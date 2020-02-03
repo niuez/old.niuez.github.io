@@ -3,21 +3,28 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://niuez.github.io/2020/02/first/</loc>
-    <lastmod>2020-02-03T17:19:14+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://niuez.github.io/</loc>
-    <lastmod>2020-02-03T17:19:14+09:00</lastmod>
+    <lastmod>2020-02-03T21:20:02+09:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://niuez.github.io/posts/</loc>
+    <lastmod>2020-02-03T21:20:02+09:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://niuez.github.io/2020/02/divisor_transform_memo/</loc>
+    <lastmod>2020-02-03T21:20:02+09:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://niuez.github.io/2020/02/first/</loc>
     <lastmod>2020-02-03T17:19:14+09:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
