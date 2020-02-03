@@ -11,6 +11,11 @@ googleAnalytics: "UA-157596444-1"      # UA-XXXXXXXX-X
 permalinks:
   posts: /:year/:month/:filename/
 
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+
 taxonomies:
     category : categories
     tag : tags
