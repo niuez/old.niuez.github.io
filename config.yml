@@ -7,7 +7,7 @@ hasCJKLanguage: true
 paginate: 7
 enableEmoji: true
 PygmentsCodeFences: false
-googleAnalytics: ""      # UA-XXXXXXXX-X 
+googleAnalytics: "UA-157596444-1"      # UA-XXXXXXXX-X 
 permalinks:
   posts: /:year/:month/:filename/
 
