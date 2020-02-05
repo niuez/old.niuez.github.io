@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Algorithms on niuez.github.io</title>
+    <link>https://niuez.github.io/categories/algorithms/</link>
+    <description>Recent content in Algorithms on niuez.github.io</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 05 Feb 2020 20:33:01 +0900</lastBuildDate>
+    
+        <atom:link href="https://niuez.github.io/categories/algorithms/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Tarjan&#39;s off-line LCA の実装メモと速度</title>
+      <link>https://niuez.github.io/2020/02/tarjans_offline_lca/</link>
+      <pubDate>Wed, 05 Feb 2020 20:33:01 +0900</pubDate>
+      
+      <guid>https://niuez.github.io/2020/02/tarjans_offline_lca/</guid>
+      <description>Tarjan&amp;rsquo;s off-line LCAを書いてみたので, その時のメモです. ネタバレ注意 No.898 tri-βutree - yukicoder のちょっとしたネタバレが含まれます&amp;hellip; Tarjan&amp;rsquo;s off-line LCA(lowest</description>
+    </item>
+    
+    <item>
+      <title>約数畳み込みを使って最大公約数と集合をうまく扱うメモ</title>
+      <link>https://niuez.github.io/2020/02/divisor_transform_memo/</link>
+      <pubDate>Mon, 03 Feb 2020 21:20:02 +0900</pubDate>
+      
+      <guid>https://niuez.github.io/2020/02/divisor_transform_memo/</guid>
+      <description>移植テストです 書いて置かないと頭に置いておけない気がしたのでメモを残す. 間違ってたらごめん これについて気になったので メビウス関数とかを導入す</description>
+    </item>
+    
+    <item>
+      <title>First</title>
+      <link>https://niuez.github.io/2020/02/first/</link>
+      <pubDate>Mon, 03 Feb 2020 17:19:14 +0900</pubDate>
+      
+      <guid>https://niuez.github.io/2020/02/first/</guid>
+      <description>はじめまして いつはてなブログが消えてもおかしくない気がするので, 僕のはてなブログからこっちに移してこようかなと考えてます. テスト期間真っ最中</description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>https://niuez.github.io/about/</link>
+      <pubDate>Mon, 03 Feb 2020 17:14:56 +0900</pubDate>
+      
+      <guid>https://niuez.github.io/about/</guid>
+      <description> GitHub Twitter AtCoder Codeforces  </description>
+    </item>
+    
+  </channel>
+</rss>

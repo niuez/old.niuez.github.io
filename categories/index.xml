@@ -5,9 +5,19 @@
     <link>https://niuez.github.io/categories/</link>
     <description>Recent content in Categories on niuez.github.io</description>
     <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 05 Feb 2020 20:33:01 +0900</lastBuildDate>
     
         <atom:link href="https://niuez.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Tarjan&#39;s off-line LCA の実装メモと速度</title>
+      <link>https://niuez.github.io/2020/02/tarjans_offline_lca/</link>
+      <pubDate>Wed, 05 Feb 2020 20:33:01 +0900</pubDate>
+      
+      <guid>https://niuez.github.io/2020/02/tarjans_offline_lca/</guid>
+      <description>Tarjan&amp;rsquo;s off-line LCAを書いてみたので, その時のメモです. ネタバレ注意 No.898 tri-βutree - yukicoder のちょっとしたネタバレが含まれます&amp;hellip; Tarjan&amp;rsquo;s off-line LCA(lowest</description>
+    </item>
     
     <item>
       <title>約数畳み込みを使って最大公約数と集合をうまく扱うメモ</title>
