@@ -46,5 +46,68 @@
       <description> GitHub Twitter AtCoder Codeforces  </description>
     </item>
     
+    <item>
+      <title>Suffix Array と LCP と 文字列検索の実装をした</title>
+      <link>https://niuez.github.io/2019/12/203739/</link>
+      <pubDate>Mon, 16 Dec 2019 20:37:39 +0000</pubDate>
+      
+      <guid>https://niuez.github.io/2019/12/203739/</guid>
+      <description>この土日のメモです. SAとLCPのお気持ちをまとめたくなっただけ. 間違ってたらごめん 文字列アルゴの勉強する気が起きないたった一つの理由: Rolling H</description>
+    </item>
+    
+    <item>
+      <title>動的木上の最小シュタイナー木をtoptreeで解く</title>
+      <link>https://niuez.github.io/2019/12/000036/</link>
+      <pubDate>Sat, 14 Dec 2019 00:00:36 +0000</pubDate>
+      
+      <guid>https://niuez.github.io/2019/12/000036/</guid>
+      <description>この記事は「データ構造とアルゴリズム Advent Calendar 2019」 14日目の記事です. 13日目は@ajalabさんのRun-Length FM-Index - koki, 15日目は@m</description>
+    </item>
+    
+    <item>
+      <title>BFS Euler Tour</title>
+      <link>https://niuez.github.io/2019/10/002503/</link>
+      <pubDate>Sat, 05 Oct 2019 00:25:03 +0000</pubDate>
+      
+      <guid>https://niuez.github.io/2019/10/002503/</guid>
+      <description>僕が木上クエリコンで出題した問題で使った手法です. No.899 γatheree - yukicoder アルゴリズム 例 Euler TourをBFSで行います. すると, Euler Tourの列は</description>
+    </item>
+    
+    <item>
+      <title>Toptree - Link &amp; Cut編</title>
+      <link>https://niuez.github.io/2019/08/114511/</link>
+      <pubDate>Mon, 05 Aug 2019 11:45:11 +0000</pubDate>
+      
+      <guid>https://niuez.github.io/2019/08/114511/</guid>
+      <description>Toptree 導入編 - niuez’s diary 引き続き, toptreeの解説をしていきます. Link link(v, w): 頂点vとwを辺vwで結ぶをします. 場合分けが多すぎるんじゃ が,</description>
+    </item>
+    
+    <item>
+      <title>Toptree 導入編</title>
+      <link>https://niuez.github.io/2019/08/191420/</link>
+      <pubDate>Sun, 04 Aug 2019 19:14:20 +0000</pubDate>
+      
+      <guid>https://niuez.github.io/2019/08/191420/</guid>
+      <description>みんな日本語記事を待っていたはず&amp;hellip;.! toptreeがどんな感じで動いているのかを書いてみます 実装はここにあります https://github.com/niuez/toptree-rust 0. toptree is なに</description>
+    </item>
+    
+    <item>
+      <title>top-tree実装体験木</title>
+      <link>https://niuez.github.io/2019/06/161729/</link>
+      <pubDate>Sat, 29 Jun 2019 16:17:29 +0000</pubDate>
+      
+      <guid>https://niuez.github.io/2019/06/161729/</guid>
+      <description>読者層が限定されすぎていませんか？ Link Cut Treeを書いたことがない人はこちら！ Link-Cut 木 - ei1333の日記 部分木クエリについてはこちら！ Link Cut Tre</description>
+    </item>
+    
+    <item>
+      <title>ダイクストラとポテンシャルのはなし</title>
+      <link>https://niuez.github.io/2019/03/142903/</link>
+      <pubDate>Mon, 04 Mar 2019 14:29:03 +0000</pubDate>
+      
+      <guid>https://niuez.github.io/2019/03/142903/</guid>
+      <description>はじめまして, niuezといいます. 競プロを少ししています. 最近勉強したことのメモ書きをしておきます. ダイクストラ法 ダイクストラ法(Dijk</description>
+    </item>
+    
   </channel>
 </rss>

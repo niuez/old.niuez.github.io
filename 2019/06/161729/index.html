@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>
+        top-tree実装体験木 - niuez.github.io
+      </title>
+    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  
+  <meta name="theme-color" content="#000000" />
+  
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <meta name="description" content="読者層が限定されすぎていませんか？ Link Cut Treeを書いたことがない人はこちら！ Link-Cut 木 - ei1333の日記 部分木クエリについてはこちら！ Link Cut Tre" />
+  <meta name="generator" content="Hugo 0.63.1 with theme pure" />
+  <title>top-tree実装体験木 - niuez.github.io</title>
+  
+  
+  <link rel="stylesheet" href="https://niuez.github.io/css/style.min.7dc20efbc53647d41aa9ddea0c48e59300223d084e66ea0cbe7c30bd88903acc.css">
+  
+  <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+  <meta property="og:title" content="top-tree実装体験木" />
+<meta property="og:description" content="読者層が限定されすぎていませんか？ Link Cut Treeを書いたことがない人はこちら！ Link-Cut 木 - ei1333の日記 部分木クエリについてはこちら！ Link Cut Tre" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://niuez.github.io/2019/06/161729/" />
+<meta property="article:published_time" content="2019-06-29T16:17:29+00:00" />
+<meta property="article:modified_time" content="2019-06-29T16:17:29+00:00" />
+<meta itemprop="name" content="top-tree実装体験木">
+<meta itemprop="description" content="読者層が限定されすぎていませんか？ Link Cut Treeを書いたことがない人はこちら！ Link-Cut 木 - ei1333の日記 部分木クエリについてはこちら！ Link Cut Tre">
+<meta itemprop="datePublished" content="2019-06-29T16:17:29&#43;00:00" />
+<meta itemprop="dateModified" content="2019-06-29T16:17:29&#43;00:00" />
+<meta itemprop="wordCount" content="1570">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="top-tree実装体験木"/>
+<meta name="twitter:description" content="読者層が限定されすぎていませんか？ Link Cut Treeを書いたことがない人はこちら！ Link-Cut 木 - ei1333の日記 部分木クエリについてはこちら！ Link Cut Tre"/>
+
+  <!--[if lte IE 9]>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+    <![endif]-->
+
+  <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+  </head>
+
+  
+  
+
+  <body class="main-center theme-white" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/niuez" target="_blank">
+            <img class="img-circle img-rotate" src="https://niuez.github.io/niuez.jpg" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Niuez</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Japan</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder=""
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/categories/">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">Categories</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://niuez.github.io/2020/02/tarjans_offline_lca/" class="title">Tarjan&#39;s off-line LCA の実装メモと速度</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2020-02-05 20:33:01 &#43;0900 &#43;0900" itemprop="datePublished">2020-02-05</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://niuez.github.io/2020/02/divisor_transform_memo/" class="title">約数畳み込みを使って最大公約数と集合をうまく扱うメモ</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2020-02-03 21:20:02 &#43;0900 &#43;0900" itemprop="datePublished">2020-02-03</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://niuez.github.io/2020/02/first/" class="title">First</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2020-02-03 17:19:14 &#43;0900 &#43;0900" itemprop="datePublished">2020-02-03</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://niuez.github.io/2019/12/203739/" class="title">Suffix Array と LCP と 文字列検索の実装をした</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-12-16 20:37:39 &#43;0000 UTC" itemprop="datePublished">2019-12-16</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://niuez.github.io/2019/12/000036/" class="title">動的木上の最小シュタイナー木をtoptreeで解く</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-12-14 00:00:36 &#43;0000 UTC" itemprop="datePublished">2019-12-14</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+  </div>
+</aside>
+
+    
+    
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2019/06/161729/"
+    >top-tree実装体験木</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://niuez.github.io/2019/06/161729/" class="article-date">
+  <time datetime="2019-06-29 16:17:29 &#43;0000 UTC" itemprop="datePublished">2019-06-29</time>
+</a>
+</span>
+
+
+        <span class="post-comment"><i class="icon icon-comment"></i>&nbsp;<a href="/2019/06/161729/#comments"
+            class="article-comment-link"></a></span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <p>読者層が限定されすぎていませんか？</p>
+<p>Link Cut Treeを書いたことがない人はこちら！</p>
+<p><a href="https://ei1333.hateblo.jp/entry/2018/05/29/011140">Link-Cut 木 - ei1333の日記</a></p>
+<p>部分木クエリについてはこちら！</p>
+<p><a href="http://beet-aizu.hatenablog.com/entry/2019/06/08/221833">Link Cut Treeで部分木の情報を管理する - beet's soil</a></p>
+<p>最遠点クエリについてはこちら！</p>
+<p><a href="https://ei1333.hateblo.jp/entry/2019/06/13/133736">Link-Cut木と最遠点クエリ - ei1333の日記</a></p>
+<p>え〜っと, 多分toptreeが書けました. 多分!  verifyしたいんですが, Rustのバージョンで困っています&hellip;</p>
+<h2 id="実装">実装</h2>
+<p>論文を読むとかける！(素振り) 間違ってたらごめんなさい</p>
+<div class="github-card" data-user="kutimoti" data-repo="toptree-rust" data-width="400" data-height="" data-theme="default"></div>
+<script src="https://cdn.jsdelivr.net/github-cards/latest/widget.js"></script>
+<p>LinkCutTreeがならしO(logN)らしいし, これもO(logN)だと信じている(解析できねえ&hellip;)</p>
+<h2 id="読んだもの">読んだもの</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/cs/0310065">Maintaining Information in Fully-Dynamic Trees with Top Trees</a></li>
+<li><a href="https://renatowerneck.files.wordpress.com/2016/06/wer06-dissertation.pdf">Design and Analysis of Data Structures for Dynamic Trees</a></li>
+<li>noshi91さんのツイート</li>
+</ul>
+<h2 id="toptree">toptree?</h2>
+<p>LinkCutTreeでは, Heavy-edgeのパスを頂点の順番でSplayTreeで管理していました. また, 上のLinkCutTreeでの部分木クエリでは, Light-edgeでつながったものを, multisetで管理しています.</p>
+<p>これを, Heavy-edgeのパスを辺の順番で, <strong>辺を葉とする</strong>SplayTreeで管理し, <strong>Light-edgeでつながったものをSplayTreeでまとめた</strong>データ構造が, TopTreeの雑な説明です. このSplayTreeにクエリを処理させれば, 部分木クエリなどができます. link, cutもできます.</p>
+<p>ここでもっと雑な説明をしてしまうとTopTreeが分からなくなってしまいそうなので, 他の記事にゆっくりまとめたいと思います&hellip; まとめる時間をください&hellip;(学業がなくなれば)</p>
+<h2 id="実際にできたクエリ">実際にできたクエリ</h2>
+<p>TopTreeにはClusterを載せてクエリを処理させます. ClusterのTraitは以下のようになっています.</p>
+<pre><code class="language-rust">pub trait Cluster: Clone {
+    fn identity() -&gt; Self;
+    fn compress(left: Self, right: Self) -&gt; Self;
+    fn rake(left: Self, right: Self) -&gt; Self;
+    fn reverse(&amp;amp;mut self);
+}
+
+</code></pre>
+<h3 id="v-uパスの長さ">v-uパスの長さ</h3>
+<pre><code class="language-rust">impl Cluster for usize {
+    fn identity() -&gt; Self { 0 }
+    fn compress(left: Self, right: Self) -&gt; Self { left + right }
+    fn rake(a: Self, _: Self) -&gt; Self { a }
+    fn reverse(&amp;amp;mut self) {}
+}
+
+</code></pre>
+<p>というふうにClusterを定義すると</p>
+<pre><code class="language-rust">pub fn path_length_test() {
+    println!(&quot;path_length&quot;);
+    let v: Vec&amp;lt;_&gt; = (0..13).map(|i| Vertex::new(i)).collect();
+    let edges = [
+        (0usize, 1usize, 1usize),
+        (1, 2, 10),
+        (1, 3, 3),
+        (1, 4, 4),
+        (0, 5, 3),
+        (5, 9, 4),
+        (9, 10, 7),
+        (10, 11, 9),
+        (10, 12, 1),
+        (0, 6, 3),
+        (6, 7, 3),
+        (7, 8, 7),
+    ];
+    let mut es = Vec::new();
+    for (a, b, w) in edges.iter() {
+        es.push(link(v[*a], v[*b], *w));
+    }
+    assert!(path_query(v[1], v[0]) == 1);
+    assert!(path_query(v[0], v[4]) == 5);
+    assert!(path_query(v[1], v[9]) == 8);
+    assert!(path_query(v[3], v[11]) == 27);
+    assert!(path_query(v[6], v[12]) == 18);
+    assert!(path_query(v[12], v[6]) == 18);
+    assert!(path_query(v[2], v[4]) == 14);
+    assert!(path_query(v[5], v[6]) == 6);
+}
+
+</code></pre>
+<h3 id="木の直径クエリ">木の直径クエリ</h3>
+<pre><code class="language-rust">#[derive(Clone, Debug)]
+struct Diameter {
+    diam: usize,
+    max_dist_left: usize,
+    max_dist_right: usize,
+    length: usize
+}
+
+impl Diameter {
+    fn new(l: usize) -&gt; Self {
+        Diameter {
+            diam: l,
+            max_dist_left: l,
+            max_dist_right: l,
+            length: l,
+        }
+    }
+}
+
+impl Cluster for Diameter {
+    fn identity() -&gt; Self {
+        Diameter {
+            diam: 0,
+            max_dist_left: 0,
+            max_dist_right: 0,
+            length: 0,
+        }
+    }
+    fn compress(a: Self, b: Self) -&gt; Self {
+        Diameter {
+            diam: *[ a.diam, b.diam, a.max_dist_right + b.max_dist_left].into_iter().max().unwrap(),
+            max_dist_left: std::cmp::max(a.max_dist_left, a.length + b.max_dist_left),
+            max_dist_right: std::cmp::max(b.max_dist_right, b.length + a.max_dist_right),
+            length: a.length + b.length
+        }
+    }
+    fn rake(a: Self, b: Self) -&gt; Self {
+        Diameter {
+            diam: *[ a.diam, b.diam, a.max_dist_right + b.max_dist_right ].into_iter().max().unwrap(),
+            max_dist_left: std::cmp::max(a.max_dist_left, a.length + b.max_dist_right),
+            max_dist_right: std::cmp::max(a.max_dist_right, b.max_dist_right),
+            length: a.length,
+        }
+    }
+    fn reverse(&amp;amp;mut self) {
+        std::mem::swap(&amp;amp;mut self.max_dist_left, &amp;amp;mut self.max_dist_right);
+    }
+}
+
+</code></pre>
+<p>というふうにClusterを定義すると</p>
+<pre><code class="language-rust">pub fn diameter_cut_test() {
+    println!(&quot;diameter cut&quot;);
+    let v: Vec&amp;lt;_&gt; = (0..13).map(|i| Vertex::new(i)).collect();
+    let edges = [
+        (0usize, 1usize, 1usize),
+        (1, 2, 10),
+        (1, 3, 3),
+        (1, 4, 4),
+        (0, 5, 3),
+        (5, 9, 4),
+        (9, 10, 7),
+        (10, 11, 9),
+        (10, 12, 1),
+        (0, 6, 3),
+        (6, 7, 3),
+        (7, 8, 7),
+    ];
+    let mut es = Vec::new();
+    for (a, b, w) in edges.iter() {
+        es.push(link(v[*a], v[*b], Diameter::new(*w)));
+    }
+    cut(v[0], v[5]);
+    println!(&quot;0 diameter = {}&quot;, expose(v[0]).fold().diam); // -&gt; 24
+    println!(&quot;5 diameter = {}&quot;, expose(v[5]).fold().diam); // -&gt; 20
+}
+
+</code></pre>
+<p>AOJの直径のやつ適当にいくつか通しました(提出できない)</p>
+<h3 id="最遠点クエリ">最遠点クエリ</h3>
+<pre><code class="language-rust">#[derive(Clone, Debug)]
+struct Farthest {
+    ans: usize,
+    max_dist_left: usize,
+    max_dist_right: usize,
+    length: usize
+}
+
+impl Farthest {
+    fn new(l: usize) -&gt; Self {
+        Farthest {
+            ans: l,
+            max_dist_left: l,
+            max_dist_right: l,
+            length: l,
+        }
+    }
+}
+
+impl Cluster for Farthest {
+    fn identity() -&gt; Self {
+        Farthest {
+            ans: 0,
+            max_dist_left: 0,
+            max_dist_right: 0,
+            length: 0,
+        }
+    }
+    fn compress(a: Self, b: Self) -&gt; Self {
+        Farthest {
+            ans: std::cmp::max(a.max_dist_right, b.max_dist_left),
+            max_dist_left: std::cmp::max(a.max_dist_left, a.length + b.max_dist_left),
+            max_dist_right: std::cmp::max(b.max_dist_right, b.length + a.max_dist_right),
+            length: a.length + b.length
+        }
+    }
+    fn rake(a: Self, b: Self) -&gt; Self {
+        Farthest {
+            ans: 0,
+            max_dist_left: std::cmp::max(a.max_dist_left, a.length + b.max_dist_right),
+            max_dist_right: std::cmp::max(a.max_dist_right, b.max_dist_right),
+            length: a.length,
+        }
+    }
+    fn reverse(&amp;amp;mut self) {
+        std::mem::swap(&amp;amp;mut self.max_dist_left, &amp;amp;mut self.max_dist_right);
+    }
+}
+
+</code></pre>
+<p>というふうにClusterを定義すると</p>
+<p><a href="https://atcoder.jp/contests/tkppc/tasks/tkppc2015_j">J - 仕事をしよう！ (Working!)</a></p>
+<p>が解けます. サンプルは通りました(AtCoderさんverifyさせてくださいおねがいします)</p>
+<pre><code class="language-rust">pub fn farthest_test() {
+    println!(&quot;farthest&quot;);
+    let mut buf = String::new();
+    std::io::stdin().read_to_string(&amp;amp;mut buf).unwrap();
+    let mut iter = buf.split_whitespace();
+    let q: usize = iter.next().unwrap().parse().unwrap();
+
+    let mut v: Vec&amp;lt;_&gt; = (0..1).map(|_| Vertex::new(())).collect();
+    let edges :Vec&amp;lt;(usize, usize, usize)&gt;= (0..q).map(|_| {
+        (
+            iter.next().unwrap().parse().unwrap(),
+            iter.next().unwrap().parse().unwrap(),
+            iter.next().unwrap().parse().unwrap(),
+            )
+    }).collect();
+    let mut es = Vec::new();
+    for (t, a, c) in edges.iter() {
+        if *t == 1 {
+            let new_v = Vertex::new(());
+            v.push(new_v);
+            link(v[*a], new_v, Farthest::new(*c));
+            es.push((*a, v.len() - 1));
+        }
+        else if *t == 2 {
+            let p = es[*a - 1].0;
+            let q = es[*a - 1].1;
+            cut(v[p], v[q]);
+            link(v[p], v[q], Farthest::new(*c));
+        }
+        else if *t == 3 {
+            println!(&quot;farthest from {} = {}&quot;, *a, expose(v[*a]).fold().ans);
+        }
+    }
+}
+
+</code></pre>
+<p>Nearest Marked Vertex Queryはまだやってない.</p>
+<p>何が載るのかはさっぱりわかりません, だれか解明して.</p>
+
+    </div>
+    
+  </article>
+<section id="comments">
+</section>
+
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://niuez.github.io/2019/03/142903/" title="ダイクストラとポテンシャルのはなし"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;</span></a>
+            </li>
+            <li class="next">
+                <a href="https://niuez.github.io/2019/08/191420/"
+                    title="Toptree 導入編"><span>&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="twitter"
+                data-mobile-sites="twitter"></div>
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/niuez" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://twitter.com/xiuez" target="_blank" title="twitter" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-twitter"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2017  -
+    2020
+    <div class="publishby">
+         <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a><a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    <p>This site use Google Analytics.</p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://niuez.github.io/js/application.min.bdeb64b910570b6c41badc6a05b7afb0c8ad9efd8525de3c7257d59e786326a3.js"></script>
+<script src="https://niuez.github.io/js/plugin.min.51ff8c7317566f82259170fa36e09c4493adc9b9378b427a01ad3f017ebac7dd.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '',
+                PAGES: '',
+                CATEGORIES: '',
+                TAGS: '',
+                UNTITLED: '',
+            },
+            ROOT_URL: 'https:\/\/niuez.github.io',
+            CONTENT_URL: 'https:\/\/niuez.github.io\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://niuez.github.io/js/insight.min.a343cd9a5a7698336b28ef3a7c16a3a1b1d2d5fb17dc8ed04022bbe08cc5459073a15bdafa3a8a58cdd56080784bdd69fa70b1ae8597565c799c57ed00f0e120.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-157596444-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>

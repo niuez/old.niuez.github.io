@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>
+        ダイクストラとポテンシャルのはなし - niuez.github.io
+      </title>
+    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  
+  <meta name="theme-color" content="#000000" />
+  
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <meta name="description" content="はじめまして, niuezといいます. 競プロを少ししています. 最近勉強したことのメモ書きをしておきます. ダイクストラ法 ダイクストラ法(Dijk" />
+  <meta name="generator" content="Hugo 0.63.1 with theme pure" />
+  <title>ダイクストラとポテンシャルのはなし - niuez.github.io</title>
+  
+  
+  <link rel="stylesheet" href="https://niuez.github.io/css/style.min.7dc20efbc53647d41aa9ddea0c48e59300223d084e66ea0cbe7c30bd88903acc.css">
+  
+  <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+  <meta property="og:title" content="ダイクストラとポテンシャルのはなし" />
+<meta property="og:description" content="はじめまして, niuezといいます. 競プロを少ししています. 最近勉強したことのメモ書きをしておきます. ダイクストラ法 ダイクストラ法(Dijk" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://niuez.github.io/2019/03/142903/" />
+<meta property="article:published_time" content="2019-03-04T14:29:03+00:00" />
+<meta property="article:modified_time" content="2019-03-04T14:29:03+00:00" />
+<meta itemprop="name" content="ダイクストラとポテンシャルのはなし">
+<meta itemprop="description" content="はじめまして, niuezといいます. 競プロを少ししています. 最近勉強したことのメモ書きをしておきます. ダイクストラ法 ダイクストラ法(Dijk">
+<meta itemprop="datePublished" content="2019-03-04T14:29:03&#43;00:00" />
+<meta itemprop="dateModified" content="2019-03-04T14:29:03&#43;00:00" />
+<meta itemprop="wordCount" content="2506">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="ダイクストラとポテンシャルのはなし"/>
+<meta name="twitter:description" content="はじめまして, niuezといいます. 競プロを少ししています. 最近勉強したことのメモ書きをしておきます. ダイクストラ法 ダイクストラ法(Dijk"/>
+
+  <!--[if lte IE 9]>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+    <![endif]-->
+
+  <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+  </head>
+
+  
+  
+
+  <body class="main-center theme-white" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/niuez" target="_blank">
+            <img class="img-circle img-rotate" src="https://niuez.github.io/niuez.jpg" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Niuez</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Japan</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder=""
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/categories/">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">Categories</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://niuez.github.io/2020/02/tarjans_offline_lca/" class="title">Tarjan&#39;s off-line LCA の実装メモと速度</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2020-02-05 20:33:01 &#43;0900 &#43;0900" itemprop="datePublished">2020-02-05</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://niuez.github.io/2020/02/divisor_transform_memo/" class="title">約数畳み込みを使って最大公約数と集合をうまく扱うメモ</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2020-02-03 21:20:02 &#43;0900 &#43;0900" itemprop="datePublished">2020-02-03</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://niuez.github.io/2020/02/first/" class="title">First</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2020-02-03 17:19:14 &#43;0900 &#43;0900" itemprop="datePublished">2020-02-03</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://niuez.github.io/2019/12/203739/" class="title">Suffix Array と LCP と 文字列検索の実装をした</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-12-16 20:37:39 &#43;0000 UTC" itemprop="datePublished">2019-12-16</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://niuez.github.io/2019/12/000036/" class="title">動的木上の最小シュタイナー木をtoptreeで解く</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-12-14 00:00:36 &#43;0000 UTC" itemprop="datePublished">2019-12-14</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+  </div>
+</aside>
+
+    
+    
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2019/03/142903/"
+    >ダイクストラとポテンシャルのはなし</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://niuez.github.io/2019/03/142903/" class="article-date">
+  <time datetime="2019-03-04 14:29:03 &#43;0000 UTC" itemprop="datePublished">2019-03-04</time>
+</a>
+</span>
+
+
+        <span class="post-comment"><i class="icon icon-comment"></i>&nbsp;<a href="/2019/03/142903/#comments"
+            class="article-comment-link"></a></span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <p>はじめまして, niuezといいます. 競プロを少ししています.</p>
+<p>最近勉強したことのメモ書きをしておきます.</p>
+<h2 id="ダイクストラ法">ダイクストラ法</h2>
+<p>ダイクストラ法(<em>Dijkstra</em>)は負の長さの無いグラフで始点からの最短距離を求めるアルゴリズムです.</p>
+<p>具体的には</p>
+<ol>
+<li>距離が未確定の頂点の中で一番小さいものを選び, 距離を確定させる.</li>
+<li>選んだ頂点から距離が未確定の頂点に伸びる辺で, 未確定な距離をより短いものに更新する.</li>
+</ol>
+<p>を繰り返します. これを実装すると $O(N)$ですが, よく知られるダイクストラの計算量は $O((E+ V) \log E)$ です(heapとかを使う).</p>
+<pre><code class="language-cpp">#include &lt;set&gt;&lt;/set&gt;
+#include &lt;queue&gt;&lt;/queue&gt;
+#include &lt;vector&gt;&lt;/vector&gt;
+
+struct edge {
+  int u,v;
+  int dist;
+};
+
+std::vector&amp;lt;int&gt; dijkstra(const std::vector&amp;lt;std::vector&amp;lt;edge&gt;&gt;&amp;amp; g, int s) {
+  std::vector&amp;lt;int&gt; dist(g.size(), 1e9);
+  using node = std::pair&amp;lt;int,int&gt;;
+  std::priority_queue&amp;lt;node,std::vector&amp;lt;node&gt;, std::greater&amp;lt;node&gt;&gt; Q;
+  dist[s] = 0;
+  Q.push(node(dist[s], s));
+
+  while(!Q.empty()) {
+    int v = Q.top().second;
+    int d = Q.top().first;
+    Q.pop();
+    if(dist[v] &amp;lt; d) continue;
+    for(const auto&amp;amp; e: g[v]) {
+      if(dist[e.u] + e.dist &amp;lt; dist[e.v]) {
+        dist[e.v] = dist[e.u] + e.dist;
+        Q.push(node(dist[e.v], e.v));
+      }
+    }
+  }
+
+  return std::move(dist);
+}
+
+</code></pre>
+<h2 id="ベルマンフォード法">ベルマンフォード法</h2>
+<p>ベルマンフォード法(<em>Bellman-Ford</em>)は任意の長さのグラフで始点からの最短距離を求めるアルゴリズムです. 負の長さの閉路があるときはもちろん求められませんが, この記事では考えないことにします.</p>
+<p>$O(VE)$ で直感的にもわかりやすいアルゴリズムですね.</p>
+<pre><code class="language-cpp">#include &lt;vector&gt;&lt;/vector&gt;
+
+struct edge {
+  int u,v;
+  int dist;
+};
+
+std::vector&amp;lt;int&gt; dijkstra(const std::vector&amp;lt;std::vector&amp;lt;edge&gt;&gt;&amp;amp; g, int s) {
+  std::vector&amp;lt;int&gt; dist(g.size(), 1e9);
+  dist[s] = 0;
+
+  for(int c = 0;c &amp;lt; g.size();c++) {
+      for(int v = 0;v &amp;lt; g.size();g++) {
+          if(dist[v] == (int)1e9) continue;
+          for(const auto&amp;amp; e: g[v]) {
+            if(dist[e.u] + e.dist &amp;lt; dist[e.v]) {
+                dist[e.v] = dist[e.u] + e.dist;
+            }
+          }
+      }
+  }
+
+  return std::move(dist);
+}
+
+</code></pre>
+<h2 id="負の重みがあるときはベルマンフォード法しか無い">負の重みがあるときはベルマンフォード法しか無い?</h2>
+<p>ダイクストラ法のほうが定数倍が早かったりするので, できるだけベルマンフォード法よりはダイクストラ法を使いたいですよね?</p>
+<p><strong>一回だけ</strong>最短経路を求めるときはベルマンフォード法を使うしかありません.</p>
+<p><strong>複数回</strong>最短経路を求めるときはどうでしょうか?</p>
+<p>実はこの場合, ベルマンフォード法を最初に一回だけしておくことで, 後の複数回はダイクストラ法を使うことが出来ます.</p>
+<p>ダイクストラ法を使うとすると, 辺の長さを<strong>うまいことして正の長さにする</strong>必要があります.</p>
+<h2 id="最短経路とは">最短経路とは??</h2>
+<p>始点を頂点 $s$ とした最短経路を数式に落とし込むと, こういう定義になります.</p>
+<p>$d_s = 0$ とする.<br/>
+すべての辺 $(i,j)$ において $d_i + dist(i,j) \ge d_j$ が成り立つときの, $d$ のそれぞれの取れる最大値.</p>
+<p>これを頭に入れておくと次がわかります.</p>
+<h2 id="ポテンシャル">ポテンシャル</h2>
+<p>ここで天才をします. 先人は天才です.</p>
+<p>ある$p_i$という値を用意して, 距離を $dist'(i,j) = dist(i,j) + p_i - p_j$ としたグラフを考えます.</p>
+<p>長さ $dist'$ のグラフで, 頂点 $s$ を始点とした最短距離を計算して, ${d'}_i$ を求めたとしましょう.</p>
+<div>${d&#39;}_i + dist&#39;(i, j) \ge {d&#39;}_j$</div>
+<div>${d&#39;}_i + dist(i, j) + p_i - p_j \ge {d&#39;}_j$</div>
+<div>${d&#39;}_i + p_i + dist(i, j) \ge {d&#39;}_j + p_j$</div>
+<p>よく見ると</p>
+<div> $d_i = {d&#39;}_i + p_i$ </div>
+<p>とすれば, $d_i$は最短距離の定義を満たしているように見えますね.しかし</p>
+<div>$d_s = {d&#39;}_s + p_s = p_s`$ </div>
+<p>なので<br/>
+$d_s = 0$ を満たしていません. <br/>
+なので, すべての頂点 $i$ について $ans_i = {d'}_i + p_i - p_s$ を計算すれば, $ans$ は最短経路を示しています.</p>
+<p>このとき, $p_i$ のことを<strong>ポテンシャル</strong>と呼びます.</p>
+<p>では, <strong>$dist'$を正の長さにしたい</strong>気持ちになります.</p>
+<div>$dist(i, j) + p_i - p_j \ge 0$</div>
+<div>$p_i + dist(i, j) \ge p_j$</div>
+<p>これは何かな. 最短距離の定義そのままですね(天才).</p>
+<p>これを使うと色々なものが効率的に求めることが出来ます.</p>
+<h2 id="負の重みがあるグラフでの全点間最短距離問題">負の重みがあるグラフでの全点間最短距離問題</h2>
+<p>全点間最短距離問題とは, すべての頂点の間での最短距離を計算する問題のことです.</p>
+<p>よく知られているのはワーシャルフロイド法の <span>$O(V<sup>3</sup>)$</span> ですが, これを <span>$V$</span> 回のダイクストラに置き換えることが出来て, $O(V(E + V) \log V)$ になります.</p>
+<p>疑似コード</p>
+<pre><code>proc all_pair_shortest_path(G, dist)
+    let potential = bellman_ford(G, dist, 0) //引数は グラフ, 距離, 始点 です
+    for e = (i, j) in G
+        dist2(i, j) = dist(i, j) + potential[i] - potential[j]
+    for s in [0, |V| - 1]
+        result[s] = dijkstra(G, dist2, s)
+        for j in [0, |V| - 1]
+            result[s][j] += potential[j] - potential[s] // result[s][j]... s -&gt; jの距離
+    return result
+</code></pre>
+<h2 id="最小費用流">最小費用流</h2>
+<p>最小費用流はたぶん皆さんなら, 最短路反復法で実装していると思いますが&hellip;(<em>RHS-algorithm</em>なんて強多項式計算量知らない)</p>
+<p>このとき負の辺があるときはダイクストラが使えないと思われがちですが, 同じように最初にベルマンフォードでポテンシャルを求めておけば, 高速で計算が可能です.</p>
+<p>しかし, 逆辺が負の重みを持つので, ポテンシャルは, その時求めた最短距離を加算して行くことで, 更新をし続けなければなりません.</p>
+<p><a href="https://tubo28.me/algorithm/primal-dual/">libalgo</a>が参考になります.</p>
+<h2 id="スケーリングアルゴリズム">スケーリングアルゴリズム</h2>
+<p>スケーリングを用いたダイクストラのアルゴリズムは重みが非負整数のときに使える高速化手法です.</p>
+<p>簡潔に言うと, 「辺の重みを半分にしたものでダイクストラをして, その結果の二倍をポテンシャルに使ってダイクストラをする.」 を再帰的に行うことで, ダイクストラを高速化するテクを使うというアルゴリズムです.</p>
+<p>下に例を示します.</p>
+<figure>
+    <img src="/images/2019/03/04/142903/20190304120801.png"/> 
+</figure>
+
+<p>このようなグラフがあったとします.</p>
+<p>このグラフの重みを半分にした(小数点以下切り捨て) グラフでダイクストラをします.</p>
+<figure>
+    <img src="/images/2019/03/04/142903/20190304120815.png"/> 
+</figure>
+
+<p>最短距離は赤色に示した通りです.</p>
+<p>この値を二倍した値を, 半分にする前のグラフのポテンシャルに使います.</p>
+<figure>
+    <img src="/images/2019/03/04/142903/20190304120824.png"/> 
+</figure>
+
+<p>辺の重みをポテンシャルによって置き換えると以下のようになります.</p>
+<figure>
+    <img src="/images/2019/03/04/142903/20190304120834.png"/> 
+</figure>
+
+<p>この置き換えた重みでダイクストラをします.</p>
+<figure>
+    <img src="/images/2019/03/04/142903/20190304121550.png"/> 
+</figure>
+
+<p>最短距離は青色で示しました.</p>
+<p>それぞれの頂点で赤色と青色の値を足すと, ポテンシャルの性質により半分にする前のグラフの最短距離が求まります.</p>
+<figure>
+    <img src="/images/2019/03/04/142903/20190304120846.png"/> 
+</figure>
+
+<p>このグラフの重みは二進数にしたとき高々2桁なので1回半分にするだけで済みましたが, 一般に $ \log W$ 回再帰的に「重みを半分にして二倍してポテンシャルに使う」という動作をすれば求まります.</p>
+<h2 id="高速化">高速化</h2>
+<p>正直こんなことしなくてもこのままのアルゴリズムであれば, 大元のグラフをダイクストラすればいいだけの話です.</p>
+<p>ですが, このポテンシャルで変更を加えた後のグラフに性質があります.</p>
+<p>重みを半分にしたグラフでの, 頂点$s$から頂点$g$の最短経路($P$とします)に含まれる辺の数を $L$とします.</p>
+<p>このとき, 半分にする前の重みをポテンシャルで変更を加えたグラフでの $s$から$g$の最短経路の重みは $L$以下です.</p>
+<p>なぜなら, 二進数を考えると$P$上の辺の重みはポテンシャルで変更を加えると $0$ か $1$にしかならないからです.</p>
+<p>つまりこのスケーリングアルゴリズムで行うダイクストラは, $V$個のQueueを用意してダイクストラをするものを使えば $O(m + n \log W)$ で計算できます.</p>
+<h2 id="〆">〆</h2>
+<p>実はダイクストラの定数倍が速すぎてスケーリングはそんなに速くなりません</p>
+
+    </div>
+    
+  </article>
+<section id="comments">
+</section>
+
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="next">
+                <a href="https://niuez.github.io/2019/06/161729/"
+                    title="top-tree実装体験木"><span>&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="twitter"
+                data-mobile-sites="twitter"></div>
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/niuez" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://twitter.com/xiuez" target="_blank" title="twitter" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-twitter"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2017  -
+    2020
+    <div class="publishby">
+         <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a><a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    <p>This site use Google Analytics.</p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://niuez.github.io/js/application.min.bdeb64b910570b6c41badc6a05b7afb0c8ad9efd8525de3c7257d59e786326a3.js"></script>
+<script src="https://niuez.github.io/js/plugin.min.51ff8c7317566f82259170fa36e09c4493adc9b9378b427a01ad3f017ebac7dd.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '',
+                PAGES: '',
+                CATEGORIES: '',
+                TAGS: '',
+                UNTITLED: '',
+            },
+            ROOT_URL: 'https:\/\/niuez.github.io',
+            CONTENT_URL: 'https:\/\/niuez.github.io\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://niuez.github.io/js/insight.min.a343cd9a5a7698336b28ef3a7c16a3a1b1d2d5fb17dc8ed04022bbe08cc5459073a15bdafa3a8a58cdd56080784bdd69fa70b1ae8597565c799c57ed00f0e120.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-157596444-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>
