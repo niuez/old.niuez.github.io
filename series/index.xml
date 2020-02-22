@@ -10,6 +10,15 @@
     
     
     <item>
+      <title>ABC155 F Perils in ParallelをF_2の行列で解く</title>
+      <link>https://niuez.github.io/2020/02/abc155-f/</link>
+      <pubDate>Sat, 22 Feb 2020 16:40:51 +0900</pubDate>
+      
+      <guid>https://niuez.github.io/2020/02/abc155-f/</guid>
+      <description>ABC155-F Perils in Parallel - kotatsugameの日記を読んだときのメモです. AtCoder F - Perils in Parallelを$\mathbb{F}_2$上の行列として考えて解</description>
+    </item>
+    
+    <item>
       <title>Tarjan&#39;s off-line LCA の実装メモと速度</title>
       <link>https://niuez.github.io/2020/02/tarjans_offline_lca/</link>
       <pubDate>Wed, 05 Feb 2020 20:33:01 +0900</pubDate>
