@@ -1,7 +1,7 @@
 ---
 title: "OyamaC'20 解説"
 date: 2020-03-19T20:10:48+09:00
-draft: true
+draft: false
 ---
 
 小山高専で, mitsuさん原案のコンテスト[OyamaC](https://www.hackerrank.com/oyamac)が行われました. testerを担当したので, 解説を書いておきます.
