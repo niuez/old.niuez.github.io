@@ -28,7 +28,7 @@
   <title>DFS&#43;BFS EulerTourで部分木の任意深さのクエリを処理する - niuez.github.io</title>
   
   
-  <link rel="stylesheet" href="https://niuez.github.io/css/style.min.7dc20efbc53647d41aa9ddea0c48e59300223d084e66ea0cbe7c30bd88903acc.css">
+  <link rel="stylesheet" href="https://niuez.github.io/css/style.min.0a1ee0bc31ef0874102eacac81b56ad13971923be8ce17e476f1d5b26bfcbf1a.css">
   
   <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
@@ -42,7 +42,7 @@
 <meta itemprop="description" content="BFS Euler TourについてはBFS Euler Tour - niuez.github.ioを参照してください. 処理したいクエリ (例) 有向木が与えられ, 各頂点には重みが">
 <meta itemprop="datePublished" content="2020-03-24T18:05:05&#43;09:00" />
 <meta itemprop="dateModified" content="2020-03-24T18:05:05&#43;09:00" />
-<meta itemprop="wordCount" content="1136">
+<meta itemprop="wordCount" content="1135">
 
 
 
@@ -218,7 +218,7 @@
     <div class="article-header">
       <h1 itemprop="name">
   <a
-    class=""
+    class="article-title"
     href="/2020/03/dfs_bfs_et/"
     >DFS&#43;BFS EulerTourで部分木の任意深さのクエリを処理する</a
   >
@@ -248,36 +248,38 @@
 <p>総和じゃなくても更新とかもしたいよね.</p>
 <h2 id="アルゴリズム">アルゴリズム</h2>
 <p>BFS Euler Tourをすると, 同じ深さの頂点が並ぶということは上の記事をみるとわかります. これにDFS Euler Tourしたときの情報を合わせることで任意深さについで, BFS Euler Tourしたときの区間を前計算$O(N)$, クエリ$O(\log N)$で求めることができます.</p>
-<p>[](./images/bfs_dfs.png)</p>
+<p><img src="/images/bfs_dfs.png" alt="がぞう"></p>
 <p>BFS Euler Tourしたときの順番と, DFS Euler Tourしたときの$in/out$を各ノードに添えました. ただし, <strong>ノードの子供を探索する順序はDFS, BFS共に同じにします</strong>, すると,</p>
 <ul>
 <li>深さ$0$のノードのbfsの番号と$in$</li>
 </ul>
-<pre><code class="language-txt">bfs: 0
+<pre><code>bfs: 0
 in : 0
 </code></pre>
 <ul>
 <li>深さ$1$のノードのbfsの番号と$in$</li>
 </ul>
-<pre><code class="language-txt">bfs: 1 2
+<pre><code>bfs: 1 2
 in : 1 8
 </code></pre>
 <ul>
 <li>深さ$2$のノードのbfsの番号と$in$</li>
 </ul>
-<pre><code class="language-txt">bfs: 3 4 5 6
+<pre><code>bfs: 3 4 5 6
 in : 2 5 9 12
 </code></pre>
 <ul>
 <li>深さ$3$のノードのbfsの番号と$in$</li>
 </ul>
-<pre><code class="language-txt">bfs: 7 8 9 10 11 12 13 14
+<pre><code>bfs: 7 8 9 10 11 12 13 14
 in : 3 4 6 7  10 11 13 14
 </code></pre>
 <p>となり, 単調増加します.<br>
 また, DFS Euler Tourでは, ある頂点$v$の$[in, out)$は, $v$を根とする部分木に含まれる頂点の$in$の集合です. これを活かして, 頂点$1$から深さ$2$の頂点のBFS Euler Tourの区間を求めてみます.</p>
-<p>木全体での頂点$1$の深さは$1$なので, 求めたい区間の頂点は深さ$3$です. また, 頂点$1$の$[in, out)$は$[1, 8)$です. なので求めたい頂点の$in$の値は, 深さ$3$での$in$の列の中で$[1, 8)$に含まれている$in = 3, 4, 6, 7$です. これは, BFS Euler Tourの区間では$[7, 10)$に相当します.<br>
-この操作は二分探索で行うことができるので, クエリあたり$O(\log N)$です.</p>
+<p>木全体での頂点$1$の深さは$1$なので, 求めたい区間の頂点は深さ$3$です.<br>
+また, 頂点$1$の$[in, out)$は$[1, 8)$です. なので求めたい頂点の$in$の値は, 深さ$3$での$in$の列の中で$[1, 8)$に含まれている$in = 3, 4, 6, 7$です.<br>
+これは, BFS Euler Tourの区間では$[7, 10)$に相当します.</p>
+<p>この操作は二分探索で行うことができるので, クエリあたり$O(\log N)$です.</p>
 <h2 id="実装">実装</h2>
 <ul>
 <li><code>para[i] := BFS Euler Tourでi番目の頂点</code></li>
