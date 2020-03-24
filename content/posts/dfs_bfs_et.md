@@ -1,5 +1,5 @@
 ---
-title: "DFSとBFSのEulerTourを組み合わせて部分木の任意深さのクエリを処理する"
+title: "DFS+BFS EulerTourで部分木の任意深さのクエリを処理する"
 date: 2020-03-24T18:05:05+09:00
 draft: false
 ---
