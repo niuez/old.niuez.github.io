@@ -9455,3 +9455,7 @@ body.okayNav-loaded {
   border-left: 3px solid #ffcc00;
   background-color: #fffae6;
 }
+
+.hatena-star-add-button-image {
+  background-image: url(https://cdn.blog.st-hatena.com/images/theme/star/hatena-star-add-button.svg?version=c2bf46bf98e2a7585c5bec177a05b33c);
+}
