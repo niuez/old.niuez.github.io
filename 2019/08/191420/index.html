@@ -375,8 +375,7 @@ toptreeで扱っている木は, 葉木です. 葉は<code>splay</code>できな
 <p>具体的には, 下のルールで構成します.</p>
 <ol>
 <li>Compress Node <code>ab</code>の左右の子が<code>ac</code>, <code>cb</code>のとき, 頂点<code>c</code>の<code>handle</code>はCompress Node <code>ab</code></li>
-<li>Compress/Edge Node <code>ab</code>の親が</li>
-<li>いない(toptreeの根): 頂点<code>a</code>, <code>b</code>のhandleはCompress Node<code>ab</code></li>
+<li>Compress/Edge Node <code>ab</code>の親がいない(toptreeの根): 頂点<code>a</code>, <code>b</code>のhandleはCompress Node<code>ab</code></li>
 <li>それ以外(Rake Treeの葉になっている): 頂点<code>a</code>の<code>handle</code>はCompress Node <code>ab</code></li>
 </ol>
 <p>具体例を見たほうが早い気がします.</p>
@@ -444,7 +443,7 @@ toptreeで扱っている木は, 葉木です. 葉は<code>splay</code>できな
 <h3 id="6">6.</h3>
 <p>これで, <code>N_v</code>をtoptreeの根にすることができます.</p>
 <h2 id="soft-expose">Soft Expose</h2>
-<p><code>soft_expose</code>は任意の頂点<code>v</code>, <code>u</code>間のパスのCompress Node <code>vu</code>を作る操作です！(やっとここまできた)<br/>
+<p><code>soft_expose</code>は任意の頂点<code>v</code>, <code>w</code>間のパスのCompress Node <code>vw</code>を作る操作です！(やっとここまできた)<br/>
 こんな形にtoptreeを変形します.</p>
 <figure>
     <img src="/images/2019/08/04/191420/20190805073700.png"/> 
@@ -452,20 +451,20 @@ toptreeで扱っている木は, 葉木です. 葉は<code>splay</code>できな
 
 <p>(8/5 なんか頭悪い画像になっていたので修正しました)</p>
 <p>手順を先に言ってしまいます</p>
-<p><code>soft_expose(v, u)</code></p>
+<p><code>soft_expose(v, w)</code></p>
 <ol>
 <li><code>expose(v)</code></li>
 <li><code>N_v</code>と<code>N_w</code>が</li>
 </ol>
 <ul>
-<li>同じ: toptreeの根は<code>vu</code>か<code>uv</code>なので, <code>uv</code>であれば反転する. <code>soft_expose</code>おわり</li>
+<li>同じ: toptreeの根は<code>vw</code>か<code>wv</code>なので, <code>wv</code>であれば反転する. <code>soft_expose</code>おわり</li>
 <li>違う: 続く</li>
 </ul>
 <ol start="3">
 <li><code>N_v</code>をguardする(????)</li>
 <li>expose(w)</li>
 <li><code>N_v</code>のguardを外す</li>
-<li><code>N_v</code>から見て<code>N_u</code>が右側なら, 反転させる.</li>
+<li><code>N_v</code>から見て<code>N_w</code>が右側なら, 反転させる.</li>
 <li>おわり</li>
 </ol>
 <p>toptreeの根をguardするとは, <code>splay</code>操作があってもtoptreeの根を変えさせないようにすることです.<br/>
