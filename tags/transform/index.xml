@@ -11,6 +11,15 @@
     
     
     <item>
+      <title>Fully Retroactive Stack 実装してみた</title>
+      <link>https://niuez.github.io/2020/04/fully_retroactive_stack/</link>
+      <pubDate>Fri, 10 Apr 2020 20:09:09 +0900</pubDate>
+      
+      <guid>https://niuez.github.io/2020/04/fully_retroactive_stack/</guid>
+      <description>noshi91さんがFully Retroactive Stackについての解説生放送をやっていたので, その解説通りに実装してみました. ちょっとした解説も書きました</description>
+    </item>
+    
+    <item>
       <title>DFS&#43;BFS EulerTourで部分木の任意深さのクエリを処理する</title>
       <link>https://niuez.github.io/2020/03/dfs_bfs_et/</link>
       <pubDate>Tue, 24 Mar 2020 18:05:05 +0900</pubDate>
