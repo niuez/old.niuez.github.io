@@ -11,6 +11,15 @@
     
     
     <item>
+      <title>RSQをクエリ平方分割で解いた時のメモ</title>
+      <link>https://niuez.github.io/2020/04/query_sqrt_decomposition_rsq/</link>
+      <pubDate>Fri, 17 Apr 2020 10:19:21 +0900</pubDate>
+      
+      <guid>https://niuez.github.io/2020/04/query_sqrt_decomposition_rsq/</guid>
+      <description>バケットサイズなんもわからん. 誰か助けて クエリ平方分割 Point Add Range Sum - Library Checkerをクエリ平方分割で解きます. クエリ平方分割はその名の通り, ク</description>
+    </item>
+    
+    <item>
       <title>Fully Retroactive Stack 実装してみた</title>
       <link>https://niuez.github.io/2020/04/fully_retroactive_stack/</link>
       <pubDate>Fri, 10 Apr 2020 20:09:09 +0900</pubDate>
