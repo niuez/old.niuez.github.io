@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <title>
-        BFS Euler Tour - niuez.github.io
+        グラフ, 格子状のグラフ, 次元拡張グラフを同じコードで扱う抽象化BFS, DijkstraのC&#43;&#43;14実装 - niuez.github.io
       </title>
     <head>
   <meta charset="utf-8">
@@ -23,32 +23,32 @@
   <meta http-equiv="window-target" content="_top" />
   
   
-  <meta name="description" content="僕が木上クエリコンで出題した問題で使った手法です. No.899 γatheree - yukicoder アルゴリズム 例 Euler TourをBFSで行います. すると, Euler Tourの列は" />
+  <meta name="description" content="これすごく悩んでいたんですけど, 新しい実装法を考えたらスッキリしたのでまとめます. 先駆者がいたらごめん, 勝手ににう式グラフ抽象化って言っちゃ" />
   <meta name="generator" content="Hugo 0.63.1 with theme pure" />
-  <title>BFS Euler Tour - niuez.github.io</title>
+  <title>グラフ, 格子状のグラフ, 次元拡張グラフを同じコードで扱う抽象化BFS, DijkstraのC&#43;&#43;14実装 - niuez.github.io</title>
   
   
   <link rel="stylesheet" href="https://niuez.github.io/css/style.min.d5a9cf8c757bb5d8bf27d9eeaf165a0c9fc4fd0377004c4d6bb875aafde502c9.css">
   
   <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
-  <meta property="og:title" content="BFS Euler Tour" />
-<meta property="og:description" content="僕が木上クエリコンで出題した問題で使った手法です. No.899 γatheree - yukicoder アルゴリズム 例 Euler TourをBFSで行います. すると, Euler Tourの列は" />
+  <meta property="og:title" content="グラフ, 格子状のグラフ, 次元拡張グラフを同じコードで扱う抽象化BFS, DijkstraのC&#43;&#43;14実装" />
+<meta property="og:description" content="これすごく悩んでいたんですけど, 新しい実装法を考えたらスッキリしたのでまとめます. 先駆者がいたらごめん, 勝手ににう式グラフ抽象化って言っちゃ" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://niuez.github.io/2019/10/002503/" />
-<meta property="article:published_time" content="2019-10-05T00:25:03+00:00" />
-<meta property="article:modified_time" content="2019-10-05T00:25:03+00:00" />
-<meta itemprop="name" content="BFS Euler Tour">
-<meta itemprop="description" content="僕が木上クエリコンで出題した問題で使った手法です. No.899 γatheree - yukicoder アルゴリズム 例 Euler TourをBFSで行います. すると, Euler Tourの列は">
-<meta itemprop="datePublished" content="2019-10-05T00:25:03&#43;00:00" />
-<meta itemprop="dateModified" content="2019-10-05T00:25:03&#43;00:00" />
-<meta itemprop="wordCount" content="570">
+<meta property="og:url" content="https://niuez.github.io/2020/04/impl_abstract_dijkstra/" />
+<meta property="article:published_time" content="2020-04-27T01:08:48+09:00" />
+<meta property="article:modified_time" content="2020-04-27T01:08:48+09:00" />
+<meta itemprop="name" content="グラフ, 格子状のグラフ, 次元拡張グラフを同じコードで扱う抽象化BFS, DijkstraのC&#43;&#43;14実装">
+<meta itemprop="description" content="これすごく悩んでいたんですけど, 新しい実装法を考えたらスッキリしたのでまとめます. 先駆者がいたらごめん, 勝手ににう式グラフ抽象化って言っちゃ">
+<meta itemprop="datePublished" content="2020-04-27T01:08:48&#43;09:00" />
+<meta itemprop="dateModified" content="2020-04-27T01:08:48&#43;09:00" />
+<meta itemprop="wordCount" content="1617">
 
 
 
 <meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="BFS Euler Tour"/>
-<meta name="twitter:description" content="僕が木上クエリコンで出題した問題で使った手法です. No.899 γatheree - yukicoder アルゴリズム 例 Euler TourをBFSで行います. すると, Euler Tourの列は"/>
+<meta name="twitter:title" content="グラフ, 格子状のグラフ, 次元拡張グラフを同じコードで扱う抽象化BFS, DijkstraのC&#43;&#43;14実装"/>
+<meta name="twitter:description" content="これすごく悩んでいたんですけど, 新しい実装法を考えたらスッキリしたのでまとめます. 先駆者がいたらごめん, 勝手ににう式グラフ抽象化って言っちゃ"/>
 
   <!--[if lte IE 9]>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -233,8 +233,8 @@
       <h1 itemprop="name">
   <a
     class="article-title"
-    href="/2019/10/002503/"
-    >BFS Euler Tour</a
+    href="/2020/04/impl_abstract_dijkstra/"
+    >グラフ, 格子状のグラフ, 次元拡張グラフを同じコードで扱う抽象化BFS, DijkstraのC&#43;&#43;14実装</a
   >
 </h1>
 
@@ -242,8 +242,8 @@
         
 <span class="article-date">
   <i class="icon icon-calendar-check"></i>&nbsp;
-<a href="https://niuez.github.io/2019/10/002503/" class="article-date">
-  <time datetime="2019-10-05 00:25:03 &#43;0000 UTC" itemprop="datePublished">2019-10-05</time>
+<a href="https://niuez.github.io/2020/04/impl_abstract_dijkstra/" class="article-date">
+  <time datetime="2020-04-27 01:08:48 &#43;0900 &#43;0900" itemprop="datePublished">2020-04-27</time>
 </a>
 </span>
 
@@ -252,92 +252,215 @@
       </div>
     </div>
     <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
-      <p>僕が木上クエリコンで出題した問題で使った手法です.</p>
-<p><a href="https://yukicoder.me/problems/no/899">No.899 γatheree - yukicoder</a></p>
-<h2 id="アルゴリズム">アルゴリズム</h2>
-<p>例</p>
-<figure>
-    <img src="/images/2019/10/05/002503/20191005001432.png"/> 
-</figure>
+      <p>これすごく悩んでいたんですけど, 新しい実装法を考えたらスッキリしたのでまとめます.</p>
+<p>先駆者がいたらごめん, 勝手に<strong>にう式グラフ抽象化</strong>って言っちゃおうかな</p>
+<h2 id="意思">意思</h2>
+<p>DijkstraやBFSのライブラリを書いておきたい！</p>
+<h2 id="問題点">問題点</h2>
+<ul>
+<li>同じアルゴリズムのライブラリを, 種類の違うグラフに対して一つずつ書くのは本当にイヤ</li>
+<li>格子状のグラフをわざわざ, <code>std::vector&lt;std::vector&lt;int&gt;&gt; G</code>に構築するのは定数倍があるのでイヤ.</li>
+<li>問題を解くために次元拡張したグラフをわざわざ構築するのは, キレイじゃない</li>
+<li><code>struct edge</code>がC++においてはなんかイヤ, 隣接する頂点が<code>int to</code>で固定しないとダメだったりでイヤ(Rustのtraitとかあるならまだしも 個人差あり)</li>
+<li>そもそも<code>struct edge</code>を毎回書くのもイヤ(競プロなので)</li>
+<li>隣接リストを毎回<code>std::vector&lt;edge&gt;</code>で返すのもキレイじゃない, できるだけ無駄はなくしたい.</li>
+</ul>
+<p>どうしよう(欲求が多すぎる)</p>
+<h2 id="解決">解決</h2>
+<p>抽象化しにくいのはなぜかというと, <code>struct edge</code>と隣接行列の保持の仕方がグラフの種類ごとに違うからです.  なので, 方針としては</p>
+<ul>
+<li><code>struct edge</code>は, ライブラリに触れさせない</li>
+<li>隣接行列は, 直接ライブラリに触れさせない</li>
+</ul>
+<p>という点を実現できれば良いです. ですが, 隣接行列を<code>std::vector&lt;なんたら&gt;</code>で返す関数を返すのも美しくありません. なので, これを関数で受けることにします.</p>
+<p>具体的には,</p>
+<ol>
+<li>BFS関数は, <code>delta</code>という隣接行列を生成する関数を受け取ります.</li>
+<li>隣接する頂点を列挙する時は, <code>delta</code>に, 現在の頂点$v$と, <strong>$v$と隣接する頂点を引数にとる, 探索をする関数</strong>を渡します.</li>
+<li><code>delta</code>が隣接する頂点を, 引数で渡された関数の引数に入れて探索をしてもらいます.</li>
+<li>できる!</li>
+</ol>
+<p>Dijkstraの場合には, <code>delta</code>に渡す関数を<code>(V t /* 隣接頂点 */, W cost /* 辺のコスト */)</code>にしておけばOKですね.</p>
+<p>頂点の抽象化は, <code>index(V) -&gt; int</code>があればいいです.</p>
+<h2 id="コード">コード</h2>
+<h3 id="bfs">BFS</h3>
+<pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;queue&gt;
+using i64 = long long;
 
-<p>Euler TourをBFSで行います. すると, Euler Tourの列は</p>
-<pre><code>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14
-</code></pre>
-<p>になります. ここで, BFSは深さが浅い順に頂点を見ることに注目すると,</p>
-<ul>
-<li>頂点0の部分木の中で, 頂点0から距離1にある頂点</li>
-</ul>
-<pre><code>0 [1 2] 3 4 5 6 7 8 9 10 11 12 13 14
-</code></pre>
-<ul>
-<li>頂点0の部分木の中で, 頂点0から距離2にある頂点</li>
-</ul>
-<pre><code>0 1 2 [3 4 5 6] 7 8 9 10 11 12 13 14
-</code></pre>
-<p>また同様に</p>
-<ul>
-<li>頂点1の部分木の中で, 頂点0から距離1にある頂点</li>
-</ul>
-<pre><code>0 1 2 [3 4] 5 6 7 8 9 10 11 12 13 14
-</code></pre>
-<ul>
-<li>頂点1の部分木の中で, 頂点0から距離2にある頂点</li>
-</ul>
-<pre><code>0 1 2 3 4 5 6 [7 8 9 10] 11 12 13 14
-</code></pre>
-<p>つまりBFS Euler Tourは, 深さを同じくする頂点を列の区間に落とし込むことができます.</p>
-<p>実装はこんな感じ(この例では, 距離2までの頂点を記録しています)</p>
-<pre><code class="language-cpp">i64 N;
-cin &gt;&gt; N;
-idx.resize(N + 1, -1);//idx[v] := Euler Tourの列での頂点vの位置
-L1.resize(N + 1, -1);//距離1にある頂点の列の左端
-R1.resize(N + 1, -1);//右端
-L2.resize(N + 1, -1);//距離2にある頂点の列の左端
-R2.resize(N + 1, -1);//右端
-p.resize(N + 1, -1);//親
-G.resize(N + 1);
-for(int i = 0;i &amp;lt; N - 1; i++) {
-  i64 a, b;
-  cin &gt;&gt; a &gt;&gt; b;
-  G[a].push_back(b);
-  G[b].push_back(a);
+/*
+ * delta(V v, fn (V t))
+ * index(V v) -&gt; int
+ */
+template&lt;class V, class Delta, class Index&gt;
+std::vector&lt;i64&gt; bfs(std::size_t N, V s, Delta delta, Index index) {
+  std::vector&lt;i64&gt; dist(N, -1);
+  std::queue&lt;V&gt; que;
+  dist[index(s)] = 0;
+  que.push(s);
+  while(!que.empty()) {
+    V v = que.front();
+    que.pop();
+    delta(v, [&amp;](V t) {
+        if(dist[index(t)] == -1) {
+          dist[index(t)] = dist[index(v)] + 1;
+          que.push(t);
+        }
+    });
+  }
+  return dist;
 }
-G[N].push_back(0);
+</code></pre>
+<h3 id="dijkstra">Dijkstra</h3>
+<pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;queue&gt;
 
-queue&amp;lt;i64&gt; que;
-que.push(N);
-idx[N] = vec.size();
-vec.push_back(N);
-while(!que.empty()) {
-  i64 v = que.front();
-  que.pop();
-  for(auto x: G[v]) {
-    if(idx[x] != -1) continue;
-    que.push(x);
-    idx[x] = vec.size();
-    vec.push_back(x);
-    p[x] = v;
-
-    if(L1[v] == -1) L1[v] = idx[x];
-    R1[v] = idx[x] + 1;
-
-    i64 pp = p[v];
-    if(pp != -1) {
-      if(L2[pp] == -1) L2[pp] = idx[x];
-      R2[pp] = idx[x] + 1;
+/*
+ * delta(V v, fn (V t, W weight))
+ * index(V v) -&gt; int
+ */
+template&lt;class V, class W, class Delta, class Index&gt;
+std::vector&lt;W&gt; dijkstra(std::size_t N, W inf, V s, Delta delta, Index index) {
+  std::vector&lt;W&gt; dist(N, inf);
+  using P = std::pair&lt;W, V&gt;;
+  std::priority_queue&lt;P, std::vector&lt;P&gt;, std::greater&lt;P&gt;&gt; que;
+  que.push({ dist[index(s)] = W(), s });
+  while(!que.empty()) {
+    W d = que.top().first;
+    V v = que.top().second;
+    que.pop();
+    if(dist[index(v)] &lt; d) continue;
+    delta(v, [&amp;](V t, W weight) {
+        if(dist[index(t)] &gt; dist[index(v)] + weight) {
+          que.push({ dist[index(t)] = dist[index(v)] + weight, t });
+        }
+    });
+  }
+  return dist;
+}
+</code></pre>
+<h3 id="how-to-use">How To Use</h3>
+<p>格子グラフに関しては, こんな感じに予めライブラリを書いておくと楽です.</p>
+<pre><code class="language-cpp">template&lt;class F&gt;
+struct lattice_delta {
+  i64 H, W;
+  F f;
+  using P = std::pair&lt;i64, i64&gt;;
+  lattice_delta(i64 H, i64 W, F f): H(H), W(W), f(f) {}
+  template&lt;class Func&gt;
+  void operator()(P v, Func func) {
+    const static vector&lt;i64&gt; dx { 1, 0, -1, 0 };
+    i64 i = v.first;
+    i64 j = v.second;
+    for(i64 q = 0; q &lt; 2; q++) {
+      i64 x = i + dx[q];
+      i64 y = j + dx[q ^ 1];
+      if(0 &lt;= x &amp;&amp; x &lt; H &amp;&amp; 0 &lt;= y &amp;&amp; y &lt; W) {
+        f(P(i, j), P(x, y), func);
+      }
     }
   }
-}
-
+};
+ 
+template&lt;class F&gt;
+lattice_delta&lt;F&gt; make_lattice_delta(i64 H, i64 W, F f) { return lattice_delta&lt;F&gt;(H, W, f); }
+ 
+struct lattice_index {
+  i64 H, W;
+  using P = std::pair&lt;i64, i64&gt;;
+  lattice_index(i64 H, i64 W): H(H), W(W) {}
+  i64 operator()(P v) {
+    return v.first * W + v.second;
+  }
+};
 </code></pre>
-<p>わりと素直に書ける</p>
-<h2 id="感想">感想</h2>
-<p>新出で驚いた 典型にしていこうな</p>
+<p>これで, <a href="https://atcoder.jp/contests/abc151/tasks/abc151_d">Maze Master</a>は以下のように解くことができます.</p>
+<pre><code class="language-cpp">int main() {
+  i64 H, W;
+  cin &gt;&gt; H &gt;&gt; W;
+  vector&lt;string&gt; S(H);
+  rep(i,0,H) {
+    cin &gt;&gt; S[i];
+  }
+  i64 ans = 0;
+
+  using P = std::pair&lt;i64, i64&gt;;
+  auto delta = make_lattice_delta(H, W, [&amp;](P v, P t, auto func) {
+    if(S[t.first][t.second] == '.') func(t);
+    }
+  );
+  auto index = lattice_index(H, W);
+
+  rep(i,0,H) rep(j,0,W) {
+    if(S[i][j] == '#') continue;
+    auto res = bfs(H * W, P(i, j), delta, index);
+    ans = std::max(ans, *std::max_element(all(res)));
+  }
+  cout &lt;&lt; ans &lt;&lt; endl;
+}
+</code></pre>
+<p>また, 次元拡張グラフを扱う<a href="https://atcoder.jp/contests/abc164/tasks/abc164_e">E - Two Currencies</a>は, こんな感じで.</p>
+<pre><code class="language-cpp">int main() {
+  i64 N, M, S;
+  cin &gt;&gt; N &gt;&gt; M &gt;&gt; S;
+  S = std::min(S, 2500ll);
+ 
+  struct edge {
+    i64 to;
+    i64 a;
+    i64 b;
+  };
+ 
+  vector&lt;vector&lt;edge&gt;&gt; G(N);
+  rep(i,0,M) {
+    i64 u, v, a, b;
+    cin &gt;&gt; u &gt;&gt; v &gt;&gt; a &gt;&gt; b;
+    u--;
+    v--;
+    G[u].push_back({ v, a, b });
+    G[v].push_back({ u, a, b });
+  }
+ 
+  vector&lt;i64&gt; C(N);
+  vector&lt;i64&gt; D(N);
+  rep(i,0,N) {
+    cin &gt;&gt; C[i] &gt;&gt; D[i];
+  }
+ 
+  using P = std::pair&lt;i64, i64&gt;;
+  auto index = [&amp;](P p) { return p.first * 2501 + p.second; };
+  auto delta = [&amp;](P vv, auto func) {
+    i64 v = vv.first;
+    i64 c = vv.second;
+    func(P(v, std::min(c + C[v], 2500ll)), D[v]);
+    for(auto e: G[v]) {
+      if(e.a &lt;= c) {
+        func(P(e.to, c - e.a), e.b);
+      }
+    }
+  };
+  auto res = dijkstra(N * 2501, (i64)(1e17), P(0, S), delta, index);
+  rep(i,1,N) {
+    i64 ans = res[index(P(i, 0))];
+    rep(j,0,2501) {
+      ans = std::min(ans, res[index(P(i, j))]);
+    }
+    cout &lt;&lt; ans &lt;&lt; &quot;\n&quot;;
+  }
+}
+</code></pre>
+<p>C++14ならジェネリックラムダあるので, <code>auto func</code>って書き殴れるのでいいですね.</p>
+<h2 id="提出ページ">提出ページ</h2>
+<ul>
+<li>格子グラフのBFS: <a href="https://atcoder.jp/contests/abc151/submissions/11773027">D - Maze Master - 提出 #11773027 - AtCoder Beginner Contest 151</a> ちょっとコード違うけど許して</li>
+<li>格子グラフの01dial(01-bfs): <a href="https://atcoder.jp/contests/agc043/submissions/11773947">A - Range Flip Find Route - 提出 #11773947 - AtCoder Grand Contest 043</a></li>
+<li>次元拡張グラフのDijkstra: <a href="https://atcoder.jp/contests/abc164/submissions/12401080">E - Two Currencies - 提出 #12401080 - AtCoder Beginner Contest 164</a></li>
+</ul>
 
     </div>
     <div class="article-footer">
-      <a style="display:none;" href="https://niuez.github.io/2019/10/002503/"></a>
-      <h1 style="display:none;">BFS Euler Tour</h1>
+      <a style="display:none;" href="https://niuez.github.io/2020/04/impl_abstract_dijkstra/"></a>
+      <h1 style="display:none;">グラフ, 格子状のグラフ, 次元拡張グラフを同じコードで扱う抽象化BFS, DijkstraのC&#43;&#43;14実装</h1>
       <div></div>
     </div>
   </article>
@@ -348,14 +471,9 @@ while(!que.empty()) {
     <div class="bar-inner">
         <ul class="pager pull-left">
             <li class="prev">
-                <a href="https://niuez.github.io/2019/08/114511/" title="Toptree - Link &amp; Cut編"><i
+                <a href="https://niuez.github.io/2020/04/query_sqrt_decomposition_rsq/" title="RSQをクエリ平方分割で解いた時のメモ"><i
                         class="icon icon-angle-left"
                         aria-hidden="true"></i><span>&nbsp;&nbsp;</span></a>
-            </li>
-            <li class="next">
-                <a href="https://niuez.github.io/2019/12/000036/"
-                    title="動的木上の最小シュタイナー木をtoptreeで解く"><span>&nbsp;&nbsp;</span><i
-                        class="icon icon-angle-right" aria-hidden="true"></i></a>
             </li>
             
         </ul>

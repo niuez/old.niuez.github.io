@@ -5,10 +5,19 @@
     <link>https://niuez.github.io/</link>
     <description>Recent content on niuez.github.io</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Fri, 17 Apr 2020 10:19:21 +0900</lastBuildDate>
+    <lastBuildDate>Mon, 27 Apr 2020 01:08:48 +0900</lastBuildDate>
     
         <atom:link href="https://niuez.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>グラフ, 格子状のグラフ, 次元拡張グラフを同じコードで扱う抽象化BFS, DijkstraのC&#43;&#43;14実装</title>
+      <link>https://niuez.github.io/2020/04/impl_abstract_dijkstra/</link>
+      <pubDate>Mon, 27 Apr 2020 01:08:48 +0900</pubDate>
+      
+      <guid>https://niuez.github.io/2020/04/impl_abstract_dijkstra/</guid>
+      <description>これすごく悩んでいたんですけど, 新しい実装法を考えたらスッキリしたのでまとめます. 先駆者がいたらごめん, 勝手ににう式グラフ抽象化って言っちゃ</description>
+    </item>
     
     <item>
       <title>RSQをクエリ平方分割で解いた時のメモ</title>
