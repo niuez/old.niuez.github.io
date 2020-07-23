@@ -1,4 +1,4 @@
-baseURL = "http://niuez.github.io/"
+baseURL = "https://niuez.github.io/"
 languageCode = "jp"
 title = "Niue'z Blog"
 theme = "ezhil"
