@@ -1,184 +1,24 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>LCA on niuez.github.io</title>
-    <link>https://niuez.github.io/tags/lca/</link>
-    <description>Recent content in LCA on niuez.github.io</description>
+    <title>LCA on Niue&#39;z Blog</title>
+    <link>http://niuez.github.io/tags/lca/</link>
+    <description>Recent content in LCA on Niue&#39;z Blog</description>
     <generator>Hugo -- gohugo.io</generator>
+    <language>jp</language>
+    <copyright>This site use Google Analytics</copyright>
     <lastBuildDate>Wed, 05 Feb 2020 20:33:01 +0900</lastBuildDate>
     
-        <atom:link href="https://niuez.github.io/tags/lca/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://niuez.github.io/tags/lca/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>Library Checker - Associative Array に関するいろいろ</title>
-      <link>https://niuez.github.io/2020/06/lc_associative_array/</link>
-      <pubDate>Fri, 12 Jun 2020 23:02:44 +0900</pubDate>
-      
-      <guid>https://niuez.github.io/2020/06/lc_associative_array/</guid>
-      <description>[Library Checker - Associative Array]を解くに当たってのいろいろをまとめておきます. 概要 Associative Arrayは, Mapとよく呼ばれるデータ構造です. キーとそれに対応す</description>
-    </item>
-    
-    <item>
-      <title>グラフ, 格子状のグラフ, 次元拡張グラフを同じコードで扱う抽象化BFS, DijkstraのC&#43;&#43;14実装</title>
-      <link>https://niuez.github.io/2020/04/impl_abstract_dijkstra/</link>
-      <pubDate>Mon, 27 Apr 2020 01:08:48 +0900</pubDate>
-      
-      <guid>https://niuez.github.io/2020/04/impl_abstract_dijkstra/</guid>
-      <description>これすごく悩んでいたんですけど, 新しい実装法を考えたらスッキリしたのでまとめます. 先駆者がいたらごめん, 勝手ににう式グラフ抽象化って言っちゃ</description>
-    </item>
-    
-    <item>
-      <title>RSQをクエリ平方分割で解いた時のメモ</title>
-      <link>https://niuez.github.io/2020/04/query_sqrt_decomposition_rsq/</link>
-      <pubDate>Fri, 17 Apr 2020 10:19:21 +0900</pubDate>
-      
-      <guid>https://niuez.github.io/2020/04/query_sqrt_decomposition_rsq/</guid>
-      <description>バケットサイズなんもわからん. 誰か助けて クエリ平方分割 Point Add Range Sum - Library Checkerをクエリ平方分割で解きます. クエリ平方分割はその名の通り, ク</description>
-    </item>
-    
-    <item>
-      <title>Fully Retroactive Stack 実装してみた</title>
-      <link>https://niuez.github.io/2020/04/fully_retroactive_stack/</link>
-      <pubDate>Fri, 10 Apr 2020 20:09:09 +0900</pubDate>
-      
-      <guid>https://niuez.github.io/2020/04/fully_retroactive_stack/</guid>
-      <description>noshi91さんがFully Retroactive Stackについての解説生放送をやっていたので, その解説通りに実装してみました. ちょっとした解説も書きました</description>
-    </item>
-    
-    <item>
-      <title>DFS&#43;BFS EulerTourで部分木の任意深さのクエリを処理する</title>
-      <link>https://niuez.github.io/2020/03/dfs_bfs_et/</link>
-      <pubDate>Tue, 24 Mar 2020 18:05:05 +0900</pubDate>
-      
-      <guid>https://niuez.github.io/2020/03/dfs_bfs_et/</guid>
-      <description>BFS Euler TourについてはBFS Euler Tour - niuez.github.ioを参照してください. 処理したいクエリ (例) 有向木が与えられ, 各頂点には重みが</description>
-    </item>
-    
-    <item>
-      <title>OyamaC&#39;20 解説</title>
-      <link>https://niuez.github.io/2020/03/oyamac20/</link>
-      <pubDate>Thu, 19 Mar 2020 20:10:48 +0900</pubDate>
-      
-      <guid>https://niuez.github.io/2020/03/oyamac20/</guid>
-      <description>小山高専で, mitsuさん原案のコンテストOyamaCが行われました. testerを担当したので, 解説を書いておきます. fizzbuzz fizzbuzzは</description>
-    </item>
-    
-    <item>
-      <title>ABC155 F Perils in ParallelをF_2の行列で解く</title>
-      <link>https://niuez.github.io/2020/02/abc155-f/</link>
-      <pubDate>Sat, 22 Feb 2020 16:40:51 +0900</pubDate>
-      
-      <guid>https://niuez.github.io/2020/02/abc155-f/</guid>
-      <description>ABC155-F Perils in Parallel - kotatsugameの日記を読んだときのメモです. AtCoder F - Perils in Parallelを$\mathbb{F}_2$上の行列として考えて解</description>
-    </item>
     
     <item>
       <title>Tarjan&#39;s off-line LCA の実装メモと速度</title>
-      <link>https://niuez.github.io/2020/02/tarjans_offline_lca/</link>
+      <link>http://niuez.github.io/posts/tarjans_offline_lca/</link>
       <pubDate>Wed, 05 Feb 2020 20:33:01 +0900</pubDate>
       
-      <guid>https://niuez.github.io/2020/02/tarjans_offline_lca/</guid>
-      <description>Tarjan&amp;rsquo;s off-line LCAを書いてみたので, その時のメモです. ネタバレ注意 No.898 tri-βutree - yukicoder のちょっとしたネタバレが含まれます&amp;hellip; Tarjan&amp;rsquo;s off-line LCA(lowest</description>
-    </item>
-    
-    <item>
-      <title>約数畳み込みを使って最大公約数と集合をうまく扱うメモ</title>
-      <link>https://niuez.github.io/2020/02/divisor_transform_memo/</link>
-      <pubDate>Mon, 03 Feb 2020 21:20:02 +0900</pubDate>
-      
-      <guid>https://niuez.github.io/2020/02/divisor_transform_memo/</guid>
-      <description>移植テストです 書いて置かないと頭に置いておけない気がしたのでメモを残す. 間違ってたらごめん これについて気になったので メビウス関数とかを導入す</description>
-    </item>
-    
-    <item>
-      <title>First</title>
-      <link>https://niuez.github.io/2020/02/first/</link>
-      <pubDate>Mon, 03 Feb 2020 17:19:14 +0900</pubDate>
-      
-      <guid>https://niuez.github.io/2020/02/first/</guid>
-      <description>はじめまして いつはてなブログが消えてもおかしくない気がするので, 僕のはてなブログからこっちに移してこようかなと考えてます. テスト期間真っ最中</description>
-    </item>
-    
-    <item>
-      <title>About</title>
-      <link>https://niuez.github.io/about/</link>
-      <pubDate>Mon, 03 Feb 2020 17:14:56 +0900</pubDate>
-      
-      <guid>https://niuez.github.io/about/</guid>
-      <description>GitHub Twitter AtCoder Codeforces 使っているライブラリ</description>
-    </item>
-    
-    <item>
-      <title>Suffix Array と LCP と 文字列検索の実装をした</title>
-      <link>https://niuez.github.io/2019/12/203739/</link>
-      <pubDate>Mon, 16 Dec 2019 20:37:39 +0000</pubDate>
-      
-      <guid>https://niuez.github.io/2019/12/203739/</guid>
-      <description>この土日のメモです. SAとLCPのお気持ちをまとめたくなっただけ. 間違ってたらごめん 文字列アルゴの勉強する気が起きないたった一つの理由: Rolling H</description>
-    </item>
-    
-    <item>
-      <title>動的木上の最小シュタイナー木をtoptreeで解く</title>
-      <link>https://niuez.github.io/2019/12/000036/</link>
-      <pubDate>Sat, 14 Dec 2019 00:00:36 +0000</pubDate>
-      
-      <guid>https://niuez.github.io/2019/12/000036/</guid>
-      <description>この記事は「データ構造とアルゴリズム Advent Calendar 2019」 14日目の記事です. 13日目は@ajalabさんのRun-Length FM-Index - koki, 15日目は@m</description>
-    </item>
-    
-    <item>
-      <title>BFS Euler Tour</title>
-      <link>https://niuez.github.io/2019/10/002503/</link>
-      <pubDate>Sat, 05 Oct 2019 00:25:03 +0000</pubDate>
-      
-      <guid>https://niuez.github.io/2019/10/002503/</guid>
-      <description>僕が木上クエリコンで出題した問題で使った手法です. No.899 γatheree - yukicoder アルゴリズム 例 Euler TourをBFSで行います. すると, Euler Tourの列は</description>
-    </item>
-    
-    <item>
-      <title>Toptree - Link &amp; Cut編</title>
-      <link>https://niuez.github.io/2019/08/114511/</link>
-      <pubDate>Mon, 05 Aug 2019 11:45:11 +0000</pubDate>
-      
-      <guid>https://niuez.github.io/2019/08/114511/</guid>
-      <description>Toptree 導入編 - niuez’s diary 引き続き, toptreeの解説をしていきます. Link link(v, w): 頂点vとwを辺vwで結ぶをします. 場合分けが多すぎるんじゃ が,</description>
-    </item>
-    
-    <item>
-      <title>Toptree 導入編</title>
-      <link>https://niuez.github.io/2019/08/191420/</link>
-      <pubDate>Sun, 04 Aug 2019 19:14:20 +0000</pubDate>
-      
-      <guid>https://niuez.github.io/2019/08/191420/</guid>
-      <description>みんな日本語記事を待っていたはず&amp;hellip;.! toptreeがどんな感じで動いているのかを書いてみます 実装はここにあります https://github.com/niuez/toptree-rust 0. toptree is なに</description>
-    </item>
-    
-    <item>
-      <title>top-tree実装体験木</title>
-      <link>https://niuez.github.io/2019/06/161729/</link>
-      <pubDate>Sat, 29 Jun 2019 16:17:29 +0000</pubDate>
-      
-      <guid>https://niuez.github.io/2019/06/161729/</guid>
-      <description>読者層が限定されすぎていませんか？ Link Cut Treeを書いたことがない人はこちら！ Link-Cut 木 - ei1333の日記 部分木クエリについてはこちら！ Link Cut Tre</description>
-    </item>
-    
-    <item>
-      <title>ダイクストラとポテンシャルのはなし</title>
-      <link>https://niuez.github.io/2019/03/142903/</link>
-      <pubDate>Mon, 04 Mar 2019 14:29:03 +0000</pubDate>
-      
-      <guid>https://niuez.github.io/2019/03/142903/</guid>
-      <description>はじめまして, niuezといいます. 競プロを少ししています. 最近勉強したことのメモ書きをしておきます. ダイクストラ法 ダイクストラ法(Dijk</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://niuez.github.io/google2a8756ea5e9759e7/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://niuez.github.io/google2a8756ea5e9759e7/</guid>
-      <description>google-site-verification: google2a8756ea5e9759e7.</description>
+      <guid>http://niuez.github.io/posts/tarjans_offline_lca/</guid>
+      <description>Tarjan&amp;rsquo;s off-line LCAを書いてみたので, その時のメモです.</description>
     </item>
     
   </channel>

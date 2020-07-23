@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Fully Retroactive Stack 実装してみた - Niue&#39;z Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Fully Retroactive Stack 実装してみた" />
+<meta property="og:description" content="noshi91さんがFully Retroactive Stackについての解説生放送をやっていたので, その解説通りに実装してみました." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://niuez.github.io/posts/fully_retroactive_stack/" />
+<meta property="article:published_time" content="2020-04-10T20:09:09+09:00" />
+<meta property="article:modified_time" content="2020-04-10T20:09:09+09:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Fully Retroactive Stack 実装してみた"/>
+<meta name="twitter:description" content="noshi91さんがFully Retroactive Stackについての解説生放送をやっていたので, その解説通りに実装してみました."/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="http://niuez.github.io/css/highlight-native.css">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="http://niuez.github.io/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="http://niuez.github.io/css/main.css" /><link rel="stylesheet" type="text/css" href="http://niuez.github.io/css/dark.css"  />
+	<link rel="stylesheet" type="text/css" href="http://niuez.github.io/css/custom-dark.css"  />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="http://niuez.github.io/js/main.js"></script>
+
+  <script type="text/javascript" src="https://s.hatena.ne.jp/js/HatenaStar.js"></script>
+  <script type="text/javascript">
+  Hatena.Star.Token = 'e2714bc09c0f22d36f9bea483e4c3efc2846d9e9';
+  Hatena.Star.SiteConfig = {
+    entryNodes: {
+      'div.article-footer': {
+        uri: 'a',
+        title: 'h1',
+        container: 'div'
+      }
+    }
+  };
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+              showMathMenu: false, //disables context menu
+              tex2jax: {
+              inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+             }
+      });
+  </script>
+
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<base href="http://niuez.github.io/">
+	<h1 class="site-title"><a href="http://niuez.github.io/">Niue&#39;z Blog</a></h1>
+	<div class="site-description"><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/niuez" title="Github"><i data-feather="github"></i></a><a href="https://twitter.com/xiuez" title="Twitter"><i data-feather="twitter"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="/">Home</a>
+			</li>
+			
+			<li>
+				<a href="/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="/about">About</a>
+			</li>
+			
+			<li>
+				<a href="/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">Fully Retroactive Stack 実装してみた</h1>
+			<div class="meta">Posted at &mdash; Apr 10, 2020</div>
+		</div>
+
+		<div class="markdown">
+			<p>noshi91さんがFully Retroactive Stackについての解説生放送をやっていたので, その解説通りに実装してみました. ちょっとした解説も書きました.</p>
+<h2 id="できること">できること</h2>
+<p>Stackの処理できるクエリは以下の通りです.</p>
+<ul>
+<li>$\mathtt{push}(x)$: 要素 $x$ を列の後ろに追加する.</li>
+<li>$\mathtt{pop}()$: 列の一番後ろの要素を取り出す.</li>
+<li>$\mathtt{top}()$: 列の後ろの要素を求める.</li>
+</ul>
+<p>これをFully Retroactive Stackに進化させると, こんな感じ.</p>
+<ul>
+<li>$\mathtt{insert}(t, \mathtt{Query})$: 時刻$t$に$\mathtt{Query}$があったとにする.(過去改変)</li>
+<li>$\mathtt{delete}(t)$: 時刻$t$のクエリを無かったことにする.(過去改変)</li>
+<li>$\mathtt{top}(t)$: 時刻$t$時点で$\mathtt{top}()$をしたときの値を求める.</li>
+</ul>
+<p>これを$O(\log N)$($N$は$\mathtt{Query}$数)でします.</p>
+<p>実は, 今回実装するFully Retroactive Stackは, Stack Arrayとして処理できます. つまり, $\mathtt{top}$よりも強い$\mathtt{at}$が処理できます. これは後ほど.</p>
+<h2 id="アルゴリズム">アルゴリズム</h2>
+<p>$\mathtt{push}$と$\mathtt{pop}$をしたときの時系列とStackのサイズをグラフにすると, 例えばこのようになります.</p>
+<p><img src="/images/FR_Stack/graph1.png" alt=""></p>
+<p><code>A</code>の時点では, Stackは<code>[1, 2]</code>の状態, <code>B</code>の時点では, Stackは<code>[1, 4]</code>の状態です. こんな感じ.</p>
+<p><img src="/images/FR_Stack/graph2.png" alt="">
+<img src="/images/FR_Stack/graph3.png" alt=""></p>
+<p>こうみると, 最後に高さ$i$を通過した$\mathtt{push}$が, Stackの$i$番目の要素となります. これを探索できれば勝ちです.</p>
+<p>これは, 二分探索で探すことができます. 実際に, <code>B</code>の時点での$\mathtt{top}$つまり, 高さ$2$の$\mathtt{push}$を探すことにします.</p>
+<p>まず真ん中で区切り, 左右の<strong>最低高度</strong>と<strong>最高高度</strong>を調べます. もし右側の最低高度と最高高度の区間に, 求めたい高さが存在すれば右側を探索します. 逆に存在しなければ, 左側を探索します.</p>
+<p><img src="/images/FR_Stack/search1.png" alt=""></p>
+<p>右側が含んでいるので, 右に進みます.</p>
+<p><img src="/images/FR_Stack/search2.png" alt=""></p>
+<p>右側が含んでいないので, 左に進みます.</p>
+<p><img src="/images/FR_Stack/search3.png" alt=""></p>
+<p>右側が含んでいるので, 右に進みます. すると, $\mathtt{push}(4)$にたどり着きます. これが, <code>B</code>の時点での$\mathtt{top}$です. これを考えると, $\mathtt{at}$も処理できそうですね.</p>
+<p><code>A</code>の時点での$\mathtt{top}$を調べたいなら, <code>A</code>までの区間で探索を開始すればよいです.</p>
+<h2 id="実装に必要なデータ構造">実装に必要なデータ構造</h2>
+<p>つまり,</p>
+<ul>
+<li>操作の挿入, 削除をする.</li>
+<li>操作を<code>split</code>, <code>merge</code>したい.</li>
+<li>二分探索がしたい.</li>
+</ul>
+<p>ので, 操作(グラフでいう, 矢印)を葉に持つ平衡二分探索木を書けば良さそうです.</p>
+<h2 id="罠">罠</h2>
+<p>何も入っていないStackを$\mathtt{pop}$すると,<code>None</code>を返すような仕様の場合, 上の方法のままだとうまく探索できません. 本来は, サイズが$0$から$0$に遷移するが, グラフのままだと, サイズが$0$から$-1$になってしまいます.</p>
+<p>これは, 探索を行う前に最低高度まで潜っておくことで解決できます. こんな感じ.</p>
+<!-- raw HTML omitted -->
+<h2 id="実装">実装</h2>
+<p>親ありmerge/split型AVL葉木です&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cp">#</span><span class="cp">include</span> <span class="cpf">&lt;cstdint&gt;</span><span class="cp">
+</span><span class="cp"></span><span class="cp">#</span><span class="cp">include</span> <span class="cpf">&lt;algorithm&gt;</span><span class="cp">
+</span><span class="cp"></span><span class="cp">#</span><span class="cp">include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span><span class="cp"></span><span class="cp">#</span><span class="cp">include</span> <span class="cpf">&lt;cassert&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="k">struct</span> <span class="nc">retroactive_stack</span> <span class="p">{</span>
+  <span class="k">using</span> <span class="n">value_type</span> <span class="o">=</span> <span class="kt">long</span> <span class="kt">long</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">size_type</span> <span class="o">=</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">size_t</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">height_type</span> <span class="o">=</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="kt">int_least32_t</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">node_index</span> <span class="o">=</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="kt">int_least32_t</span><span class="p">;</span>
+
+  <span class="k">struct</span> <span class="nc">diff</span> <span class="p">{</span>
+    <span class="n">value_type</span> <span class="n">p_value</span><span class="p">;</span>
+    <span class="n">height_type</span> <span class="n">d</span><span class="p">;</span>
+    <span class="n">height_type</span> <span class="n">max_d</span><span class="p">;</span>
+    <span class="n">height_type</span> <span class="n">min_d</span><span class="p">;</span>
+
+    <span class="k">static</span> <span class="n">diff</span> <span class="nf">push_diff</span><span class="p">(</span><span class="n">value_type</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">diff</span> <span class="n">i</span><span class="p">;</span>
+      <span class="n">i</span><span class="p">.</span><span class="n">p_value</span> <span class="o">=</span> <span class="n">value</span><span class="p">;</span>
+      <span class="n">i</span><span class="p">.</span><span class="n">d</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="n">i</span><span class="p">.</span><span class="n">max_d</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="n">i</span><span class="p">.</span><span class="n">min_d</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="k">return</span> <span class="n">i</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">static</span> <span class="n">diff</span> <span class="nf">pop_diff</span><span class="p">(</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">diff</span> <span class="n">i</span><span class="p">;</span>
+      <span class="n">i</span><span class="p">.</span><span class="n">d</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+      <span class="n">i</span><span class="p">.</span><span class="n">max_d</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="n">i</span><span class="p">.</span><span class="n">min_d</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+      <span class="k">return</span> <span class="n">i</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">static</span> <span class="n">diff</span> <span class="nf">ope</span><span class="p">(</span><span class="k">const</span> <span class="n">diff</span><span class="o">&amp;</span> <span class="n">l</span><span class="p">,</span> <span class="k">const</span> <span class="n">diff</span><span class="o">&amp;</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">diff</span> <span class="n">i</span><span class="p">;</span>
+      <span class="n">i</span><span class="p">.</span><span class="n">d</span> <span class="o">=</span> <span class="n">l</span><span class="p">.</span><span class="n">d</span> <span class="o">+</span> <span class="n">r</span><span class="p">.</span><span class="n">d</span><span class="p">;</span>
+      <span class="n">i</span><span class="p">.</span><span class="n">max_d</span> <span class="o">=</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">max</span><span class="p">(</span><span class="n">l</span><span class="p">.</span><span class="n">max_d</span><span class="p">,</span> <span class="n">l</span><span class="p">.</span><span class="n">d</span> <span class="o">+</span> <span class="n">r</span><span class="p">.</span><span class="n">max_d</span><span class="p">)</span><span class="p">;</span>
+      <span class="n">i</span><span class="p">.</span><span class="n">min_d</span> <span class="o">=</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">min</span><span class="p">(</span><span class="n">l</span><span class="p">.</span><span class="n">min_d</span><span class="p">,</span> <span class="n">l</span><span class="p">.</span><span class="n">d</span> <span class="o">+</span> <span class="n">r</span><span class="p">.</span><span class="n">min_d</span><span class="p">)</span><span class="p">;</span>
+      <span class="k">return</span> <span class="n">i</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span><span class="p">;</span>
+
+  <span class="k">struct</span> <span class="nc">node</span><span class="p">;</span>
+
+  <span class="k">static</span> <span class="k">struct</span> <span class="nc">node</span> <span class="n">n</span><span class="p">[</span><span class="mi">2020202</span><span class="p">]</span><span class="p">;</span>
+  <span class="k">static</span> <span class="n">size_type</span> <span class="n">ni</span><span class="p">;</span>
+
+  <span class="k">struct</span> <span class="nc">node</span> <span class="p">{</span>
+    <span class="n">diff</span> <span class="n">d</span><span class="p">;</span>
+    <span class="n">size_type</span> <span class="n">s</span><span class="p">;</span>
+    <span class="n">height_type</span> <span class="n">h</span><span class="p">;</span>
+    <span class="n">node_index</span> <span class="n">c</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="p">;</span>
+    <span class="n">node_index</span> <span class="n">p</span><span class="p">;</span>
+    <span class="n">node</span><span class="p">(</span><span class="p">)</span> <span class="p">{</span><span class="p">}</span>
+    <span class="n">node</span><span class="o">&amp;</span> <span class="k">operator</span><span class="p">[</span><span class="p">]</span><span class="p">(</span><span class="n">size_type</span> <span class="n">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">n</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="n">d</span><span class="p">]</span><span class="p">]</span><span class="p">;</span> <span class="p">}</span>
+  <span class="p">}</span><span class="p">;</span>
+
+  <span class="k">static</span> <span class="n">node_index</span> <span class="nf">new_node</span><span class="p">(</span><span class="k">const</span> <span class="n">diff</span><span class="o">&amp;</span> <span class="n">d</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">node_index</span> <span class="n">i</span> <span class="o">=</span> <span class="n">ni</span><span class="o">+</span><span class="o">+</span><span class="p">;</span>
+    <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">s</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">h</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">d</span> <span class="o">=</span> <span class="n">d</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">i</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">static</span> <span class="kt">void</span> <span class="nf">fix</span><span class="p">(</span><span class="n">node_index</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">s</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">.</span><span class="n">s</span> <span class="o">+</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">.</span><span class="n">s</span><span class="p">;</span>
+    <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">h</span> <span class="o">=</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">max</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">.</span><span class="n">h</span><span class="p">,</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">.</span><span class="n">h</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">d</span> <span class="o">=</span> <span class="n">diff</span><span class="o">:</span><span class="o">:</span><span class="n">ope</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">.</span><span class="n">d</span><span class="p">,</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">.</span><span class="n">d</span><span class="p">)</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">static</span> <span class="n">size_type</span> <span class="nf">child_dir</span><span class="p">(</span><span class="n">node_index</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">p</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">p</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span><span class="o">=</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">p</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span><span class="o">=</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="mi">1</span><span class="p">;</span> <span class="p">}</span>
+      <span class="n">assert</span><span class="p">(</span><span class="nb">false</span><span class="p">)</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">static</span> <span class="n">node_index</span> <span class="nf">rotate</span><span class="p">(</span><span class="n">node_index</span> <span class="n">x</span><span class="p">,</span> <span class="n">size_type</span> <span class="n">dir</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">node_index</span> <span class="n">p</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="p">.</span><span class="n">p</span><span class="p">;</span>
+    <span class="n">size_type</span> <span class="n">x_dir</span> <span class="o">=</span> <span class="n">child_dir</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="p">;</span>
+    <span class="n">node_index</span> <span class="n">y</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span> <span class="o">^</span> <span class="n">dir</span><span class="p">]</span><span class="p">;</span>
+    <span class="n">n</span><span class="p">[</span><span class="n">n</span><span class="p">[</span><span class="n">y</span><span class="p">]</span><span class="p">[</span><span class="n">dir</span><span class="p">]</span><span class="p">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">x</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span> <span class="o">^</span> <span class="n">dir</span><span class="p">]</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">y</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="n">dir</span><span class="p">]</span><span class="p">;</span>
+    <span class="n">n</span><span class="p">[</span><span class="n">n</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="p">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">y</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="n">dir</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
+    <span class="n">n</span><span class="p">[</span><span class="n">y</span><span class="p">]</span><span class="p">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">p</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="n">n</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="n">x_dir</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
+    <span class="n">fix</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="p">;</span>
+    <span class="n">fix</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">y</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">static</span> <span class="n">node_index</span> <span class="nf">balance</span><span class="p">(</span><span class="n">node_index</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">fix</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">.</span><span class="n">h</span> <span class="o">-</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">.</span><span class="n">h</span> <span class="o">=</span><span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">.</span><span class="n">h</span> <span class="o">-</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">.</span><span class="n">h</span> <span class="o">=</span><span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">rotate</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="n">rotate</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">.</span><span class="n">h</span> <span class="o">-</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">.</span><span class="n">h</span> <span class="o">=</span><span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">.</span><span class="n">h</span> <span class="o">-</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">.</span><span class="n">h</span> <span class="o">=</span><span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">rotate</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="n">rotate</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">i</span><span class="p">;</span>
+  <span class="p">}</span>
+
+
+  <span class="k">static</span> <span class="n">node_index</span> <span class="nf">merge_dir</span><span class="p">(</span><span class="n">node_index</span> <span class="n">l</span><span class="p">,</span> <span class="n">node_index</span> <span class="n">root</span><span class="p">,</span> <span class="n">node_index</span> <span class="n">r</span><span class="p">,</span> <span class="n">size_type</span> <span class="n">dir</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">abs</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">l</span><span class="p">]</span><span class="p">.</span><span class="n">h</span> <span class="o">-</span> <span class="n">n</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="p">.</span><span class="n">h</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">l</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">l</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="n">dir</span><span class="p">]</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">node_index</span> <span class="n">x</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">l</span><span class="p">]</span><span class="p">.</span><span class="n">p</span><span class="p">;</span>
+    <span class="n">n</span><span class="p">[</span><span class="n">n</span><span class="p">[</span><span class="n">l</span><span class="p">]</span><span class="p">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">root</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="n">dir</span> <span class="o">^</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span><span class="p">;</span>
+    <span class="n">n</span><span class="p">[</span><span class="n">n</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="p">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">root</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="n">dir</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="p">;</span>
+    <span class="n">fix</span><span class="p">(</span><span class="n">root</span><span class="p">)</span><span class="p">;</span>
+    <span class="n">n</span><span class="p">[</span><span class="n">n</span><span class="p">[</span><span class="n">root</span><span class="p">]</span><span class="p">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">x</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="n">dir</span><span class="p">]</span> <span class="o">=</span> <span class="n">root</span><span class="p">;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">root</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="p">.</span><span class="n">p</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">x</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="p">.</span><span class="n">p</span><span class="p">;</span>
+      <span class="n">x</span> <span class="o">=</span> <span class="n">balance</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">static</span> <span class="n">node_index</span> <span class="nf">merge</span><span class="p">(</span><span class="n">node_index</span> <span class="n">l</span><span class="p">,</span> <span class="n">node_index</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">l</span><span class="p">)</span> <span class="k">return</span> <span class="n">r</span><span class="p">;</span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">r</span><span class="p">)</span> <span class="k">return</span> <span class="n">l</span><span class="p">;</span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">l</span><span class="p">]</span><span class="p">.</span><span class="n">h</span> <span class="o">&gt;</span><span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="p">.</span><span class="n">h</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="n">merge_dir</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">new_node</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="p">)</span><span class="p">)</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="n">merge_dir</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">new_node</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="p">)</span><span class="p">)</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">static</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">node_index</span><span class="p">,</span> <span class="n">node_index</span><span class="o">&gt;</span> <span class="n">split</span><span class="p">(</span><span class="n">node_index</span> <span class="n">root</span><span class="p">,</span> <span class="n">size_type</span> <span class="n">pos</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">pos</span> <span class="o">=</span><span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="p">{</span> <span class="mi">0</span><span class="p">,</span> <span class="n">root</span> <span class="p">}</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">pos</span> <span class="o">=</span><span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">root</span><span class="p">]</span><span class="p">.</span><span class="n">s</span><span class="p">)</span> <span class="k">return</span> <span class="p">{</span> <span class="n">root</span><span class="p">,</span> <span class="mi">0</span> <span class="p">}</span><span class="p">;</span>
+    <span class="n">node_index</span> <span class="n">i</span> <span class="o">=</span> <span class="n">root</span><span class="p">;</span>
+    <span class="n">node_index</span> <span class="n">par</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;</span><span class="o">&amp;</span> <span class="n">pos</span> <span class="o">!</span><span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">.</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">pos</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">.</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="n">pos</span> <span class="o">-</span><span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">.</span><span class="n">s</span><span class="p">;</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="n">node_index</span> <span class="n">l</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">;</span>
+    <span class="n">n</span><span class="p">[</span><span class="n">l</span><span class="p">]</span><span class="p">.</span><span class="n">p</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">node_index</span> <span class="n">r</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">;</span>
+    <span class="n">n</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="p">.</span><span class="n">p</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">size_type</span> <span class="n">dir</span><span class="p">;</span>
+    <span class="n">node_index</span> <span class="n">p</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">p</span><span class="p">;</span>
+    <span class="n">node_index</span> <span class="n">pd</span> <span class="o">=</span> <span class="n">child_dir</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">dir</span> <span class="o">=</span> <span class="n">pd</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="n">p</span><span class="p">,</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">//std::cout &lt;&lt; i &lt;&lt; &#34; &#34; &lt;&lt; dir &lt;&lt; std::endl;
+</span><span class="c1"></span>      <span class="n">pd</span> <span class="o">=</span> <span class="n">child_dir</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="p">;</span>
+      <span class="n">p</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">p</span><span class="p">;</span>
+      <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">p</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">dir</span> <span class="o">=</span><span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">.</span><span class="n">p</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="c1">//std::cout &lt;&lt; &#34;merge_dir, 0&#34; &lt;&lt; std::endl;
+</span><span class="c1"></span>        <span class="c1">//debug(n[i].c[1], &#34;&#34;);
+</span><span class="c1"></span>        <span class="c1">//debug(r, &#34;&#34;);
+</span><span class="c1"></span>        <span class="n">r</span> <span class="o">=</span> <span class="n">merge_dir</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="p">;</span>
+        <span class="c1">//debug(r, &#34;&#34;);
+</span><span class="c1"></span>      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">.</span><span class="n">p</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="c1">//std::cout &lt;&lt; &#34;merge_dir, 0&#34; &lt;&lt; std::endl;
+</span><span class="c1"></span>        <span class="c1">//debug(n[i].c[0], &#34;&#34;);
+</span><span class="c1"></span>        <span class="c1">//debug(l, &#34;&#34;);
+</span><span class="c1"></span>        <span class="n">l</span> <span class="o">=</span> <span class="n">merge_dir</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="p">;</span>
+        <span class="c1">//debug(l, &#34;&#34;);
+</span><span class="c1"></span>      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="p">}</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">static</span> <span class="n">node_index</span> <span class="nf">at</span><span class="p">(</span><span class="n">node_index</span> <span class="n">i</span><span class="p">,</span> <span class="n">size_type</span> <span class="n">pos</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">pos</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">.</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="n">pos</span> <span class="o">-</span><span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">.</span><span class="n">s</span><span class="p">;</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">i</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">static</span> <span class="kt">void</span> <span class="nf">set</span><span class="p">(</span><span class="n">node_index</span> <span class="n">i</span><span class="p">,</span> <span class="n">size_type</span> <span class="n">pos</span><span class="p">,</span> <span class="n">diff</span> <span class="n">v</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">node_index</span> <span class="n">par</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">pos</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">.</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="n">pos</span> <span class="o">-</span><span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">.</span><span class="n">s</span><span class="p">;</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">d</span> <span class="o">=</span> <span class="n">v</span><span class="p">;</span>
+
+    <span class="k">while</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">p</span><span class="p">,</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">fix</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">static</span> <span class="n">size_type</span> <span class="nf">index</span><span class="p">(</span><span class="n">node_index</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">size_type</span> <span class="n">pos</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">p</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">child_dir</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">=</span><span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">pos</span> <span class="o">+</span><span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">p</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">.</span><span class="n">s</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="n">i</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">p</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">pos</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">static</span> <span class="n">node_index</span> <span class="nf">search</span><span class="p">(</span><span class="n">node_index</span> <span class="n">i</span><span class="p">,</span> <span class="n">height_type</span> <span class="n">pos</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">.</span><span class="n">d</span><span class="p">.</span><span class="n">d</span> <span class="o">+</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">.</span><span class="n">d</span><span class="p">.</span><span class="n">min_d</span> <span class="o">&lt;</span><span class="o">=</span> <span class="n">pos</span> <span class="o">&amp;</span><span class="o">&amp;</span> <span class="n">pos</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">.</span><span class="n">d</span><span class="p">.</span><span class="n">d</span> <span class="o">+</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">.</span><span class="n">d</span><span class="p">.</span><span class="n">max_d</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">pos</span> <span class="o">-</span><span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">.</span><span class="n">d</span><span class="p">.</span><span class="n">d</span><span class="p">;</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">i</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">static</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">node_index</span><span class="p">,</span> <span class="n">node_index</span><span class="o">&gt;</span> <span class="n">min_depth_split</span><span class="p">(</span><span class="n">node_index</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">node_index</span> <span class="n">r</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+    <span class="n">size_type</span> <span class="n">pos</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">d</span><span class="p">.</span><span class="n">min_d</span><span class="p">;</span>
+    <span class="n">size_type</span> <span class="n">res</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">.</span><span class="n">d</span><span class="p">.</span><span class="n">d</span> <span class="o">+</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">.</span><span class="n">d</span><span class="p">.</span><span class="n">min_d</span> <span class="o">&lt;</span><span class="o">=</span> <span class="n">pos</span> <span class="o">&amp;</span><span class="o">&amp;</span> <span class="n">pos</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">.</span><span class="n">d</span><span class="p">.</span><span class="n">d</span> <span class="o">+</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">.</span><span class="n">d</span><span class="p">.</span><span class="n">max_d</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">pos</span> <span class="o">-</span><span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">.</span><span class="n">d</span><span class="p">.</span><span class="n">d</span><span class="p">;</span>
+        <span class="n">res</span> <span class="o">+</span><span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">.</span><span class="n">s</span><span class="p">;</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nf">split</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">static</span> <span class="kt">void</span> <span class="nf">debug</span><span class="p">(</span><span class="n">node_index</span> <span class="n">i</span><span class="p">,</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">string</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span><span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">cout</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">s</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="mi">0</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">endl</span><span class="p">;</span>
+      <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">cout</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">s</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">i</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="sa"></span><span class="s">&#34;</span><span class="s"> = </span><span class="s">&#34;</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">d</span><span class="p">.</span><span class="n">p_value</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="sa"></span><span class="s">&#34;</span><span class="s"> = </span><span class="s">&#34;</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">p</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="sa"></span><span class="s">&#34;</span><span class="s"> = </span><span class="s">&#34;</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">s</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&amp;</span><span class="o">&amp;</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">.</span><span class="n">p</span> <span class="o">!</span><span class="o">=</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">assert</span><span class="p">(</span><span class="nb">false</span><span class="p">)</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">debug</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">,</span> <span class="n">s</span> <span class="o">+</span> <span class="sa"></span><span class="s">&#34;</span><span class="s">  </span><span class="s">&#34;</span><span class="p">)</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&amp;</span><span class="o">&amp;</span> <span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">.</span><span class="n">p</span> <span class="o">!</span><span class="o">=</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">assert</span><span class="p">(</span><span class="nb">false</span><span class="p">)</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">debug</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">,</span> <span class="n">s</span> <span class="o">+</span> <span class="sa"></span><span class="s">&#34;</span><span class="s">  </span><span class="s">&#34;</span><span class="p">)</span><span class="p">;</span>
+  <span class="p">}</span>
+
+
+<span class="k">public</span><span class="o">:</span>
+
+  <span class="n">node_index</span> <span class="n">root</span><span class="p">;</span>
+  <span class="n">retroactive_stack</span><span class="p">(</span><span class="p">)</span><span class="o">:</span> <span class="n">root</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span><span class="p">}</span>
+  <span class="n">retroactive_stack</span><span class="p">(</span><span class="n">node_index</span> <span class="n">i</span><span class="p">)</span><span class="o">:</span> <span class="n">root</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span><span class="p">}</span>
+
+  <span class="k">static</span> <span class="n">node_index</span> <span class="nf">new_push_operation</span><span class="p">(</span><span class="n">value_type</span> <span class="n">val</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">new_node</span><span class="p">(</span><span class="n">diff</span><span class="o">:</span><span class="o">:</span><span class="n">push_diff</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">static</span> <span class="n">node_index</span> <span class="nf">new_pop_operation</span><span class="p">(</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">new_node</span><span class="p">(</span><span class="n">diff</span><span class="o">:</span><span class="o">:</span><span class="n">pop_diff</span><span class="p">(</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">retroactive_stack</span><span class="o">&amp;</span> <span class="n">merge</span><span class="p">(</span><span class="n">retroactive_stack</span> <span class="n">right</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">merge</span><span class="p">(</span><span class="k">this</span><span class="o">-</span><span class="o">&gt;</span><span class="n">root</span><span class="p">,</span> <span class="n">right</span><span class="p">.</span><span class="n">root</span><span class="p">)</span><span class="p">;</span>
+    <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">retroactive_stack</span> <span class="nf">split</span><span class="p">(</span><span class="n">node_index</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="n">p</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">index</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+    <span class="n">retroactive_stack</span> <span class="n">avl</span><span class="p">;</span>
+    <span class="n">avl</span><span class="p">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">avl</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="n">node_index</span> <span class="n">i</span><span class="p">,</span> <span class="n">diff</span> <span class="n">v</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">set</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">index</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">size_type</span> <span class="nf">operation_size</span><span class="p">(</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">n</span><span class="p">[</span><span class="n">root</span><span class="p">]</span><span class="p">.</span><span class="n">s</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">height_type</span> <span class="nf">stack_size</span><span class="p">(</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">n</span><span class="p">[</span><span class="n">root</span><span class="p">]</span><span class="p">.</span><span class="n">d</span><span class="p">.</span><span class="n">d</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">value_type</span> <span class="nf">top</span><span class="p">(</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="n">P</span> <span class="o">=</span> <span class="n">min_depth_split</span><span class="p">(</span><span class="n">root</span><span class="p">)</span><span class="p">;</span>
+    <span class="k">auto</span> <span class="n">res</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">search</span><span class="p">(</span><span class="n">P</span><span class="p">.</span><span class="n">second</span><span class="p">,</span> <span class="n">n</span><span class="p">[</span><span class="n">P</span><span class="p">.</span><span class="n">second</span><span class="p">]</span><span class="p">.</span><span class="n">d</span><span class="p">.</span><span class="n">d</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="p">]</span><span class="p">.</span><span class="n">d</span><span class="p">.</span><span class="n">p_value</span><span class="p">;</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">merge</span><span class="p">(</span><span class="n">P</span><span class="p">.</span><span class="n">first</span><span class="p">,</span> <span class="n">P</span><span class="p">.</span><span class="n">second</span><span class="p">)</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="nf">debug</span><span class="p">(</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">debug</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="sa"></span><span class="s">&#34;</span><span class="s">&#34;</span><span class="p">)</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span><span class="p">;</span>
+
+<span class="n">retroactive_stack</span><span class="o">:</span><span class="o">:</span><span class="n">size_type</span> <span class="n">retroactive_stack</span><span class="o">:</span><span class="o">:</span><span class="n">ni</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="n">retroactive_stack</span><span class="o">:</span><span class="o">:</span><span class="n">node</span> <span class="n">retroactive_stack</span><span class="o">:</span><span class="o">:</span><span class="n">n</span><span class="p">[</span><span class="mi">2020202</span><span class="p">]</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">opes</span><span class="p">;</span>
+  <span class="n">opes</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">retroactive_stack</span><span class="o">:</span><span class="o">:</span><span class="n">new_push_operation</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+  <span class="n">opes</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">retroactive_stack</span><span class="o">:</span><span class="o">:</span><span class="n">new_push_operation</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+  <span class="n">opes</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">retroactive_stack</span><span class="o">:</span><span class="o">:</span><span class="n">new_push_operation</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+
+  <span class="n">retroactive_stack</span> <span class="n">st</span><span class="p">;</span>
+
+  <span class="n">st</span><span class="p">.</span><span class="n">merge</span><span class="p">(</span><span class="n">retroactive_stack</span><span class="o">:</span><span class="o">:</span><span class="n">new_pop_operation</span><span class="p">(</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+  <span class="n">st</span><span class="p">.</span><span class="n">merge</span><span class="p">(</span><span class="n">retroactive_stack</span><span class="o">:</span><span class="o">:</span><span class="n">new_pop_operation</span><span class="p">(</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+  <span class="n">st</span><span class="p">.</span><span class="n">merge</span><span class="p">(</span><span class="n">retroactive_stack</span><span class="o">:</span><span class="o">:</span><span class="n">new_pop_operation</span><span class="p">(</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+
+  <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="nl">i</span><span class="p">:</span> <span class="n">opes</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">st</span><span class="p">.</span><span class="n">merge</span><span class="p">(</span><span class="n">retroactive_stack</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">cout</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">st</span><span class="p">.</span><span class="n">top</span><span class="p">(</span><span class="p">)</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">endl</span><span class="p">;</span> <span class="c1">// 3
+</span><span class="c1"></span>
+  <span class="kt">int</span> <span class="n">pop_ope</span> <span class="o">=</span> <span class="n">retroactive_stack</span><span class="o">:</span><span class="o">:</span><span class="n">new_pop_operation</span><span class="p">(</span><span class="p">)</span><span class="p">;</span>
+
+  <span class="n">st</span><span class="p">.</span><span class="n">merge</span><span class="p">(</span><span class="n">retroactive_stack</span><span class="p">(</span><span class="n">pop_ope</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+
+  <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">cout</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">st</span><span class="p">.</span><span class="n">top</span><span class="p">(</span><span class="p">)</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">endl</span><span class="p">;</span> <span class="c1">// 2
+</span><span class="c1"></span>
+  <span class="n">st</span><span class="p">.</span><span class="n">merge</span><span class="p">(</span><span class="n">retroactive_stack</span><span class="p">(</span><span class="n">retroactive_stack</span><span class="o">:</span><span class="o">:</span><span class="n">new_pop_operation</span><span class="p">(</span><span class="p">)</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">cout</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">st</span><span class="p">.</span><span class="n">top</span><span class="p">(</span><span class="p">)</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">endl</span><span class="p">;</span> <span class="c1">// 1
+</span><span class="c1"></span>
+  <span class="n">st</span><span class="p">.</span><span class="n">update</span><span class="p">(</span><span class="n">pop_ope</span><span class="p">,</span> <span class="n">retroactive_stack</span><span class="o">:</span><span class="o">:</span><span class="n">diff</span><span class="o">:</span><span class="o">:</span><span class="n">push_diff</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">cout</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">st</span><span class="p">.</span><span class="n">top</span><span class="p">(</span><span class="p">)</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">endl</span><span class="p">;</span> <span class="c1">// 3 (push 1 -&gt; push 2 -&gt; push 3 -&gt; push 4 -&gt; pop)
+</span><span class="c1"></span>
+  <span class="k">auto</span> <span class="n">after</span> <span class="o">=</span> <span class="n">st</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="n">opes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="p">)</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">cout</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">st</span><span class="p">.</span><span class="n">top</span><span class="p">(</span><span class="p">)</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">endl</span><span class="p">;</span> <span class="c1">// 2 st := (push 1 -&gt; push 2)
+</span><span class="c1"></span><span class="p">}</span>
+
+</code></pre></div><p>star押してね(承認欲求)</p>
+
+
+    <div class="article-footer">
+      <a style="display:none;" href="http://niuez.github.io/posts/fully_retroactive_stack/"></a>
+      <h1 style="display:none;">Fully Retroactive Stack 実装してみた</h1>
+      <div></div>
+    </div>
+		</div>
+
+		<div class="post-tags">
+			
+				
+			
+		</div>
+		</div>
+	
+<div class="footer wrapper">
+	<nav class="nav">
+		<div> This site use Google Analytics |  <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-157596444-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+<script>feather.replace()</script>
+</body>
+</html>

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Suffix Array と LCP と 文字列検索の実装をした - Niue&#39;z Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Suffix Array と LCP と 文字列検索の実装をした" />
+<meta property="og:description" content="この土日のメモです. SAとLCPのお気持ちをまとめたくなっただけ." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://niuez.github.io/posts/entry/2019/12/16/203739/" />
+<meta property="article:published_time" content="2019-12-16T20:37:39+00:00" />
+<meta property="article:modified_time" content="2019-12-16T20:37:39+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Suffix Array と LCP と 文字列検索の実装をした"/>
+<meta name="twitter:description" content="この土日のメモです. SAとLCPのお気持ちをまとめたくなっただけ."/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="http://niuez.github.io/css/highlight-native.css">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="http://niuez.github.io/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="http://niuez.github.io/css/main.css" /><link rel="stylesheet" type="text/css" href="http://niuez.github.io/css/dark.css"  />
+	<link rel="stylesheet" type="text/css" href="http://niuez.github.io/css/custom-dark.css"  />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="http://niuez.github.io/js/main.js"></script>
+
+  <script type="text/javascript" src="https://s.hatena.ne.jp/js/HatenaStar.js"></script>
+  <script type="text/javascript">
+  Hatena.Star.Token = 'e2714bc09c0f22d36f9bea483e4c3efc2846d9e9';
+  Hatena.Star.SiteConfig = {
+    entryNodes: {
+      'div.article-footer': {
+        uri: 'a',
+        title: 'h1',
+        container: 'div'
+      }
+    }
+  };
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+              showMathMenu: false, //disables context menu
+              tex2jax: {
+              inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+             }
+      });
+  </script>
+
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<base href="http://niuez.github.io/">
+	<h1 class="site-title"><a href="http://niuez.github.io/">Niue&#39;z Blog</a></h1>
+	<div class="site-description"><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/niuez" title="Github"><i data-feather="github"></i></a><a href="https://twitter.com/xiuez" title="Twitter"><i data-feather="twitter"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="/">Home</a>
+			</li>
+			
+			<li>
+				<a href="/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="/about">About</a>
+			</li>
+			
+			<li>
+				<a href="/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">Suffix Array と LCP と 文字列検索の実装をした</h1>
+			<div class="meta">Posted at &mdash; Dec 16, 2019</div>
+		</div>
+
+		<div class="markdown">
+			<p>この土日のメモです. SAとLCPのお気持ちをまとめたくなっただけ. 間違ってたらごめん</p>
+<blockquote>
+<p>文字列アルゴの勉強する気が起きないたった一つの理由: Rolling Hash— νιυεζ (@xiuez) 2019年12月13日<!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+</blockquote>
+<p>これをやめたいので, 手始めにSuffix Arrayを使った文字列検索をやってみようかなというのが今回の主題</p>
+<h2 id="概要">概要</h2>
+<!-- raw HTML omitted -->
+<p>の実装をやってみました. このときのメモを残しておきたいと思います.</p>
+<p>各用語の説明はここではしません&hellip; 他の記事や, <!-- raw HTML omitted -->蟻本 - Amazon<!-- raw HTML omitted -->を参考に.</p>
+<h2 id="sa-is">SA-IS</h2>
+<p>Suffix Arrayの実装は蟻本にも載っていますが, そこまで早くありません&hellip; SA-ISというアルゴリズムが早いらしいのでこれを実装します.</p>
+<p>SA-ISの理解には, この記事がとても参考になりました. とてもわかりやすい記事です.</p>
+<p><a href="https://mametter.hatenablog.com/entry/20180130/p1"> SA-IS 法のメモ - まめめも</a></p>
+<p>SA-ISの実装は<!-- raw HTML omitted -->yosupoさんのコード<!-- raw HTML omitted -->を見ました.</p>
+<p>僕が書いたSA-ISのコードはこれです.</p>
+<p><a href="https://judge.yosupo.jp/submission/1908">Submitted</a></p>
+<!-- raw HTML omitted -->
+<p>実はSA-ISの論文に実装が載っていてそれがとても速いです. ぜひ参考にしてみてください.</p>
+<p>以下, 文字列<!-- raw HTML omitted -->S<!-- raw HTML omitted -->のSuffix Arrayを<!-- raw HTML omitted -->SA<!-- raw HTML omitted -->とします. <!-- raw HTML omitted -->S<!-- raw HTML omitted -->の辞書順で<!-- raw HTML omitted -->i<!-- raw HTML omitted -->番目に小さいsuffixを<!-- raw HTML omitted -->Suf[i] := S[SA[i]&hellip;]<!-- raw HTML omitted -->とします.</p>
+<h2 id="lcplongest-common-prefix">LCP(Longest Common Prefix)</h2>
+<p>LCP配列は, Suffix Arrayで隣り合ったSuffix(つまり, <!-- raw HTML omitted -->Suf[i]とSuf[i + 1]<!-- raw HTML omitted -->)の最長共通接頭辞を求めた配列です. Kasai's Algorithmを用いて$ O(|S|)$で構築できます.</p>
+<p>LCPの理解は以下の記事がわかりやすいです. 蟻本にもあるはず.</p>
+<p><a href="https://lumakernel.github.io/ecasdqina/string/LCP-Array">LCP配列 (Kasai’s algorithm)</a></p>
+<p>例は,
+<!-- raw HTML omitted -->接尾辞配列(Suffix-Array) | Luzhiled’s memo<!-- raw HTML omitted --> がわかりやすいです.</p>
+<p>僕の実装は先頭に無(空配列)があるので, 以下のようになります.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">i :lcp
+0 : 0 
+1 : 0 a
+2 : 1 abra
+3 : 4 abracadabra
+4 : 1 acadabra
+5 : 1 adabra
+6 : 0 bra
+7 : 3 bracadabra
+8 : 0 cadabra
+9 : 0 dabra
+10: 0 ra
+11: 2 racadabra
+</code></pre></div><h2 id="任意のsuffix同士のlcp">任意のsuffix同士のLCP</h2>
+<p>上の例で, <!-- raw HTML omitted -->i = 2, abra<!-- raw HTML omitted -->と, <!-- raw HTML omitted -->j = 5, adabra<!-- raw HTML omitted -->のLCPを求めるとすると, <!-- raw HTML omitted -->3, 4, 5<!-- raw HTML omitted -->の<!-- raw HTML omitted -->lcp<!-- raw HTML omitted -->の最小値である<!-- raw HTML omitted -->1<!-- raw HTML omitted -->がその答えになります.</p>
+<p>Suffix Arrayで, indexが $ i$ のsuffixと $ j$ のsuffixのLCPは, $ [i + 1, j + 1)$ 間の<!-- raw HTML omitted -->lcp<!-- raw HTML omitted -->の最小値になります.</p>
+<p>なので, <!-- raw HTML omitted -->lcp<!-- raw HTML omitted -->をSparse Tableに載せると構築 $ O(|S| \log{|S|})$, クエリ$ O(1)$で処理できます.</p>
+<h2 id="suffix-arrayで文字列検索">Suffix Arrayで文字列検索</h2>
+<p>文字列<!-- raw HTML omitted -->S<!-- raw HTML omitted -->のSuffix Array <!-- raw HTML omitted -->SA<!-- raw HTML omitted -->を使って, <!-- raw HTML omitted -->S<!-- raw HTML omitted -->の中に文字列<!-- raw HTML omitted -->T<!-- raw HTML omitted -->があるかどうかを二分探索で処理できます. これは, Suffix Arrayによって各suffixがソートされているのを利用しています.</p>
+<p>計算量は$ O(|T| \log{|S|})$です. <!-- raw HTML omitted -->AOJの提出コード<!-- raw HTML omitted --></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">cin</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span class="n">t</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">L</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">R</span> <span class="o">=</span> <span class="n">sa</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="p">)</span><span class="p">;</span>
+<span class="k">while</span><span class="p">(</span><span class="n">R</span> <span class="o">-</span> <span class="n">L</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">M</span> <span class="o">=</span> <span class="p">(</span><span class="n">L</span> <span class="o">+</span> <span class="n">R</span><span class="p">)</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="n">sa</span><span class="p">[</span><span class="n">M</span><span class="p">]</span><span class="p">,</span> <span class="n">t</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="p">)</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">=</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="n">M</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">M</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="n">cout</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="n">sa</span><span class="p">[</span><span class="n">L</span><span class="p">]</span><span class="p">,</span> <span class="n">t</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="p">)</span><span class="p">)</span> <span class="o">=</span><span class="o">=</span> <span class="n">t</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">endl</span><span class="p">;</span>
+
+</code></pre></div><p>これがかなりはやい なんでだろう</p>
+<h2 id="saとlcpで文字列検索">SAとLCPで文字列検索</h2>
+<p>この二分探索はさらに高速化できます. suffixとTの比較を最小限にすることで, $ O(|T| + \log{|S|})$を達成します.</p>
+<p>具体的には, <!-- raw HTML omitted -->suf[L]<!-- raw HTML omitted -->とTのLCPを常に持ちながら二分探索をします. このLCPを<!-- raw HTML omitted -->Llcp<!-- raw HTML omitted -->とします.  <!-- raw HTML omitted -->M = (L + R) / 2<!-- raw HTML omitted -->として, <!-- raw HTML omitted -->suf[L]<!-- raw HTML omitted -->と<!-- raw HTML omitted -->suf[M]<!-- raw HTML omitted -->のLCPを求めて, <!-- raw HTML omitted -->nlcp<!-- raw HTML omitted -->とします. <!-- raw HTML omitted -->nlcp<!-- raw HTML omitted -->は先に書いたとおり, Sparse Tableで求めることができます.  次に<!-- raw HTML omitted -->Llcp<!-- raw HTML omitted -->と<!-- raw HTML omitted -->nlcp<!-- raw HTML omitted -->を比較します.</p>
+<!-- raw HTML omitted -->
+<p>以下の例で考えてみます. (Suffix Arrayではありませんが, 複数の文字列を辞書順にソートしたという意味で同じです)</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">T = ad
+
+L : aaa
+    aaab
+    aaac
+M : aac
+    aacc
+    ba
+R : 
+
+Llcp = LCP(aaa, ad) = 1  // &#34;a&#34;aa, &#34;a&#34;dなので
+nlcp = LCP(aaa, aac) = 2 // &#34;aa&#34;a, &#34;aa&#34;cなので
+</code></pre></div><p><!-- raw HTML omitted -->T<!-- raw HTML omitted -->は辞書順で<!-- raw HTML omitted -->suf[T]<!-- raw HTML omitted -->以上ということがわかっているので, <!-- raw HTML omitted -->Llcp &lt; nlcp<!-- raw HTML omitted -->より, Tと<!-- raw HTML omitted -->suf[M]<!-- raw HTML omitted -->のLCPは<!-- raw HTML omitted -->Llcp<!-- raw HTML omitted -->であり, <!-- raw HTML omitted -->T<!-- raw HTML omitted -->は辞書順で<!-- raw HTML omitted -->suf[M]<!-- raw HTML omitted -->以上です.  なので, Llcpはそのままで, <!-- raw HTML omitted -->L = M<!-- raw HTML omitted -->とします.</p>
+<!-- raw HTML omitted -->
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">T = aaac
+
+L : aaa
+    aaab
+    aaac
+M : aac
+    aacc
+    ba
+R : 
+
+Llcp = LCP(aaa, aaac) = 3  // &#34;aaa&#34;, &#34;aaa&#34;cなので
+nlcp = LCP(aaa, aac) = 2 // &#34;aa&#34;a, &#34;aa&#34;cなので
+</code></pre></div><p>T<!-- raw HTML omitted -->と<!-- raw HTML omitted -->suf[M]<!-- raw HTML omitted -->のLCPは<!-- raw HTML omitted -->nlcp<!-- raw HTML omitted -->であり,<!-- raw HTML omitted -->T<!-- raw HTML omitted -->は辞書順で<!-- raw HTML omitted -->suf[M]<!-- raw HTML omitted -->未満です. なので, Llcpはそのままで,<!-- raw HTML omitted -->R = M`とします.</p>
+<!-- raw HTML omitted -->
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">T = aacc
+
+L : aaa
+    aaab
+    aaac
+M : aac
+    aacc
+    ba
+R : 
+
+Llcp = LCP(aaa, aacc) = 2  // &#34;aa&#34;a, &#34;aa&#34;ccなので
+nlcp = LCP(aaa, aac) = 2 // &#34;aa&#34;a, &#34;aa&#34;cなので
+</code></pre></div><p>このときは, <!-- raw HTML omitted -->T<!-- raw HTML omitted -->と<!-- raw HTML omitted -->suf[M]<!-- raw HTML omitted -->の辞書順の関係がわからないので比較をします. このとき, <!-- raw HTML omitted -->LCPの部分は一致していることがわかっているので比較をしなくてよい<!-- raw HTML omitted -->です. 比較をした後, Llcpを比較をした時の計算結果を利用して更新します.</p>
+<p><!-- raw HTML omitted -->Llcp<!-- raw HTML omitted -->は探索中, 単調増加します. なので, 文字列の比較が全体で$ O(|T|)$しかされません. これにより, 計算量が改善されます.</p>
+<p>実際にコードを示します.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">pair</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;</span> <span class="n">get_lcp</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">T</span><span class="o">&gt;</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span> <span class="n">t</span><span class="p">,</span> <span class="kt">int</span> <span class="n">si</span><span class="p">,</span> <span class="kt">int</span> <span class="n">offset</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">offset</span><span class="p">;</span>
+  <span class="n">si</span> <span class="o">+</span><span class="o">=</span> <span class="n">offset</span><span class="p">;</span>
+  <span class="k">while</span><span class="p">(</span><span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">t</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span> <span class="n">si</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">N</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!</span><span class="o">=</span> <span class="n">str</span><span class="p">[</span><span class="n">si</span><span class="p">]</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="p">{</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">str</span><span class="p">[</span><span class="n">si</span><span class="p">]</span> <span class="p">}</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">i</span><span class="o">+</span><span class="o">+</span><span class="p">;</span>
+    <span class="n">si</span><span class="o">+</span><span class="o">+</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="p">{</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span> <span class="p">}</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">pair</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;</span> <span class="n">search</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">T</span><span class="o">&gt;</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">L</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">R</span> <span class="o">=</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">Llcp</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="n">R</span> <span class="o">-</span> <span class="n">L</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">M</span> <span class="o">=</span> <span class="p">(</span><span class="n">L</span> <span class="o">+</span> <span class="n">R</span><span class="p">)</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">nlcp</span> <span class="o">=</span> <span class="n">st</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="n">L</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">Llcp</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">nlcp</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">L</span> <span class="o">=</span> <span class="n">M</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="nf">if</span><span class="p">(</span><span class="n">Llcp</span> <span class="o">&gt;</span> <span class="n">nlcp</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">R</span> <span class="o">=</span> <span class="n">M</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">auto</span> <span class="n">p</span> <span class="o">=</span> <span class="n">get_lcp</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">sa</span><span class="p">[</span><span class="n">M</span><span class="p">]</span><span class="p">,</span> <span class="n">Llcp</span><span class="p">)</span><span class="p">;</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">second</span> <span class="o">&gt;</span><span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="n">M</span><span class="p">;</span>
+        <span class="n">Llcp</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">second</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">M</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="p">{</span> <span class="n">Llcp</span><span class="p">,</span> <span class="n">L</span> <span class="p">}</span><span class="p">;</span>
+<span class="p">}</span>
+
+</code></pre></div><p>これで早くなるはず&hellip;!</p>
+<p><a href="https://onlinejudge.u-aizu.ac.jp/status/users/niuez/submissions/2/ALDS1_14_D/judge/4048629/C++14">Aizu Online Judge</a></p>
+<p>5倍遅くなった&hellip;</p>
+<h2 id="sparse-tableの構築が重すぎる">Sparse Tableの構築が重すぎる</h2>
+<p>$ O(|S| \log{|S|})$ 流石に重い&hellip; 改善したい</p>
+<h2 id="sparse-tableを使わない方法で改善">Sparse Tableを使わない方法で改善</h2>
+<p>二分探索だけならSparse Tableである必要はありません. Segment Treeを使います.<!-- raw HTML omitted -->
+二分探索で最小値を求めたい区間は必ず<!-- raw HTML omitted -->[L, (L + R) / 2)<!-- raw HTML omitted -->に対応できます. なので, 二分探索するときに, Segment Treeのノードを降りていくようにすると 構築$ O(|S|)$で二分探索ができるようになります.</p>
+<p>コードはこんな感じ</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="p">.</span><span class="p">.</span><span class="p">.</span>
+<span class="p">.</span><span class="p">.</span><span class="p">.</span>
+  <span class="n">seg_n</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="k">while</span><span class="p">(</span><span class="n">seg_n</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="n">seg_n</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="n">seg</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="n">seg_n</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">1e9</span><span class="p">)</span><span class="p">;</span>
+  <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">+</span><span class="o">+</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">seg</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">seg_n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">lcp</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">seg_n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">-</span><span class="o">-</span><span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">seg</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">min</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="p">(</span><span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="p">,</span> <span class="n">seg</span><span class="p">[</span><span class="p">(</span><span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span><span class="p">)</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">pair</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;</span> <span class="n">get_lcp</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">T</span><span class="o">&gt;</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span> <span class="n">t</span><span class="p">,</span> <span class="kt">int</span> <span class="n">sa_i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">offset</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">sa_i</span> <span class="o">&gt;</span> <span class="n">N</span><span class="p">)</span> <span class="k">return</span> <span class="p">{</span> <span class="n">offset</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="p">}</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">offset</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">si</span> <span class="o">=</span> <span class="n">sa</span><span class="p">[</span><span class="n">sa_i</span><span class="p">]</span> <span class="o">+</span> <span class="n">offset</span><span class="p">;</span>
+  <span class="k">while</span><span class="p">(</span><span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">t</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span> <span class="n">si</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">N</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!</span><span class="o">=</span> <span class="n">str</span><span class="p">[</span><span class="n">si</span><span class="p">]</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="p">{</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">str</span><span class="p">[</span><span class="n">si</span><span class="p">]</span> <span class="p">}</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">i</span><span class="o">+</span><span class="o">+</span><span class="p">;</span>
+    <span class="n">si</span><span class="o">+</span><span class="o">+</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="p">{</span> <span class="n">i</span><span class="p">,</span> <span class="mi">1</span> <span class="p">}</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">pair</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;</span> <span class="n">search</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">T</span><span class="o">&gt;</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">L</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">R</span> <span class="o">=</span> <span class="n">seg_n</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">Llcp</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="n">R</span> <span class="o">-</span> <span class="n">L</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">M</span> <span class="o">=</span> <span class="p">(</span><span class="n">L</span> <span class="o">+</span> <span class="n">R</span><span class="p">)</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">nlcp</span> <span class="o">=</span> <span class="n">seg</span><span class="p">[</span><span class="p">(</span><span class="n">j</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">nlcp</span> <span class="o">=</span><span class="o">=</span> <span class="mf">1e9</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">j</span> <span class="o">=</span> <span class="p">(</span><span class="n">j</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="n">R</span> <span class="o">=</span> <span class="n">M</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">Llcp</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">nlcp</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">j</span> <span class="o">=</span> <span class="p">(</span><span class="n">j</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="p">;</span>
+      <span class="n">L</span> <span class="o">=</span> <span class="n">M</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="nf">if</span><span class="p">(</span><span class="n">Llcp</span> <span class="o">&gt;</span> <span class="n">nlcp</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">j</span> <span class="o">=</span> <span class="p">(</span><span class="n">j</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="n">R</span> <span class="o">=</span> <span class="n">M</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">auto</span> <span class="n">p</span> <span class="o">=</span> <span class="n">get_lcp</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">Llcp</span><span class="p">)</span><span class="p">;</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">second</span> <span class="o">&gt;</span><span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="p">(</span><span class="n">j</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="p">;</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="n">M</span><span class="p">;</span>
+        <span class="n">Llcp</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">second</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="p">(</span><span class="n">j</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">M</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="p">{</span> <span class="n">Llcp</span><span class="p">,</span> <span class="n">L</span> <span class="p">}</span><span class="p">;</span>
+<span class="p">}</span>
+
+</code></pre></div><p><a href="https://onlinejudge.u-aizu.ac.jp/status/users/niuez/submissions/1/ALDS1_14_D/judge/4050033/C++14">Aizu Online Judge</a></p>
+<p>これでも最初の二分探索に勝てませんでした&hellip; なんでだろう でもこれでもかなり速いです.</p>
+<h2 id="しめ">しめ</h2>
+<p>FM-indexとかやってみたくなりました</p>
+
+
+    <div class="article-footer">
+      <a style="display:none;" href="http://niuez.github.io/posts/entry/2019/12/16/203739/"></a>
+      <h1 style="display:none;">Suffix Array と LCP と 文字列検索の実装をした</h1>
+      <div></div>
+    </div>
+		</div>
+
+		<div class="post-tags">
+			
+				
+			
+		</div>
+		</div>
+	
+<div class="footer wrapper">
+	<nav class="nav">
+		<div> This site use Google Analytics |  <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-157596444-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+<script>feather.replace()</script>
+</body>
+</html>

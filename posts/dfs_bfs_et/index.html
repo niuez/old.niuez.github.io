@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>DFS&#43;BFS EulerTourで部分木の任意深さのクエリを処理する - Niue&#39;z Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="DFS&#43;BFS EulerTourで部分木の任意深さのクエリを処理する" />
+<meta property="og:description" content="BFS Euler TourについてはBFS Euler Tour - niuez." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://niuez.github.io/posts/dfs_bfs_et/" />
+<meta property="article:published_time" content="2020-03-24T18:05:05+09:00" />
+<meta property="article:modified_time" content="2020-03-24T18:05:05+09:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="DFS&#43;BFS EulerTourで部分木の任意深さのクエリを処理する"/>
+<meta name="twitter:description" content="BFS Euler TourについてはBFS Euler Tour - niuez."/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="http://niuez.github.io/css/highlight-native.css">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="http://niuez.github.io/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="http://niuez.github.io/css/main.css" /><link rel="stylesheet" type="text/css" href="http://niuez.github.io/css/dark.css"  />
+	<link rel="stylesheet" type="text/css" href="http://niuez.github.io/css/custom-dark.css"  />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="http://niuez.github.io/js/main.js"></script>
+
+  <script type="text/javascript" src="https://s.hatena.ne.jp/js/HatenaStar.js"></script>
+  <script type="text/javascript">
+  Hatena.Star.Token = 'e2714bc09c0f22d36f9bea483e4c3efc2846d9e9';
+  Hatena.Star.SiteConfig = {
+    entryNodes: {
+      'div.article-footer': {
+        uri: 'a',
+        title: 'h1',
+        container: 'div'
+      }
+    }
+  };
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+              showMathMenu: false, //disables context menu
+              tex2jax: {
+              inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+             }
+      });
+  </script>
+
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<base href="http://niuez.github.io/">
+	<h1 class="site-title"><a href="http://niuez.github.io/">Niue&#39;z Blog</a></h1>
+	<div class="site-description"><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/niuez" title="Github"><i data-feather="github"></i></a><a href="https://twitter.com/xiuez" title="Twitter"><i data-feather="twitter"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="/">Home</a>
+			</li>
+			
+			<li>
+				<a href="/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="/about">About</a>
+			</li>
+			
+			<li>
+				<a href="/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">DFS&#43;BFS EulerTourで部分木の任意深さのクエリを処理する</h1>
+			<div class="meta">Posted at &mdash; Mar 24, 2020</div>
+		</div>
+
+		<div class="markdown">
+			<p>BFS Euler Tourについては<a href="https://niuez.github.io/2019/10/002503/">BFS Euler Tour - niuez.github.io</a>を参照してください.</p>
+<h2 id="処理したいクエリ-例">処理したいクエリ (例)</h2>
+<p>有向木が与えられ, 各頂点には重みがある.</p>
+<ul>
+<li>頂点$v$から, 辺をちょうど$d$個たどって到達できる頂点の重みの総和を出力</li>
+</ul>
+<p>総和じゃなくても更新とかもしたいよね.</p>
+<h2 id="アルゴリズム">アルゴリズム</h2>
+<p>BFS Euler Tourをすると, 同じ深さの頂点が並ぶということは上の記事をみるとわかります. これにDFS Euler Tourしたときの情報を合わせることで任意深さについで, BFS Euler Tourしたときの区間を前計算$O(N)$, クエリ$O(\log N)$で求めることができます.</p>
+<p><img src="/images/bfs_dfs.png" alt="がぞう"></p>
+<p>BFS Euler Tourしたときの順番と, DFS Euler Tourしたときの$in/out$を各ノードに添えました. ただし, <strong>ノードの子供を探索する順序はDFS, BFS共に同じにします</strong>, すると,</p>
+<ul>
+<li>深さ$0$のノードのbfsの番号と$in$</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bfs: 0
+in : 0
+</code></pre></div><ul>
+<li>深さ$1$のノードのbfsの番号と$in$</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bfs: 1 2
+in : 1 8
+</code></pre></div><ul>
+<li>深さ$2$のノードのbfsの番号と$in$</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bfs: 3 4 5 6
+in : 2 5 9 12
+</code></pre></div><ul>
+<li>深さ$3$のノードのbfsの番号と$in$</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bfs: 7 8 9 10 11 12 13 14
+in : 3 4 6 7  10 11 13 14
+</code></pre></div><p>となり, 単調増加します.<br>
+また, DFS Euler Tourでは, ある頂点$v$の$[in, out)$は, $v$を根とする部分木に含まれる頂点の$in$の集合です. これを活かして, 頂点$1$から深さ$2$の頂点のBFS Euler Tourの区間を求めてみます.</p>
+<p>木全体での頂点$1$の深さは$1$なので, 求めたい区間の頂点は深さ$3$です.<br>
+また, 頂点$1$の$[in, out)$は$[1, 8)$です. なので求めたい頂点の$in$の値は, 深さ$3$での$in$の列の中で$[1, 8)$に含まれている$in = 3, 4, 6, 7$です.<br>
+これは, BFS Euler Tourの区間では$[7, 10)$に相当します.</p>
+<p>この操作は二分探索で行うことができるので, クエリあたり$O(\log N)$です.</p>
+<h2 id="実装">実装</h2>
+<ul>
+<li><code>para[i] := BFS Euler Tourでi番目の頂点</code></li>
+<li><code>inv_para[v] := BFS Euler Tourにおける頂点vのインデックス</code></li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="nc">bfs_euler_tour</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">N</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="o">&gt;</span> <span class="n">G</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">in</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">out</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">para</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">inv_para</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">dep</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">par</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">start</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">cnt</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">D</span><span class="p">;</span>
+
+  <span class="n">bfs_euler_tour</span><span class="p">(</span><span class="kt">int</span> <span class="n">N</span><span class="p">)</span><span class="o">:</span> <span class="n">N</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="p">,</span> <span class="n">G</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="p">,</span> <span class="n">in</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="p">,</span> <span class="n">out</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="p">,</span> <span class="n">para</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="p">,</span> <span class="n">inv_para</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="p">,</span> <span class="n">dep</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="p">,</span> <span class="n">par</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="p">{</span><span class="p">}</span>
+
+  <span class="kt">void</span> <span class="nf">add_edge</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">G</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="p">;</span>
+    <span class="n">G</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="nf">dfs</span><span class="p">(</span><span class="kt">int</span> <span class="n">v</span><span class="p">,</span> <span class="kt">int</span> <span class="n">f</span><span class="p">,</span> <span class="kt">int</span> <span class="n">depth</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">max</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">depth</span><span class="p">)</span><span class="p">;</span>
+    <span class="n">par</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">;</span>
+    <span class="n">dep</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">depth</span><span class="p">;</span>
+    <span class="n">in</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">cnt</span><span class="o">+</span><span class="o">+</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="nl">t</span><span class="p">:</span> <span class="n">G</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">t</span> <span class="o">=</span><span class="o">=</span> <span class="n">f</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
+      <span class="n">dfs</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">out</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">cnt</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="nf">build</span><span class="p">(</span><span class="kt">int</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">dfs</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="p">;</span>
+    <span class="n">D</span><span class="o">+</span><span class="o">+</span><span class="p">;</span>
+
+    <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">que</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">ql</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">qr</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">que</span><span class="p">[</span><span class="n">qr</span><span class="o">+</span><span class="o">+</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="p">;</span>
+    <span class="n">start</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="n">D</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="p">;</span>
+
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">d</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">ql</span> <span class="o">&lt;</span> <span class="n">qr</span><span class="p">;</span> <span class="n">d</span><span class="o">+</span><span class="o">+</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kt">int</span> <span class="n">r</span> <span class="o">=</span> <span class="n">qr</span><span class="p">;</span>
+      <span class="n">start</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">=</span> <span class="n">cnt</span><span class="p">;</span>
+      <span class="k">while</span><span class="p">(</span><span class="n">ql</span> <span class="o">&lt;</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">v</span> <span class="o">=</span> <span class="n">que</span><span class="p">[</span><span class="n">ql</span><span class="o">+</span><span class="o">+</span><span class="p">]</span><span class="p">;</span>
+        <span class="n">inv_para</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">cnt</span><span class="p">;</span>
+        <span class="n">para</span><span class="p">[</span><span class="n">cnt</span><span class="o">+</span><span class="o">+</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">;</span>
+        <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="nl">t</span><span class="p">:</span> <span class="n">G</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">if</span><span class="p">(</span><span class="n">in</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">in</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">que</span><span class="p">[</span><span class="n">qr</span><span class="o">+</span><span class="o">+</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">;</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="n">start</span><span class="p">[</span><span class="n">D</span><span class="p">]</span> <span class="o">=</span> <span class="n">cnt</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kt">int</span> <span class="nf">para_lower_bound</span><span class="p">(</span><span class="kt">int</span> <span class="n">l</span><span class="p">,</span> <span class="kt">int</span> <span class="n">r</span><span class="p">,</span> <span class="kt">int</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="n">l</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kt">int</span> <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">l</span> <span class="o">+</span> <span class="n">r</span><span class="p">)</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span><span class="o">=</span> <span class="n">in</span><span class="p">[</span><span class="n">para</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="p">]</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">m</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="n">m</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">r</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;</span> <span class="n">range</span><span class="p">(</span><span class="kt">int</span> <span class="n">v</span><span class="p">,</span> <span class="kt">int</span> <span class="n">d</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">dep</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+</span> <span class="n">d</span> <span class="o">&lt;</span> <span class="n">D</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kt">int</span> <span class="n">l</span> <span class="o">=</span> <span class="n">start</span><span class="p">[</span><span class="n">dep</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+</span> <span class="n">d</span><span class="p">]</span><span class="p">;</span>
+      <span class="kt">int</span> <span class="n">r</span> <span class="o">=</span> <span class="n">start</span><span class="p">[</span><span class="n">dep</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+</span> <span class="n">d</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="p">;</span>
+      <span class="k">return</span> <span class="p">{</span> <span class="n">para_lower_bound</span><span class="p">(</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">in</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="p">)</span><span class="p">,</span> <span class="n">para_lower_bound</span><span class="p">(</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">out</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="p">)</span> <span class="p">}</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="p">{</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">}</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span><span class="p">;</span>
+</code></pre></div><h2 id="使用例">使用例</h2>
+<p>No.899 γathereeを解いてみました. <a href="https://yukicoder.me/submissions/448690">#448690 (C++14) No.899 γatheree - yukicoder</a></p>
+<h2 id="verify問題">verify問題</h2>
+<p>びーと, ありがとう</p>
+
+
+    <div class="article-footer">
+      <a style="display:none;" href="http://niuez.github.io/posts/dfs_bfs_et/"></a>
+      <h1 style="display:none;">DFS&#43;BFS EulerTourで部分木の任意深さのクエリを処理する</h1>
+      <div></div>
+    </div>
+		</div>
+
+		<div class="post-tags">
+			
+				
+			
+		</div>
+		</div>
+	
+<div class="footer wrapper">
+	<nav class="nav">
+		<div> This site use Google Analytics |  <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-157596444-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+<script>feather.replace()</script>
+</body>
+</html>

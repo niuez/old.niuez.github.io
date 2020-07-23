@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Library Checker - Associative Array に関するいろいろ - Niue&#39;z Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Library Checker - Associative Array に関するいろいろ" />
+<meta property="og:description" content="[Library Checker - Associative Array]を解くに当たってのいろいろをまとめておきます." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://niuez.github.io/posts/lc_associative_array/" />
+<meta property="article:published_time" content="2020-06-12T23:02:44+09:00" />
+<meta property="article:modified_time" content="2020-06-12T23:02:44+09:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Library Checker - Associative Array に関するいろいろ"/>
+<meta name="twitter:description" content="[Library Checker - Associative Array]を解くに当たってのいろいろをまとめておきます."/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="http://niuez.github.io/css/highlight-native.css">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="http://niuez.github.io/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="http://niuez.github.io/css/main.css" /><link rel="stylesheet" type="text/css" href="http://niuez.github.io/css/dark.css"  />
+	<link rel="stylesheet" type="text/css" href="http://niuez.github.io/css/custom-dark.css"  />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="http://niuez.github.io/js/main.js"></script>
+
+  <script type="text/javascript" src="https://s.hatena.ne.jp/js/HatenaStar.js"></script>
+  <script type="text/javascript">
+  Hatena.Star.Token = 'e2714bc09c0f22d36f9bea483e4c3efc2846d9e9';
+  Hatena.Star.SiteConfig = {
+    entryNodes: {
+      'div.article-footer': {
+        uri: 'a',
+        title: 'h1',
+        container: 'div'
+      }
+    }
+  };
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+              showMathMenu: false, //disables context menu
+              tex2jax: {
+              inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+             }
+      });
+  </script>
+
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<base href="http://niuez.github.io/">
+	<h1 class="site-title"><a href="http://niuez.github.io/">Niue&#39;z Blog</a></h1>
+	<div class="site-description"><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/niuez" title="Github"><i data-feather="github"></i></a><a href="https://twitter.com/xiuez" title="Twitter"><i data-feather="twitter"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="/">Home</a>
+			</li>
+			
+			<li>
+				<a href="/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="/about">About</a>
+			</li>
+			
+			<li>
+				<a href="/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">Library Checker - Associative Array に関するいろいろ</h1>
+			<div class="meta">Posted at &mdash; Jun 12, 2020</div>
+		</div>
+
+		<div class="markdown">
+			<p>[Library Checker - Associative Array]を解くに当たってのいろいろをまとめておきます.</p>
+<h2 id="概要">概要</h2>
+<p>Associative Arrayは, Mapとよく呼ばれるデータ構造です. キーとそれに対応する値の組を保持し, キーで検索して値を参照することができます.</p>
+<p>Associative Arrayを実現するデータ構造は,</p>
+<ul>
+<li>Map型の平衡二分探索木(ただし, キーが比較可能であることが条件)
+<ul>
+<li><code>std::map</code></li>
+<li>自作</li>
+</ul>
+</li>
+<li>HashMap
+<ul>
+<li><code>std::unordered_map</code></li>
+<li>自作(メインテーマ)</li>
+</ul>
+</li>
+</ul>
+<h2 id="stdmap-523ms"><code>std::map</code>: 523ms</h2>
+<p><a href="https://judge.yosupo.jp/submission/12076">Submit Info #12076</a></p>
+<p>これを基準にしていきます</p>
+<h2 id="mergesplit型-avl-tree-682ms"><code>merge/split型 AVL Tree</code>: 682ms</h2>
+<p><a href="https://judge.yosupo.jp/submission/12082">Submit Info #12082</a></p>
+<p><code>insert/erase</code>の非再帰AVL Treeを持ってません, すみません&hellip;<br>
+<code>merge/split</code>の非再帰AVL Treeを無理やりMapにしたものです. 余分なデータとか, 探索をしているのでもっと早くなると思います.</p>
+<h2 id="stdunordered_map-tle"><code>std::unordered_map</code>: TLE(?????)</h2>
+<p><a href="https://judge.yosupo.jp/submission/12083">Submit Info #12083</a></p>
+<p><code>std::unordered_map</code>だとTLEします. <code>unordered_map_killer_01</code>にやられていますね.<br>
+これは, <a href="https://kimiyuki.net/blog/2017/03/08/unordered-map-hash-collision/">std::unordered_mapのhash衝突による速度低下をさせてみる - うさぎ小屋</a>で紹介されているように, <code>std::unordered_map</code>をそのまま使うとハッシュ衝突をより起こすケースでTLEになってしまいます. 対策としては,</p>
+<ul>
+<li><code>std::map</code>を使う</li>
+<li><code>hash</code>関数をランダムに変える</li>
+</ul>
+<p>です. hash関数については, 下に書きます.</p>
+<h2 id="自作hashmap-114ms">自作HashMap: 114ms</h2>
+<p><a href="https://judge.yosupo.jp/submission/9787">Submit Info #9787</a></p>
+<p>自作する際には, この<a href="https://postd.cc/designing-a-fast-hash-table/">高速なハッシュテーブルを設計する | POSTD</a>という記事を参考にしました. とてもわかりやすいので, 自作する, しないにしろ読んでおいて損はないです.</p>
+<ul>
+<li>オープンアドレス法: 衝突したら, テーブルの空いている別の場所を探す</li>
+<li>2冪の制約: mod操作が早いので</li>
+<li>線形探索法: 衝突したらインデックスをインクリメントしていって探索する</li>
+<li>ハッシュをメモしない</li>
+</ul>
+<p>という方針で実装しました.</p>
+<p>ハッシュ関数については, <a href="https://gist.github.com/badboy/6267743">Gist - badboy/inthash.md Integer Hash Function</a>を参考にしました. ハッシュ関数の実装と解説が載っています. 解説は読み切れていません&hellip;</p>
+<h2 id="stdunordered_map-with-hashu64-352ms"><code>std::unordered_map with Hashu64</code>: 352ms</h2>
+<p><a href="https://judge.yosupo.jp/submission/12087">Submit Info #12087</a></p>
+<p>ハッシュ関数を変えると<code>std::unordered_map</code>でもACできましたが, 自作のほうがめっちゃ早いですね</p>
+<h2 id="しめ">しめ</h2>
+<p>自作HashMapを持っておくと, 他のデータ構造に後少し速さを求めたいときに使うことができたりするので便利です.<br>
+<code>std::map</code>でACカウントだけしている人はぜひこの機会に書いてみてはいかがでしょうか.</p>
+
+
+    <div class="article-footer">
+      <a style="display:none;" href="http://niuez.github.io/posts/lc_associative_array/"></a>
+      <h1 style="display:none;">Library Checker - Associative Array に関するいろいろ</h1>
+      <div></div>
+    </div>
+		</div>
+
+		<div class="post-tags">
+			
+				
+			
+		</div>
+		</div>
+	
+<div class="footer wrapper">
+	<nav class="nav">
+		<div> This site use Google Analytics |  <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-157596444-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+<script>feather.replace()</script>
+</body>
+</html>

@@ -1,240 +1,155 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://niuez.github.io/categories/</loc>
+    <loc>http://niuez.github.io/posts/lc_associative_array/</loc>
     <lastmod>2020-06-12T23:02:44+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/categories/library-checker/</loc>
+    <loc>http://niuez.github.io/</loc>
     <lastmod>2020-06-12T23:02:44+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/2020/06/lc_associative_array/</loc>
+    <loc>http://niuez.github.io/posts/</loc>
     <lastmod>2020-06-12T23:02:44+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/</loc>
-    <lastmod>2020-06-12T23:02:44+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://niuez.github.io/posts/</loc>
-    <lastmod>2020-06-12T23:02:44+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://niuez.github.io/2020/04/impl_abstract_dijkstra/</loc>
+    <loc>http://niuez.github.io/posts/impl_abstract_dijkstra/</loc>
     <lastmod>2020-04-27T01:08:48+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/2020/04/query_sqrt_decomposition_rsq/</loc>
+    <loc>http://niuez.github.io/posts/query_sqrt_decomposition_rsq/</loc>
     <lastmod>2020-04-17T10:19:21+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/2020/04/fully_retroactive_stack/</loc>
+    <loc>http://niuez.github.io/posts/fully_retroactive_stack/</loc>
     <lastmod>2020-04-10T20:09:09+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/2020/03/dfs_bfs_et/</loc>
+    <loc>http://niuez.github.io/posts/dfs_bfs_et/</loc>
     <lastmod>2020-03-24T18:05:05+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/2020/03/oyamac20/</loc>
+    <loc>http://niuez.github.io/posts/oyamac20/</loc>
     <lastmod>2020-03-19T20:10:48+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/2020/02/abc155-f/</loc>
+    <loc>http://niuez.github.io/posts/abc155-f/</loc>
     <lastmod>2020-02-22T16:40:51+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/categories/algorithms/</loc>
+    <loc>http://niuez.github.io/tags/dfs/</loc>
     <lastmod>2020-02-05T20:33:01+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/tags/dfs/</loc>
+    <loc>http://niuez.github.io/tags/lca/</loc>
     <lastmod>2020-02-05T20:33:01+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/tags/lca/</loc>
+    <loc>http://niuez.github.io/tags/</loc>
     <lastmod>2020-02-05T20:33:01+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/tags/</loc>
+    <loc>http://niuez.github.io/posts/tarjans_offline_lca/</loc>
     <lastmod>2020-02-05T20:33:01+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/2020/02/tarjans_offline_lca/</loc>
+    <loc>http://niuez.github.io/tags/tree/</loc>
     <lastmod>2020-02-05T20:33:01+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/tags/tree/</loc>
-    <lastmod>2020-02-05T20:33:01+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://niuez.github.io/tags/divisor/</loc>
+    <loc>http://niuez.github.io/tags/divisor/</loc>
     <lastmod>2020-02-03T21:20:02+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/tags/gcd/</loc>
+    <loc>http://niuez.github.io/tags/gcd/</loc>
     <lastmod>2020-02-03T21:20:02+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/tags/lcm/</loc>
+    <loc>http://niuez.github.io/tags/lcm/</loc>
     <lastmod>2020-02-03T21:20:02+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/tags/mobius/</loc>
+    <loc>http://niuez.github.io/tags/mobius/</loc>
     <lastmod>2020-02-03T21:20:02+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/tags/transform/</loc>
+    <loc>http://niuez.github.io/tags/transform/</loc>
     <lastmod>2020-02-03T21:20:02+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/2020/02/divisor_transform_memo/</loc>
+    <loc>http://niuez.github.io/posts/divisor_transform_memo/</loc>
     <lastmod>2020-02-03T21:20:02+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/2020/02/first/</loc>
+    <loc>http://niuez.github.io/posts/first/</loc>
     <lastmod>2020-02-03T17:19:14+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/about/</loc>
+    <loc>http://niuez.github.io/about/</loc>
     <lastmod>2020-02-03T17:14:56+09:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/2019/12/203739/</loc>
+    <loc>http://niuez.github.io/posts/entry/2019/12/16/203739/</loc>
     <lastmod>2019-12-16T20:37:39+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/2019/12/000036/</loc>
+    <loc>http://niuez.github.io/posts/entry/2019/12/14/000036/</loc>
     <lastmod>2019-12-14T00:00:36+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/2019/10/002503/</loc>
+    <loc>http://niuez.github.io/posts/entry/2019/10/05/002503/</loc>
     <lastmod>2019-10-05T00:25:03+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/2019/08/114511/</loc>
+    <loc>http://niuez.github.io/posts/entry/2019/08/05/114511/</loc>
     <lastmod>2019-08-05T11:45:11+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/2019/08/191420/</loc>
+    <loc>http://niuez.github.io/posts/entry/2019/08/04/191420/</loc>
     <lastmod>2019-08-04T19:14:20+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/2019/06/161729/</loc>
+    <loc>http://niuez.github.io/posts/entry/2019/06/29/161729/</loc>
     <lastmod>2019-06-29T16:17:29+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/2019/03/142903/</loc>
+    <loc>http://niuez.github.io/posts/entry/2019/03/04/142903/</loc>
     <lastmod>2019-03-04T14:29:03+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://niuez.github.io/google2a8756ea5e9759e7/</loc>
+    <loc>http://niuez.github.io/google2a8756ea5e9759e7/</loc>
     <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://niuez.github.io/series/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
 </urlset>
