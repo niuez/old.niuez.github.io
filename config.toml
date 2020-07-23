@@ -3,7 +3,7 @@ languageCode = "jp"
 title = "Niue'z Blog"
 theme = "ezhil"
 
-copyright = "© Copyright notice"
+copyright = "This site use Google Analytics"
 
 # Enable syntax highlighting.
 pygmentsstyle = "native"
