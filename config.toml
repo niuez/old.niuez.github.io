@@ -90,3 +90,7 @@ url = "https://twitter.com/xiuez"
 # Enable tags.
 [taxonomies]
    tag = "tags"
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
