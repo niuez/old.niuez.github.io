@@ -91,7 +91,7 @@
 			<p>Tarjan&rsquo;s off-line LCAを書いてみたので, その時のメモです.</p>
 <p><strong>ネタバレ注意</strong></p>
 <p><a href="https://yukicoder.me/problems/no/898">No.898 tri-βutree - yukicoder</a> のちょっとしたネタバレが含まれます&hellip;</p>
-<!-- raw HTML omitted -->
+<br>
 <p>Tarjan&rsquo;s off-line LCA(lowest common ancestors)は, LCAをoff-lineで$O((N + Q) \alpha (N))$で求めるアルゴリズムです. ($\alpha$は逆アッカーマン関数)</p>
 <p><a href="https://en.wikipedia.org/wiki/Tarjan%27s_off-line_lowest_common_ancestors_algorithm">Tarjan&rsquo;s off-line lowest common ancestors algorithm - Wikipedia</a></p>
 <p>DFSの帰りがけに, <code>Union Find</code>で木の辺を<code>unite</code>していく. すると, <code>Union Find</code>で表現している集合は, いまたどっている頂点とのLCAが同じになる頂点の集合になります.</p>

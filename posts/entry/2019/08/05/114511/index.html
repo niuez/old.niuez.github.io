@@ -91,44 +91,44 @@
 			<p><a href="https://niuez.hatenablog.com/entry/2019/08/04/191420">Toptree 導入編 - niuez’s diary</a></p>
 <p>引き続き, toptreeの解説をしていきます.</p>
 <h2 id="link">Link</h2>
-<p><!-- raw HTML omitted -->link(v, w)<!-- raw HTML omitted -->: 頂点<!-- raw HTML omitted -->v<!-- raw HTML omitted -->と<!-- raw HTML omitted -->w<!-- raw HTML omitted -->を辺<!-- raw HTML omitted -->vw<!-- raw HTML omitted -->で結ぶをします.</p>
+<p><code>link(v, w)</code>: 頂点<code>v</code>と<code>w</code>を辺<code>vw</code>で結ぶをします.</p>
 <p>場合分けが多すぎるんじゃ</p>
-<p>が, <!-- raw HTML omitted -->v<!-- raw HTML omitted -->の次数が0, 1, 2以上で処理が変わり, また<!-- raw HTML omitted -->w<!-- raw HTML omitted -->の次数が0, 1, 2以上で処理が変わります. (ちなみに論文はどちらも次数2以上のときのことしか書いてない, 全部書けや)</p>
-<p>まず, <!-- raw HTML omitted -->expose(v)<!-- raw HTML omitted -->をした結果はこんな感じに次数で場合分けできます. <!-- raw HTML omitted -->expose<!-- raw HTML omitted -->した後, 次数1のときに右側に<!-- raw HTML omitted -->v<!-- raw HTML omitted -->が来るようにします(左にあるときはreverseします)</p>
+<p>が, <code>v</code>の次数が0, 1, 2以上で処理が変わり, また<code>w</code>の次数が0, 1, 2以上で処理が変わります. (ちなみに論文はどちらも次数2以上のときのことしか書いてない, 全部書けや)</p>
+<p>まず, <code>expose(v)</code>をした結果はこんな感じに次数で場合分けできます. <code>expose</code>した後, 次数1のときに右側に<code>v</code>が来るようにします(左にあるときはreverseします)</p>
 <figure>
     <img src="/images/2019/08/05/114511/20190805114250.png"/> 
 </figure>
 
-<p><!-- raw HTML omitted -->expose(w)<!-- raw HTML omitted -->をしたときはこんな感じ. <!-- raw HTML omitted -->expose<!-- raw HTML omitted -->した後, 次数1のときに左側に<!-- raw HTML omitted -->w<!-- raw HTML omitted -->が来るようにします.</p>
+<p><code>expose(w)</code>をしたときはこんな感じ. <code>expose</code>した後, 次数1のときに左側に<code>w</code>が来るようにします.</p>
 <figure>
     <img src="/images/2019/08/05/114511/20190805114301.png"/> 
 </figure>
 
-<p><!-- raw HTML omitted -->v<!-- raw HTML omitted -->が右側, <!-- raw HTML omitted -->w<!-- raw HTML omitted -->が左側なのは, <!-- raw HTML omitted -->&hellip; - v<!-- raw HTML omitted -->と<!-- raw HTML omitted -->w - &hellip;<!-- raw HTML omitted -->をつなげて <!-- raw HTML omitted -->&hellip; - v - w - &hellip;<!-- raw HTML omitted -->としたいからです.</p>
-<p>次に, <!-- raw HTML omitted -->w<!-- raw HTML omitted -->側のtoptreeから処理していきます.<!-- raw HTML omitted -->
-ここでは, <!-- raw HTML omitted -->&hellip; - v - w - &hellip;<!-- raw HTML omitted -->の<!-- raw HTML omitted -->v - w - &hellip;<!-- raw HTML omitted -->の部分を作ります.</p>
+<p><code>v</code>が右側, <code>w</code>が左側なのは, <code>&hellip; - v</code>と<code>w - &hellip;</code>をつなげて <code>&hellip; - v - w - &hellip;</code>としたいからです.</p>
+<p>次に, <code>w</code>側のtoptreeから処理していきます.<br/>
+ここでは, <code>&hellip; - v - w - &hellip;</code>の<code>v - w - &hellip;</code>の部分を作ります.</p>
 <figure>
     <img src="/images/2019/08/05/114511/20190805114321.png"/> 
 </figure>
 
-<p>このそれぞれの木の根を<!-- raw HTML omitted -->v-w-<!-- raw HTML omitted -->と表すことにして,<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->v<!-- raw HTML omitted -->側のtoptreeとつなげます. つなげ方は, <!-- raw HTML omitted -->v<!-- raw HTML omitted -->の次数によって場合分けです. つなげるとこんな感じ</p>
+<p>このそれぞれの木の根を<code>v-w-</code>と表すことにして,<br/>
+<code>v</code>側のtoptreeとつなげます. つなげ方は, <code>v</code>の次数によって場合分けです. つなげるとこんな感じ</p>
 <figure>
     <img src="/images/2019/08/05/114511/20190805114331.png"/> 
 </figure>
 
-<p><!-- raw HTML omitted -->&hellip; - v - w - &hellip;<!-- raw HTML omitted -->になっていると思います.</p>
+<p><code>&hellip; - v - w - &hellip;</code>になっていると思います.</p>
 <h2 id="cut">Cut</h2>
-<p><!-- raw HTML omitted -->cut(v, w)<!-- raw HTML omitted -->: 頂点<!-- raw HTML omitted -->v<!-- raw HTML omitted -->と<!-- raw HTML omitted -->w<!-- raw HTML omitted -->を結んでいる辺<!-- raw HTML omitted -->vw<!-- raw HTML omitted -->を切ります</p>
-<p><!-- raw HTML omitted -->link<!-- raw HTML omitted -->の逆操作をすればいいです.
-<!-- raw HTML omitted -->soft_expose<!-- raw HTML omitted -->を思い出してみましょう.</p>
+<p><code>cut(v, w)</code>: 頂点<code>v</code>と<code>w</code>を結んでいる辺<code>vw</code>を切ります</p>
+<p><code>link</code>の逆操作をすればいいです.
+<code>soft_expose</code>を思い出してみましょう.</p>
 <figure>
     <img src="/images/2019/08/05/114511/20190805073700.png"/> 
 </figure>
 
-<p><!-- raw HTML omitted -->vw<!-- raw HTML omitted -->は辺なので, 図中の丸<!-- raw HTML omitted -->vw<!-- raw HTML omitted -->はCompress Nodeではなく, Edge Nodeのはずです.
-また, <!-- raw HTML omitted -->degree(v) &gt;= 2, degree(w) &gt;= 2<!-- raw HTML omitted -->のパターンを見ると, <!-- raw HTML omitted -->N_w<!-- raw HTML omitted -->以下が<!-- raw HTML omitted -->link<!-- raw HTML omitted -->での<!-- raw HTML omitted -->v - w - &hellip;<!-- raw HTML omitted -->の部分を作るときと形が同じです.<!-- raw HTML omitted -->
-まあなので逆操作をすると<!-- raw HTML omitted -->cut<!-- raw HTML omitted -->ができます.</p>
+<p><code>vw</code>は辺なので, 図中の丸<code>vw</code>はCompress Nodeではなく, Edge Nodeのはずです.
+また, <code>degree(v) &gt;= 2, degree(w) &gt;= 2</code>のパターンを見ると, <code>N_w</code>以下が<code>link</code>での<code>v - w - &hellip;</code>の部分を作るときと形が同じです.<br/>
+まあなので逆操作をすると<code>cut</code>ができます.</p>
 <h2 id="記事を分けたの失敗">記事を分けたの失敗</h2>
 <p>LinkとCut重いなあと違う記事にしたけど, 図を作ったらそんなに重くなかった</p>
 <p>次はクエリの捌き方を書きます(これは流石に分けないとまずい)</p>

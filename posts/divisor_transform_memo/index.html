@@ -91,7 +91,7 @@
 			<p>移植テストです</p>
 <p>書いて置かないと頭に置いておけない気がしたのでメモを残す. 間違ってたらごめん</p>
 <p>これについて気になったので</p>
-<!-- raw HTML omitted -->
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">メビウス関数とかを導入するとより形式的に約数とかを扱えるようになるのかなあ</p>&mdash; Niuez (@xiuez) <a href="https://twitter.com/xiuez/status/1219811848263852033?ref_src=twsrc%5Etfw">January 22, 2020</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <h2 id="概要">概要</h2>
 <ul>
 <li>約数畳み込み</li>
@@ -160,7 +160,7 @@ $$</p>
 <p>となります.</p>
 <p>$f(n) = \mu(n), g(n) = \delta(n, 1)$を考えてみると, 「集合$S$の中に$n$と互いに素な要素の数」を計算しています.</p>
 <h2 id="agc038c-lcmsを解く">AGC038C LCMsを解く</h2>
-<!-- raw HTML omitted -->
+<blockquote><h4><a href="https://atcoder.jp/contests/agc038/tasks/agc038_c">AGC038 C - LCMs</a></h4></blockquote>
 <p>$lcm(x, y) = x (\frac{y}{\gcd(x, y)})$と変形します. 約数畳み込みを使う方針でやると, この$(\frac{y}{\gcd(x, y)})$が最後に来てほしい気持ちになります. $g(n) = \frac{1}{n}$と置くと,</p>
 <p>$$
 \begin{eqnarray}
@@ -180,7 +180,7 @@ $$</p>
 $$</p>
 <p>と計算できて, これに$x$を掛けると「集合$S$の中の各要素と$x$の最大公約数の和」を計算できました.<br>
 計算量は, $O(A \log{\log A} + N \sqrt A)$です.</p>
-<p><!-- raw HTML omitted -->C - LCMs の僕の提出<!-- raw HTML omitted --></p>
+<p><a href="https://atcoder.jp/contests/agc038/submissions/9703431">C - LCMs の僕の提出</a></p>
 <p>ソースコード</p>
 <div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cp">#</span><span class="cp">include</span> <span class="cpf">&lt;bits/stdc++.h&gt;</span><span class="cp">
 </span><span class="cp"></span><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>

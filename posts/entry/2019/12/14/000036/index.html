@@ -4,14 +4,14 @@
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>動的木上の最小シュタイナー木をtoptreeで解く - Niue&#39;z Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta property="og:title" content="動的木上の最小シュタイナー木をtoptreeで解く" />
-<meta property="og:description" content="この記事は「データ構造とアルゴリズム Advent Calendar 2019」14日目の記事です." />
+<meta property="og:description" content="この記事は「データ構造とアルゴリズム Advent Calendar 2019」 14日目の記事です." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://niuez.github.io/posts/entry/2019/12/14/000036/" />
 <meta property="article:published_time" content="2019-12-14T00:00:36+00:00" />
 <meta property="article:modified_time" content="2019-12-14T00:00:36+00:00" />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="動的木上の最小シュタイナー木をtoptreeで解く"/>
-<meta name="twitter:description" content="この記事は「データ構造とアルゴリズム Advent Calendar 2019」14日目の記事です."/>
+<meta name="twitter:description" content="この記事は「データ構造とアルゴリズム Advent Calendar 2019」 14日目の記事です."/>
 <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="https://niuez.github.io/css/highlight-native.css">
 
@@ -88,22 +88,28 @@
 		</div>
 
 		<div class="markdown">
-			<p>この記事は<!-- raw HTML omitted -->「データ構造とアルゴリズム Advent Calendar 2019」<!-- raw HTML omitted --> 14日目の記事です.<!-- raw HTML omitted -->
-13日目は<!-- raw HTML omitted -->@ajalab<!-- raw HTML omitted -->さんの<!-- raw HTML omitted -->Run-Length FM-Index - koki<!-- raw HTML omitted -->,<!-- raw HTML omitted -->
-15日目は<!-- raw HTML omitted -->@minaminao<!-- raw HTML omitted -->さんのMerkle Patricia Tree まわりです.</p>
+			<p>この記事は<a href="https://qiita.com/advent-calendar/2019/str">「データ構造とアルゴリズム Advent Calendar 2019」</a> 14日目の記事です.<br/>
+13日目は<a href="https://qiita.com/ajalab">@ajalab</a>さんの<a href="https://scrapbox.io/koki/Run-Length_FM-Index">Run-Length FM-Index - koki</a>,<br/>
+15日目は<a href="https://qiita.com/minaminao">@minaminao</a>さんのMerkle Patricia Tree まわりです.</p>
 <h2 id="toptreeとは">toptreeとは</h2>
-<p>toptreeは今年競プロ界隈で話題になった動的木を扱うデータ構造の一つです.<!-- raw HTML omitted -->
+<p>toptreeは今年競プロ界隈で話題になった動的木を扱うデータ構造の一つです.<br/>
 link-cut treeも同じ動的木を扱うデータ構造ですが, 機能だけを見ればその完全上位互換です.</p>
-<p>toptreeは, 木を動的に扱うデータ構造です. <!-- raw HTML omitted -->[cs/0310065] Maintaining Information in Fully-Dynamic Trees with Top Trees<!-- raw HTML omitted -->を読みました.</p>
+<p>toptreeは, 木を動的に扱うデータ構造です. <a href="https://arxiv.org/abs/cs/0310065">[cs/0310065] Maintaining Information in Fully-Dynamic Trees with Top Trees</a>を読みました.</p>
 <p>toptree自体については半年くらい前に自分が書いた記事があります.</p>
 <p><a href="https://niuez.hatenablog.com/entry/2019/08/04/191420">Toptree 導入編 - niuez’s diary</a></p>
 <p>上の記事をまとめると</p>
-<!-- raw HTML omitted -->
+<ul>
+<li>基本的には, 平衡二分探索木(Splay Tree)</li>
+<li>葉には辺を表すノード(Edge Node)</li>
+<li>1頂点を共有する２つの辺をマージして新しくできた辺を平衡二分探索木の節とする(Compress &amp; Rake)</li>
+</ul>
 <figure>
     <img src="/images/2019/12/14/000036/20190804184203.png"/> 
 </figure>
 
-<!-- raw HTML omitted -->
+<ul>
+<li>二分木だけでは列しか管理できないので, 二分木ともう一つの子を管理する(Rake Node)</li>
+</ul>
 <figure>
     <img src="/images/2019/12/14/000036/20190804184342.png"/> 
 </figure>
@@ -111,12 +117,34 @@ link-cut treeも同じ動的木を扱うデータ構造ですが, 機能だけ�
 <p>というあたりです.
 この形を保持しながらsplay treeの回転を行い各クエリの計算量を償却$ O(\log N)$を達成しています.</p>
 <p>例えば,</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+<ul>
+<li>$ \mathtt{link}$: ある2頂点間を辺で結ぶ</li>
+<li>$ \mathtt{cut}$: ある2頂点間を結んでいる辺をなくす</li>
+<li>パス: ある木の2頂点を結ぶパスについてのクエリを処理する
+<ul>
+<li>辺の重みの総和</li>
+<li>辺の重みを$ +x$する</li>
+<li>など...</li>
+</ul>
+</li>
+<li>木全体に対するクエリ
+<ul>
+<li>木に含まれる辺の重みを$ +x$する</li>
+<li>木の頂点の重みの総和</li>
+<li>木の直径</li>
+<li>ある頂点からの最遠点距離</li>
+</ul>
+</li>
+<li>toptree上の二分探索
+<ul>
+<li>木の中心</li>
+<li>木の重心</li>
+<li>パス$ x, \cdots, y$上で$ x$から$ y$に向かって$ d$だけ進んだ場所にある頂点 <a href="#f-8d0d75ed" name="fn-8d0d75ed" title=" jumpと呼ばれることが多い ">*1</a></li>
+</ul>
+</li>
+</ul>
 <p>というクエリが処理できます. 最強っぽい.</p>
-<p>これを実装したのがこれです. めっちゃ大変でした. <!-- raw HTML omitted -->niuez/toptree-rust<!-- raw HTML omitted --></p>
+<p>これを実装したのがこれです. めっちゃ大変でした. <a href="https://github.com/niuez/toptree-rust">niuez/toptree-rust</a></p>
 <h2 id="動的木上の最小シュタイナー木">動的木上の最小シュタイナー木</h2>
 <p>10月に僕の作問した問題がyukicoderで木上クエリコンとして出題されました. このときに全問正解を(意図的に)阻止した問題がこれです.</p>
 <p><a href="https://yukicoder.me/problems/no/902">No.902 Query ζone - yukicoder</a></p>
@@ -133,16 +161,20 @@ link-cut treeも同じ動的木を扱うデータ構造ですが, 機能だけ�
 </figure>
 
 <p>この問題は, toptreeに載せることで解くことができます. 今回はその解説をしたいと思います.</p>
-<p>ここから先, 各クエリで最小シュタイナー木に含めなければならない頂点を<!-- raw HTML omitted -->赤い頂点<!-- raw HTML omitted -->と表現することにします.</p>
+<p>ここから先, 各クエリで最小シュタイナー木に含めなければならない頂点を<strong>赤い頂点</strong>と表現することにします.</p>
 <h2 id="アルゴリズム">アルゴリズム</h2>
-<p>toptreeでは上でも述べたように, <!-- raw HTML omitted -->1頂点を共有する２つの辺をマージして新しくできた辺<!-- raw HTML omitted -->を平衡二分探索木の節とします.<!-- raw HTML omitted -->
+<p>toptreeでは上でも述べたように, <strong>1頂点を共有する２つの辺をマージして新しくできた辺</strong>を平衡二分探索木の節とします.<br/>
 今回の問題で考えられる, マージされる前の辺の状態は2通りのみです.</p>
-<!-- raw HTML omitted -->
+<ul>
+<li>赤い頂点を1個以上含んでマージされた辺</li>
+</ul>
 <figure>
     <img src="/images/2019/12/14/000036/20191211215436.png"/> 
 </figure>
 
-<!-- raw HTML omitted -->
+<ul>
+<li>赤い頂点を一度も含んでいない辺</li>
+</ul>
 <figure>
     <img src="/images/2019/12/14/000036/20191211215446.png"/> 
 </figure>
@@ -178,8 +210,8 @@ link-cut treeも同じ動的木を扱うデータ構造ですが, 機能だけ�
 
 <p>このパターンは頂点が赤でも黒でも同じです</p>
 <h2 id="何か足りない">何か足りない</h2>
-<p>このパターンだけでは, $ \mathbb{inter}$は作られません. どういうことでしょう&hellip;?<!-- raw HTML omitted -->
-上でも述べたとおり, toptreeでは2通りのマージ方法があります. そのもう一つのマージ方法(<!-- raw HTML omitted -->Rake<!-- raw HTML omitted -->)では以下のパターンで$ \mathbb{inter}$を発生させます.</p>
+<p>このパターンだけでは, $ \mathbb{inter}$は作られません. どういうことでしょう&hellip;?<br/>
+上でも述べたとおり, toptreeでは2通りのマージ方法があります. そのもう一つのマージ方法(<strong>Rake</strong>)では以下のパターンで$ \mathbb{inter}$を発生させます.</p>
 <figure>
     <img src="/images/2019/12/14/000036/20191211224305.png"/> 
 </figure>
@@ -190,7 +222,9 @@ link-cut treeも同じ動的木を扱うデータ構造ですが, 機能だけ�
 <p>20行目からの関数が, 上で述べたCompressのマージの計算をしています. その下にRakeの計算もありますね.</p>
 <h2 id="しめ">しめ</h2>
 <p>今年はtoptreeに夢中な一年でした. 来年はどうなるでしょうか.</p>
-<!-- raw HTML omitted -->
+<div class="footnote">
+<a href="#fn-8d0d75ed" name="f-8d0d75ed" class="footnote-number">*1</a><span class="footnote-delimiter">:</span><span class="footnote-text"> jumpと呼ばれることが多い </span>
+</div>
 
 
     <div class="article-footer">

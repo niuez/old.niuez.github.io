@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>jp</language>
     <copyright>This site use Google Analytics</copyright>
-    <lastBuildDate>Fri, 12 Jun 2020 23:02:44 +0900</lastBuildDate>
+    <lastBuildDate>Fri, 24 Jul 2020 00:04:58 +0900</lastBuildDate>
     
 	<atom:link href="https://niuez.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Hugoのテーマを変えました &amp; lyla colorschemeについて</title>
+      <link>https://niuez.github.io/posts/lyla_theme/</link>
+      <pubDate>Fri, 24 Jul 2020 00:04:58 +0900</pubDate>
+      
+      <guid>https://niuez.github.io/posts/lyla_theme/</guid>
+      <description>.pallet h2 { border-bottom: initial; }  Hugoテーマ変えました ま〜〜〜たテーマとか色とかいじくってた.</description>
+    </item>
     
     <item>
       <title>Library Checker - Associative Array に関するいろいろ</title>
@@ -117,7 +126,7 @@
       <pubDate>Sat, 14 Dec 2019 00:00:36 +0000</pubDate>
       
       <guid>https://niuez.github.io/posts/entry/2019/12/14/000036/</guid>
-      <description>この記事は「データ構造とアルゴリズム Advent Calendar 2019」14日目の記事です.</description>
+      <description>この記事は「データ構造とアルゴリズム Advent Calendar 2019」 14日目の記事です.</description>
     </item>
     
     <item>

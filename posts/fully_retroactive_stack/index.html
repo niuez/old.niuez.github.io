@@ -131,7 +131,8 @@
 <h2 id="罠">罠</h2>
 <p>何も入っていないStackを$\mathtt{pop}$すると,<code>None</code>を返すような仕様の場合, 上の方法のままだとうまく探索できません. 本来は, サイズが$0$から$0$に遷移するが, グラフのままだと, サイズが$0$から$-1$になってしまいます.</p>
 <p>これは, 探索を行う前に最低高度まで潜っておくことで解決できます. こんな感じ.</p>
-<!-- raw HTML omitted -->
+<blockquote class="twitter-tweet" data-partner="tweetdeck"><p lang="und" dir="ltr"><a href="https://t.co/7YoTD6hftP">pic.twitter.com/7YoTD6hftP</a></p>&mdash; Niuez (@xiuez) <a href="https://twitter.com/xiuez/status/1248253868384768000?ref_src=twsrc%5Etfw">April 9, 2020</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <h2 id="実装">実装</h2>
 <p>親ありmerge/split型AVL葉木です&hellip;</p>
 <div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cp">#</span><span class="cp">include</span> <span class="cpf">&lt;cstdint&gt;</span><span class="cp">

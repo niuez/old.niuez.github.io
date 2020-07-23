@@ -181,11 +181,54 @@
 </code></pre></div><h1 id="rot-and-rot">rot and rot</h1>
 <p>これが最後の砦だと思ってたんですけど, 皆さんどうでしたか？<br>
 僕は行列を用いて移動を表現しました.</p>
-<!-- raw HTML omitted -->
+<div>
+$$
+\left(
+  \begin{array}{c}
+    S & 1
+  \end{array}
+\right)
+$$
+</div>
 <p>に,</p>
-<!-- raw HTML omitted -->
+<div>
+$$
+\left(
+  \begin{array}{c}
+    A + 1 & 1 \\
+    B & 0
+  \end{array}
+\right)
+$$
+</div>
 <p>を掛けると, 1ステップです. なので, $N$ステップは,</p>
-<!-- raw HTML omitted -->
+<div>
+$$
+\left(
+  \begin{array}{c}
+    S & 1
+  \end{array}
+\right)
+\left(
+  \begin{array}{c}
+    A + 1 & 0 \\
+    B & 1
+  \end{array}
+\right) ^ N
+= 
+\left(
+  \begin{array}{c}
+    S & 1
+  \end{array}
+\right)
+\left(
+  \begin{array}{c}
+    (A + 1) ^ N & 0 \\
+    ((A + 1)^N - 1) / ((A + 1) - 1) * B & 1
+  \end{array}
+\right) ^ N
+$$
+</div>
 <p>です.  $A = 0$に注意が必要です. 行列累乗でも間に合うと思います.</p>
 <div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cp">#</span><span class="cp">include</span> <span class="cpf">&lt;bits/stdc++.h&gt;</span><span class="cp">
 </span><span class="cp"></span><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>

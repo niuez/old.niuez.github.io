@@ -3,17 +3,22 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://niuez.github.io/posts/lc_associative_array/</loc>
-    <lastmod>2020-06-12T23:02:44+09:00</lastmod>
+    <loc>https://niuez.github.io/posts/lyla_theme/</loc>
+    <lastmod>2020-07-24T00:04:58+09:00</lastmod>
   </url>
   
   <url>
     <loc>https://niuez.github.io/</loc>
-    <lastmod>2020-06-12T23:02:44+09:00</lastmod>
+    <lastmod>2020-07-24T00:04:58+09:00</lastmod>
   </url>
   
   <url>
     <loc>https://niuez.github.io/posts/</loc>
+    <lastmod>2020-07-24T00:04:58+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://niuez.github.io/posts/lc_associative_array/</loc>
     <lastmod>2020-06-12T23:02:44+09:00</lastmod>
   </url>
   

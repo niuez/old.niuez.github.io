@@ -91,16 +91,16 @@
 			<p>みんな日本語記事を待っていたはず&hellip;.!</p>
 <p>toptreeがどんな感じで動いているのかを書いてみます</p>
 <p>実装はここにあります</p>
-<p><!-- raw HTML omitted --><a href="https://github.com/niuez/toptree-rust">https://github.com/niuez/toptree-rust</a><!-- raw HTML omitted --></p>
+<p><a href="https://github.com/niuez/toptree-rust"><a href="https://github.com/niuez/toptree-rust">https://github.com/niuez/toptree-rust</a></a></p>
 <h2 id="0-toptree-is-なに">0. toptree is なに</h2>
 <p>toptreeはlink-cut treeの上位互換です. 木を切ったりつなげたり, パスのクエリを処理したり, 木上の二分探索ができたりします</p>
 <p>今回はそのベースとなる構造の話です</p>
 <h2 id="1-compress-rake">1. Compress Rake</h2>
 <h3 id="木をまとめる">木をまとめる</h3>
-<p>ここで言う木は, toptreeが表す木のことです. 曖昧にならないようにこのことを<!-- raw HTML omitted -->real tree<!-- raw HTML omitted -->と呼ぶことにします. (木を木で表現するの文章が曖昧になりがち)</p>
+<p>ここで言う木は, toptreeが表す木のことです. 曖昧にならないようにこのことを<code>real tree</code>と呼ぶことにします. (木を木で表現するの文章が曖昧になりがち)</p>
 <p>toptreeでは, つながっている2つの辺をまとめる操作を繰り返したものを表現した木です.
 1つの辺にまとめ上げることでパスを表現します.</p>
-<p>まとめる操作は２つあり, それぞれ<!-- raw HTML omitted -->Compress<!-- raw HTML omitted -->, <!-- raw HTML omitted -->Rake<!-- raw HTML omitted -->といいます.</p>
+<p>まとめる操作は２つあり, それぞれ<strong>Compress</strong>, <strong>Rake</strong>といいます.</p>
 <figure>
     <img src="/images/2019/08/04/191420/20190804184030.png"/> 
 </figure>
@@ -113,37 +113,37 @@
 
 <p>このまとめていく操作を木で表現するのがtoptreeです.</p>
 <h3 id="compress-tree">Compress Tree</h3>
-<p>例えば, <!-- raw HTML omitted -->a - c - b<!-- raw HTML omitted -->という一直線の<!-- raw HTML omitted -->real tree<!-- raw HTML omitted -->を扱う時, 辺<!-- raw HTML omitted -->ac<!-- raw HTML omitted -->と<!-- raw HTML omitted -->cb<!-- raw HTML omitted -->をcompressをします.<!-- raw HTML omitted -->
+<p>例えば, <code>a - c - b</code>という一直線の<code>real tree</code>を扱う時, 辺<code>ac</code>と<code>cb</code>をcompressをします.<br/>
 これをtoptreeで表現すると</p>
 <figure>
     <img src="/images/2019/08/04/191420/20190804184140.png"/> 
 </figure>
 
 <p>四角は辺を表すノードです. Edge Nodeといいます. toptreeでは, Edge Nodeを葉にします.
-丸はcompressした後の辺を表すノードです. Compress Nodeといいます.<!-- raw HTML omitted -->
-Compress Nodeが節, Edge Nodeが葉のこの木をCompress Treeといいます.<!-- raw HTML omitted -->
-重要なのは, <!-- raw HTML omitted -->Compress Treeの根がパスの端点を結ぶ, Compressされた辺を表している<!-- raw HTML omitted -->ということです. またそのcompressされた辺の端点は<!-- raw HTML omitted -->必ず次数が1<!-- raw HTML omitted -->です.</p>
-<p><!-- raw HTML omitted -->0 - 1 - 2 - 3 - 4 - 5<!-- raw HTML omitted --> という<!-- raw HTML omitted -->real tree<!-- raw HTML omitted -->をtoptreeで表すと, 一例としては以下のようになります.</p>
+丸はcompressした後の辺を表すノードです. Compress Nodeといいます.<br/>
+Compress Nodeが節, Edge Nodeが葉のこの木をCompress Treeといいます.<br/>
+重要なのは, <strong>Compress Treeの根がパスの端点を結ぶ, Compressされた辺を表している</strong>ということです. またそのcompressされた辺の端点は<strong>必ず次数が1</strong>です.</p>
+<p><code>0 - 1 - 2 - 3 - 4 - 5</code> という<code>real tree</code>をtoptreeで表すと, 一例としては以下のようになります.</p>
 <figure>
     <img src="/images/2019/08/04/191420/20190804184203.png"/> 
 </figure>
 
 <h3 id="辺の向き付け">辺の向き付け</h3>
 <p>ここで葉のEdge Nodeの順番がパスの辺の順番になっている点に注意してください.</p>
-<p>toptreeでは辺の向きに注意して操作しないとダメです.<!-- raw HTML omitted -->
-僕の実装では, <!-- raw HTML omitted -->0 - 1 - 2 - 3 - 4 - 5<!-- raw HTML omitted -->のtoptreeを<!-- raw HTML omitted -->0 -&gt; 1 -&gt; 2 -&gt; 3 -&gt; 4 -&gt; 5<!-- raw HTML omitted -->と向き付けると解釈しています. 以後の<!-- raw HTML omitted -->real tree<!-- raw HTML omitted -->の図では向き付けしたものを用います.</p>
-<p>compress, rakeを, <!-- raw HTML omitted -->同じ向きのものをまとめる操作<!-- raw HTML omitted -->と解釈することにしましょう. すると, compress, rakeを向き付けた<!-- raw HTML omitted -->real tree<!-- raw HTML omitted -->について改めて考えると以下のようになります.</p>
+<p>toptreeでは辺の向きに注意して操作しないとダメです.<br/>
+僕の実装では, <code>0 - 1 - 2 - 3 - 4 - 5</code>のtoptreeを<code>0 -&gt; 1 -&gt; 2 -&gt; 3 -&gt; 4 -&gt; 5</code>と向き付けると解釈しています. 以後の<code>real tree</code>の図では向き付けしたものを用います.</p>
+<p>compress, rakeを, <strong>同じ向きのものをまとめる操作</strong>と解釈することにしましょう. すると, compress, rakeを向き付けた<code>real tree</code>について改めて考えると以下のようになります.</p>
 <figure>
     <img src="/images/2019/08/04/191420/20190804184231.png"/> 
 </figure>
 
-<p>上の<!-- raw HTML omitted -->具体的に<!-- raw HTML omitted -->で示した<!-- raw HTML omitted -->real tree<!-- raw HTML omitted -->はこんな感じで向き付けすると同じようにまとめる操作ができるはずです.</p>
+<p>上の<code>具体的に</code>で示した<code>real tree</code>はこんな感じで向き付けすると同じようにまとめる操作ができるはずです.</p>
 <figure>
     <img src="/images/2019/08/04/191420/20190804184250.png"/> 
 </figure>
 
 <h3 id="rake-tree">Rake Tree</h3>
-<p>では一直線ではない<!-- raw HTML omitted -->real tree<!-- raw HTML omitted -->, 例えばこれはどうやってtoptreeにするのでしょうか.</p>
+<p>では一直線ではない<code>real tree</code>, 例えばこれはどうやってtoptreeにするのでしょうか.</p>
 <figure>
     <img src="/images/2019/08/04/191420/20190804184307.png"/> 
 </figure>
@@ -154,18 +154,18 @@ Compress Nodeが節, Edge Nodeが葉のこの木をCompress Treeといいます.
 </figure>
 
 <p>?????????????????????</p>
-<p>辺<!-- raw HTML omitted -->14<!-- raw HTML omitted -->を追加した<!-- raw HTML omitted -->real tree<!-- raw HTML omitted -->をtoptreeにすると</p>
+<p>辺<code>14</code>を追加した<code>real tree</code>をtoptreeにすると</p>
 <figure>
     <img src="/images/2019/08/04/191420/20190804184342.png"/> 
 </figure>
 
-<p>ひし形のノードはcompressと同じように察せるはずです. <!-- raw HTML omitted -->31<!-- raw HTML omitted -->と<!-- raw HTML omitted -->41<!-- raw HTML omitted -->をrakeしたものを表現しており, ひし形のノードをRake Nodeといいます.<!-- raw HTML omitted -->
+<p>ひし形のノードはcompressと同じように察せるはずです. <code>31</code>と<code>41</code>をrakeしたものを表現しており, ひし形のノードをRake Nodeといいます.<br/>
 また, Rake Nodeが節, Compress Treeの根が葉の木をRake Treeといいます.</p>
-<p>図では, Compress Nodeに今までの左右の子と, 赤の線でつながった子があります.<!-- raw HTML omitted -->
+<p>図では, Compress Nodeに今までの左右の子と, 赤の線でつながった子があります.<br/>
 赤の線でつながった子は, Compress Nodeの右の子とrakeされるノードです.</p>
-<p>このように3分木にして<!-- raw HTML omitted -->real tree<!-- raw HTML omitted -->の情報を持ちます.</p>
+<p>このように3分木にして<code>real tree</code>の情報を持ちます.</p>
 <h3 id="具体例のtoptree">具体例のtoptree</h3>
-<p>こんな感じになります<!-- raw HTML omitted -->
+<p>こんな感じになります<br/>
 四角はEdge Node, 丸はCompress Node, ひし形はRakeNodeです.</p>
 <figure>
     <img src="/images/2019/08/04/191420/20190804184401.png"/> 
@@ -189,57 +189,61 @@ Compress Nodeが節, Edge Nodeが葉のこの木をCompress Treeといいます.
     <img src="/images/2019/08/04/191420/20190804184324.png"/> 
 </figure>
 
-<p><!-- raw HTML omitted -->0 - 1 - 2<!-- raw HTML omitted -->がこのtoptreeの主役のパスになっています.</p>
-<p>でも, <!-- raw HTML omitted -->3 - 1 - 2<!-- raw HTML omitted -->を主役にしたいときもあるはずです. それは, <!-- raw HTML omitted -->31<!-- raw HTML omitted -->と<!-- raw HTML omitted -->01<!-- raw HTML omitted -->を入れ替えることで達成できます.</p>
+<p><code>0 - 1 - 2</code>がこのtoptreeの主役のパスになっています.</p>
+<p>でも, <code>3 - 1 - 2</code>を主役にしたいときもあるはずです. それは, <code>31</code>と<code>01</code>を入れ替えることで達成できます.</p>
 <figure>
     <img src="/images/2019/08/04/191420/20190804184546.png"/> 
 </figure>
 
-<p><!-- raw HTML omitted -->0 - 1 - 3<!-- raw HTML omitted -->にを主役にしたいときもあるはずです. それは, <!-- raw HTML omitted -->31<!-- raw HTML omitted -->と<!-- raw HTML omitted -->12<!-- raw HTML omitted -->の向きを反転させてから入れ替えることで達成できます.</p>
+<p><code>0 - 1 - 3</code>にを主役にしたいときもあるはずです. それは, <code>31</code>と<code>12</code>の向きを反転させてから入れ替えることで達成できます.</p>
 <figure>
     <img src="/images/2019/08/04/191420/20190804184558.png"/> 
 </figure>
 
-<p>この, Rake Treeの葉のノードと, Compress nodeの子を入れ替えてCompress Nodeの表すパスを変える操作を<!-- raw HTML omitted -->splice<!-- raw HTML omitted -->といいます.</p>
+<p>この, Rake Treeの葉のノードと, Compress nodeの子を入れ替えてCompress Nodeの表すパスを変える操作を<code>splice</code>といいます.</p>
 <h2 id="splay">Splay</h2>
 <p>Splay Treeを知っていますか? wikipediaを見て</p>
-<p>Splay Treeでは, <!-- raw HTML omitted -->splay<!-- raw HTML omitted -->という木を回転させてノードを根に持ってくるという操作をします. まあwikipediaみて<!-- raw HTML omitted -->
-toptreeで扱っている木は, 葉木です. 葉は<!-- raw HTML omitted -->splay<!-- raw HTML omitted -->できないことに注意しましょう.</p>
+<p>Splay Treeでは, <code>splay</code>という木を回転させてノードを根に持ってくるという操作をします. まあwikipediaみて<br/>
+toptreeで扱っている木は, 葉木です. 葉は<code>splay</code>できないことに注意しましょう.</p>
 <h2 id="handle">Handle</h2>
-<p><!-- raw HTML omitted -->splice<!-- raw HTML omitted -->をするとパスを変形できることはわかりましたが, 具体的にどのノードを<!-- raw HTML omitted -->splice<!-- raw HTML omitted -->すると良いのでしょうか?</p>
-<p>それを示すのが<!-- raw HTML omitted -->handle<!-- raw HTML omitted -->という概念です. <!-- raw HTML omitted -->handle<!-- raw HTML omitted -->は各頂点に対して割り振られるもので, toptree上の<!-- raw HTML omitted -->Compress/Edge Node<!-- raw HTML omitted -->が割り振られます.</p>
+<p><code>splice</code>をするとパスを変形できることはわかりましたが, 具体的にどのノードを<code>splice</code>すると良いのでしょうか?</p>
+<p>それを示すのが<code>handle</code>という概念です. <code>handle</code>は各頂点に対して割り振られるもので, toptree上の<code>Compress/Edge Node</code>が割り振られます.</p>
 <p>具体的には, 下のルールで構成します.</p>
-<!-- raw HTML omitted -->
+<ol>
+<li>Compress Node <code>ab</code>の左右の子が<code>ac</code>, <code>cb</code>のとき, 頂点<code>c</code>の<code>handle</code>はCompress Node <code>ab</code></li>
+<li>Compress/Edge Node <code>ab</code>の親がいない(toptreeの根): 頂点<code>a</code>, <code>b</code>のhandleはCompress Node<code>ab</code></li>
+<li>それ以外(Rake Treeの葉になっている): 頂点<code>a</code>の<code>handle</code>はCompress Node <code>ab</code></li>
+</ol>
 <p>具体例を見たほうが早い気がします.</p>
 <figure>
     <img src="/images/2019/08/04/191420/20190804184656.png"/> 
 </figure>
 
-<p>頂点<!-- raw HTML omitted -->0, 5<!-- raw HTML omitted -->はルール<!-- raw HTML omitted -->2.<!-- raw HTML omitted -->, <!-- raw HTML omitted -->8, a, b, c<!-- raw HTML omitted -->はルール<!-- raw HTML omitted -->3.<!-- raw HTML omitted -->, それ以外は<!-- raw HTML omitted -->1.<!-- raw HTML omitted -->です.</p>
+<p>頂点<code>0, 5</code>はルール<code>2.</code>, <code>8, a, b, c</code>はルール<code>3.</code>, それ以外は<code>1.</code>です.</p>
 <p>今はとりあえずこういうものとしておくのがいいと思います.(あとで大活躍します.)</p>
-<p>また頂点<!-- raw HTML omitted -->v<!-- raw HTML omitted -->に対して, <!-- raw HTML omitted -->N_v<!-- raw HTML omitted -->を<!-- raw HTML omitted -->v<!-- raw HTML omitted -->の<!-- raw HTML omitted -->handle<!-- raw HTML omitted -->のNodeとします. (上の図で言えば<!-- raw HTML omitted -->N_2<!-- raw HTML omitted -->はtoptreeの根です)</p>
+<p>また頂点<code>v</code>に対して, <code>N_v</code>を<code>v</code>の<code>handle</code>のNodeとします. (上の図で言えば<code>N_2</code>はtoptreeの根です)</p>
 <h2 id="expose">Expose</h2>
-<p><!-- raw HTML omitted -->expose<!-- raw HTML omitted -->という操作を導入したいと思います. (これが超本質)<!-- raw HTML omitted -->
-任意の頂点<!-- raw HTML omitted -->v<!-- raw HTML omitted -->の<!-- raw HTML omitted -->handle<!-- raw HTML omitted -->をtoptreeの根にするのが<!-- raw HTML omitted -->expose<!-- raw HTML omitted -->です.</p>
-<p>先にどうやって<!-- raw HTML omitted -->expose<!-- raw HTML omitted -->するか書いてしまいます.</p>
-<p><!-- raw HTML omitted -->expose(v)<!-- raw HTML omitted --></p>
+<p><code>expose</code>という操作を導入したいと思います. (これが超本質)<br/>
+任意の頂点<code>v</code>の<code>handle</code>をtoptreeの根にするのが<code>expose</code>です.</p>
+<p>先にどうやって<code>expose</code>するか書いてしまいます.</p>
+<p><code>expose(v)</code></p>
 <ol>
-<li><!-- raw HTML omitted -->N_v<!-- raw HTML omitted -->をCompress Tree上で<!-- raw HTML omitted -->splay<!-- raw HTML omitted -->する</li>
-<li><!-- raw HTML omitted -->N_v<!-- raw HTML omitted -->の親が</li>
+<li><code>N_v</code>をCompress Tree上で<code>splay</code>する</li>
+<li><code>N_v</code>の親が</li>
 </ol>
 <ul>
-<li>いない: <!-- raw HTML omitted -->N_v<!-- raw HTML omitted -->はtoptreeの根になったので<!-- raw HTML omitted -->expose<!-- raw HTML omitted -->終了</li>
-<li>Compress Node: そのCompress Nodeを<!-- raw HTML omitted -->n<!-- raw HTML omitted -->とおく</li>
-<li>Rake Node: そのRake Nodeを<!-- raw HTML omitted -->r<!-- raw HTML omitted -->とおく, <!-- raw HTML omitted -->r<!-- raw HTML omitted -->をRake Tree上で<!-- raw HTML omitted -->splay<!-- raw HTML omitted -->し, <!-- raw HTML omitted -->r<!-- raw HTML omitted -->の親を<!-- raw HTML omitted -->n<!-- raw HTML omitted -->とおく(<!-- raw HTML omitted -->n<!-- raw HTML omitted -->はCompress Nodeになります)</li>
+<li>いない: <code>N_v</code>はtoptreeの根になったので<code>expose</code>終了</li>
+<li>Compress Node: そのCompress Nodeを<code>n</code>とおく</li>
+<li>Rake Node: そのRake Nodeを<code>r</code>とおく, <code>r</code>をRake Tree上で<code>splay</code>し, <code>r</code>の親を<code>n</code>とおく(<code>n</code>はCompress Nodeになります)</li>
 </ul>
 <ol start="3">
-<li><!-- raw HTML omitted -->n<!-- raw HTML omitted -->をCompress Tree上で<!-- raw HTML omitted -->splay<!-- raw HTML omitted --></li>
-<li><!-- raw HTML omitted -->n<!-- raw HTML omitted -->の左のノードと<!-- raw HTML omitted -->N_v<!-- raw HTML omitted -->を入れ替える</li>
-<li><!-- raw HTML omitted -->N_v<!-- raw HTML omitted -->がEdge Nodeのとき, <!-- raw HTML omitted -->N_v<!-- raw HTML omitted -->を<!-- raw HTML omitted -->n<!-- raw HTML omitted -->にする</li>
+<li><code>n</code>をCompress Tree上で<code>splay</code></li>
+<li><code>n</code>の左のノードと<code>N_v</code>を入れ替える</li>
+<li><code>N_v</code>がEdge Nodeのとき, <code>N_v</code>を<code>n</code>にする</li>
 <li>1に戻る.</li>
 </ol>
 <h3 id="1-splayn_v">1. splay(N_v)</h3>
-<p><!-- raw HTML omitted -->N_v<!-- raw HTML omitted -->の属しているCompress Tree上で<!-- raw HTML omitted -->N_v<!-- raw HTML omitted -->を根にします.</p>
+<p><code>N_v</code>の属しているCompress Tree上で<code>N_v</code>を根にします.</p>
 <h3 id="2">2.</h3>
 <p>これがちょっとむずかしいです.</p>
 <p>親がいない場合は目的達成なので終了です.</p>
@@ -253,13 +257,13 @@ toptreeで扱っている木は, 葉木です. 葉は<!-- raw HTML omitted -->sp
     <img src="/images/2019/08/04/191420/20190804184730.png"/> 
 </figure>
 
-<p><!-- raw HTML omitted -->splay(r)<!-- raw HTML omitted -->をすると, こうなります.</p>
+<p><code>splay(r)</code>をすると, こうなります.</p>
 <figure>
     <img src="/images/2019/08/04/191420/20190804184742.png"/> 
 </figure>
 
 <h3 id="3-splayn">3. splay(n)</h3>
-<p>4で行う操作を簡単にするために行います. なんで簡単になるかは<!-- raw HTML omitted -->soft_expose<!-- raw HTML omitted -->で解説したいと思います.</p>
+<p>4で行う操作を簡単にするために行います. なんで簡単になるかは<code>soft_expose</code>で解説したいと思います.</p>
 <h3 id="4-splicen_v">4. splice(N_v)</h3>
 <p>入れ替えます.</p>
 <figure>
@@ -271,11 +275,11 @@ toptreeで扱っている木は, 葉木です. 葉は<!-- raw HTML omitted -->sp
 </figure>
 
 <h3 id="5">5.</h3>
-<p>これは何かというと, <!-- raw HTML omitted -->N_v<!-- raw HTML omitted -->がEdge Nodeのとき, <!-- raw HTML omitted -->splice<!-- raw HTML omitted -->すると<!-- raw HTML omitted -->v<!-- raw HTML omitted -->の<!-- raw HTML omitted -->handle<!-- raw HTML omitted -->の位置が変わります. これに対応するためです.</p>
+<p>これは何かというと, <code>N_v</code>がEdge Nodeのとき, <code>splice</code>すると<code>v</code>の<code>handle</code>の位置が変わります. これに対応するためです.</p>
 <h3 id="6">6.</h3>
-<p>これで, <!-- raw HTML omitted -->N_v<!-- raw HTML omitted -->をtoptreeの根にすることができます.</p>
+<p>これで, <code>N_v</code>をtoptreeの根にすることができます.</p>
 <h2 id="soft-expose">Soft Expose</h2>
-<p><!-- raw HTML omitted -->soft_expose<!-- raw HTML omitted -->は任意の頂点<!-- raw HTML omitted -->v<!-- raw HTML omitted -->, <!-- raw HTML omitted -->w<!-- raw HTML omitted -->間のパスのCompress Node <!-- raw HTML omitted -->vw<!-- raw HTML omitted -->を作る操作です！(やっとここまできた)<!-- raw HTML omitted -->
+<p><code>soft_expose</code>は任意の頂点<code>v</code>, <code>w</code>間のパスのCompress Node <code>vw</code>を作る操作です！(やっとここまできた)<br/>
 こんな形にtoptreeを変形します.</p>
 <figure>
     <img src="/images/2019/08/04/191420/20190805073700.png"/> 
@@ -283,42 +287,42 @@ toptreeで扱っている木は, 葉木です. 葉は<!-- raw HTML omitted -->sp
 
 <p>(8/5 なんか頭悪い画像になっていたので修正しました)</p>
 <p>手順を先に言ってしまいます</p>
-<p><!-- raw HTML omitted -->soft_expose(v, w)<!-- raw HTML omitted --></p>
+<p><code>soft_expose(v, w)</code></p>
 <ol>
-<li><!-- raw HTML omitted -->expose(v)<!-- raw HTML omitted --></li>
-<li><!-- raw HTML omitted -->N_v<!-- raw HTML omitted -->と<!-- raw HTML omitted -->N_w<!-- raw HTML omitted -->が</li>
+<li><code>expose(v)</code></li>
+<li><code>N_v</code>と<code>N_w</code>が</li>
 </ol>
 <ul>
-<li>同じ: toptreeの根は<!-- raw HTML omitted -->vw<!-- raw HTML omitted -->か<!-- raw HTML omitted -->wv<!-- raw HTML omitted -->なので, <!-- raw HTML omitted -->wv<!-- raw HTML omitted -->であれば反転する. <!-- raw HTML omitted -->soft_expose<!-- raw HTML omitted -->おわり</li>
+<li>同じ: toptreeの根は<code>vw</code>か<code>wv</code>なので, <code>wv</code>であれば反転する. <code>soft_expose</code>おわり</li>
 <li>違う: 続く</li>
 </ul>
 <ol start="3">
-<li><!-- raw HTML omitted -->N_v<!-- raw HTML omitted -->をguardする(????)</li>
+<li><code>N_v</code>をguardする(????)</li>
 <li>expose(w)</li>
-<li><!-- raw HTML omitted -->N_v<!-- raw HTML omitted -->のguardを外す</li>
-<li><!-- raw HTML omitted -->N_v<!-- raw HTML omitted -->から見て<!-- raw HTML omitted -->N_w<!-- raw HTML omitted -->が右側なら, 反転させる.</li>
+<li><code>N_v</code>のguardを外す</li>
+<li><code>N_v</code>から見て<code>N_w</code>が右側なら, 反転させる.</li>
 <li>おわり</li>
 </ol>
-<p>toptreeの根をguardするとは, <!-- raw HTML omitted -->splay<!-- raw HTML omitted -->操作があってもtoptreeの根を変えさせないようにすることです.<!-- raw HTML omitted -->
-これは, <!-- raw HTML omitted -->N_v<!-- raw HTML omitted -->をtoptreeの根にした後, <!-- raw HTML omitted -->N_v<!-- raw HTML omitted -->の左側に<!-- raw HTML omitted -->N_w<!-- raw HTML omitted -->を持ってくる必要があり, <!-- raw HTML omitted -->N_v<!-- raw HTML omitted -->が根であり続ける必要があるからです.</p>
-<p>guardされているときの<!-- raw HTML omitted -->splice<!-- raw HTML omitted -->の操作が少し違います.</p>
-<p><!-- raw HTML omitted -->n<!-- raw HTML omitted -->の親がguardされていて, 親から見て左側にある場合, spliceは<!-- raw HTML omitted -->n<!-- raw HTML omitted -->の左の子と交換しないといけません.</p>
+<p>toptreeの根をguardするとは, <code>splay</code>操作があってもtoptreeの根を変えさせないようにすることです.<br/>
+これは, <code>N_v</code>をtoptreeの根にした後, <code>N_v</code>の左側に<code>N_w</code>を持ってくる必要があり, <code>N_v</code>が根であり続ける必要があるからです.</p>
+<p>guardされているときの<code>splice</code>の操作が少し違います.</p>
+<p><code>n</code>の親がguardされていて, 親から見て左側にある場合, spliceは<code>n</code>の左の子と交換しないといけません.</p>
 <figure>
     <img src="/images/2019/08/04/191420/20190804184839.png"/> 
 </figure>
 
-<p>しかし, 親から見て右側にある場合, spliceは<!-- raw HTML omitted -->n<!-- raw HTML omitted -->の左の子と交換しないといけません.</p>
+<p>しかし, 親から見て右側にある場合, spliceは<code>n</code>の左の子と交換しないといけません.</p>
 <figure>
     <img src="/images/2019/08/04/191420/20190804184855.png"/> 
 </figure>
 
 <p>これはtoptreeの, 葉がパスの辺の順番になっているルールに違反するからです.(toptree壊れる)</p>
 <h2 id="path-query">Path Query</h2>
-<p><!-- raw HTML omitted -->soft_expose<!-- raw HTML omitted -->ができるようになると, パスに関するクエリを処理することができます.<!-- raw HTML omitted -->
+<p><code>soft_expose</code>ができるようになると, パスに関するクエリを処理することができます.<br/>
 パスの長さとか, パス中の辺の長さの最大値とかです.</p>
-<p>各ノードに情報をもたせて, セグ木みたいに左の子の情報と右の子の情報を演算するみたいな感じです. これをすると, <!-- raw HTML omitted -->soft_expose(v, w)<!-- raw HTML omitted -->をして<!-- raw HTML omitted -->vw<!-- raw HTML omitted -->を見た時にパス<!-- raw HTML omitted -->v-w<!-- raw HTML omitted -->についての演算結果が求まるはずです. やったね.</p>
+<p>各ノードに情報をもたせて, セグ木みたいに左の子の情報と右の子の情報を演算するみたいな感じです. これをすると, <code>soft_expose(v, w)</code>をして<code>vw</code>を見た時にパス<code>v-w</code>についての演算結果が求まるはずです. やったね.</p>
 <h2 id="ひとまず終了">ひとまず終了&hellip;</h2>
-<p><!-- raw HTML omitted -->link<!-- raw HTML omitted -->, <!-- raw HTML omitted -->cut<!-- raw HTML omitted -->, <!-- raw HTML omitted -->select<!-- raw HTML omitted -->, 各種クエリとかは後日にします&hellip; 疲れた&hellip;</p>
+<p><code>link</code>, <code>cut</code>, <code>select</code>, 各種クエリとかは後日にします&hellip; 疲れた&hellip;</p>
 <p><a href="https://niuez.hatenablog.com/entry/2019/08/05/114511">Toptree - Link &amp; Cut編 - niuez’s diary</a> link cutかいた</p>
 <p><a href="http://noshi91.hatenablog.com/entry/2019/08/05/175545">top tree 概要 - noshi91のメモ</a></p>
 <p>僕が書くのサボった厳密な話をnoshi91さんが書いています こちらも読んでください</p>

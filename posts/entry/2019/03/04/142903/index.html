@@ -91,9 +91,12 @@
 			<p>はじめまして, niuezといいます. 競プロを少ししています.</p>
 <p>最近勉強したことのメモ書きをしておきます.</p>
 <h2 id="ダイクストラ法">ダイクストラ法</h2>
-<p>ダイクストラ法(<!-- raw HTML omitted -->Dijkstra<!-- raw HTML omitted -->)は負の長さの無いグラフで始点からの最短距離を求めるアルゴリズムです.</p>
+<p>ダイクストラ法(<em>Dijkstra</em>)は負の長さの無いグラフで始点からの最短距離を求めるアルゴリズムです.</p>
 <p>具体的には</p>
-<!-- raw HTML omitted -->
+<ol>
+<li>距離が未確定の頂点の中で一番小さいものを選び, 距離を確定させる.</li>
+<li>選んだ頂点から距離が未確定の頂点に伸びる辺で, 未確定な距離をより短いものに更新する.</li>
+</ol>
 <p>を繰り返します. これを実装すると $O(N)$ですが, よく知られるダイクストラの計算量は $O((E+ V) \log E)$ です(heapとかを使う).</p>
 <div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cp">#</span><span class="cp">include</span> <span class="cpf">&lt;set&gt;&lt;/set&gt;</span><span class="cp">
 </span><span class="cp"></span><span class="cp">#</span><span class="cp">include</span> <span class="cpf">&lt;queue&gt;&lt;/queue&gt;</span><span class="cp">
@@ -128,7 +131,7 @@
 <span class="p">}</span>
 
 </code></pre></div><h2 id="ベルマンフォード法">ベルマンフォード法</h2>
-<p>ベルマンフォード法(<!-- raw HTML omitted -->Bellman-Ford<!-- raw HTML omitted -->)は任意の長さのグラフで始点からの最短距離を求めるアルゴリズムです. 負の長さの閉路があるときはもちろん求められませんが, この記事では考えないことにします.</p>
+<p>ベルマンフォード法(<em>Bellman-Ford</em>)は任意の長さのグラフで始点からの最短距離を求めるアルゴリズムです. 負の長さの閉路があるときはもちろん求められませんが, この記事では考えないことにします.</p>
 <p>$O(VE)$ で直感的にもわかりやすいアルゴリズムですね.</p>
 <div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cp">#</span><span class="cp">include</span> <span class="cpf">&lt;vector&gt;&lt;/vector&gt;</span><span class="cp">
 </span><span class="cp"></span>
@@ -157,38 +160,38 @@
 
 </code></pre></div><h2 id="負の重みがあるときはベルマンフォード法しか無い">負の重みがあるときはベルマンフォード法しか無い?</h2>
 <p>ダイクストラ法のほうが定数倍が早かったりするので, できるだけベルマンフォード法よりはダイクストラ法を使いたいですよね?</p>
-<p><!-- raw HTML omitted -->一回だけ<!-- raw HTML omitted -->最短経路を求めるときはベルマンフォード法を使うしかありません.</p>
-<p><!-- raw HTML omitted -->複数回<!-- raw HTML omitted -->最短経路を求めるときはどうでしょうか?</p>
+<p><strong>一回だけ</strong>最短経路を求めるときはベルマンフォード法を使うしかありません.</p>
+<p><strong>複数回</strong>最短経路を求めるときはどうでしょうか?</p>
 <p>実はこの場合, ベルマンフォード法を最初に一回だけしておくことで, 後の複数回はダイクストラ法を使うことが出来ます.</p>
-<p>ダイクストラ法を使うとすると, 辺の長さを<!-- raw HTML omitted -->うまいことして正の長さにする<!-- raw HTML omitted -->必要があります.</p>
+<p>ダイクストラ法を使うとすると, 辺の長さを<strong>うまいことして正の長さにする</strong>必要があります.</p>
 <h2 id="最短経路とは">最短経路とは??</h2>
 <p>始点を頂点 $s$ とした最短経路を数式に落とし込むと, こういう定義になります.</p>
-<p>$d_s = 0$ とする.<!-- raw HTML omitted -->
+<p>$d_s = 0$ とする.<br/>
 すべての辺 $(i,j)$ において $d_i + dist(i,j) \ge d_j$ が成り立つときの, $d$ のそれぞれの取れる最大値.</p>
 <p>これを頭に入れておくと次がわかります.</p>
 <h2 id="ポテンシャル">ポテンシャル</h2>
 <p>ここで天才をします. 先人は天才です.</p>
 <p>ある$p_i$という値を用意して, 距離を $dist'(i,j) = dist(i,j) + p_i - p_j$ としたグラフを考えます.</p>
 <p>長さ $dist'$ のグラフで, 頂点 $s$ を始点とした最短距離を計算して, ${d'}_i$ を求めたとしましょう.</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+<div>${d&#39;}_i + dist&#39;(i, j) \ge {d&#39;}_j$</div>
+<div>${d&#39;}_i + dist(i, j) + p_i - p_j \ge {d&#39;}_j$</div>
+<div>${d&#39;}_i + p_i + dist(i, j) \ge {d&#39;}_j + p_j$</div>
 <p>よく見ると</p>
-<!-- raw HTML omitted -->
+<div> $d_i = {d&#39;}_i + p_i$ </div>
 <p>とすれば, $d_i$は最短距離の定義を満たしているように見えますね.しかし</p>
-<!-- raw HTML omitted -->
-<p>なので<!-- raw HTML omitted -->
-$d_s = 0$ を満たしていません. <!-- raw HTML omitted -->
+<div>$d_s = {d&#39;}_s + p_s = p_s`$ </div>
+<p>なので<br/>
+$d_s = 0$ を満たしていません. <br/>
 なので, すべての頂点 $i$ について $ans_i = {d'}_i + p_i - p_s$ を計算すれば, $ans$ は最短経路を示しています.</p>
-<p>このとき, $p_i$ のことを<!-- raw HTML omitted -->ポテンシャル<!-- raw HTML omitted -->と呼びます.</p>
-<p>では, <!-- raw HTML omitted -->$dist'$を正の長さにしたい<!-- raw HTML omitted -->気持ちになります.</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+<p>このとき, $p_i$ のことを<strong>ポテンシャル</strong>と呼びます.</p>
+<p>では, <strong>$dist'$を正の長さにしたい</strong>気持ちになります.</p>
+<div>$dist(i, j) + p_i - p_j \ge 0$</div>
+<div>$p_i + dist(i, j) \ge p_j$</div>
 <p>これは何かな. 最短距離の定義そのままですね(天才).</p>
 <p>これを使うと色々なものが効率的に求めることが出来ます.</p>
 <h2 id="負の重みがあるグラフでの全点間最短距離問題">負の重みがあるグラフでの全点間最短距離問題</h2>
 <p>全点間最短距離問題とは, すべての頂点の間での最短距離を計算する問題のことです.</p>
-<p>よく知られているのはワーシャルフロイド法の <!-- raw HTML omitted -->$O(V<!-- raw HTML omitted -->3<!-- raw HTML omitted -->)$<!-- raw HTML omitted --> ですが, これを <!-- raw HTML omitted -->$V$<!-- raw HTML omitted --> 回のダイクストラに置き換えることが出来て, $O(V(E + V) \log V)$ になります.</p>
+<p>よく知られているのはワーシャルフロイド法の <span>$O(V<sup>3</sup>)$</span> ですが, これを <span>$V$</span> 回のダイクストラに置き換えることが出来て, $O(V(E + V) \log V)$ になります.</p>
 <p>疑似コード</p>
 <div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">proc all_pair_shortest_path(G, dist)
     let potential = bellman_ford(G, dist, 0) //引数は グラフ, 距離, 始点 です
@@ -200,10 +203,10 @@ $d_s = 0$ を満たしていません. <!-- raw HTML omitted -->
             result[s][j] += potential[j] - potential[s] // result[s][j]... s -&gt; jの距離
     return result
 </code></pre></div><h2 id="最小費用流">最小費用流</h2>
-<p>最小費用流はたぶん皆さんなら, 最短路反復法で実装していると思いますが&hellip;(<!-- raw HTML omitted -->RHS-algorithm<!-- raw HTML omitted -->なんて強多項式計算量知らない)</p>
+<p>最小費用流はたぶん皆さんなら, 最短路反復法で実装していると思いますが&hellip;(<em>RHS-algorithm</em>なんて強多項式計算量知らない)</p>
 <p>このとき負の辺があるときはダイクストラが使えないと思われがちですが, 同じように最初にベルマンフォードでポテンシャルを求めておけば, 高速で計算が可能です.</p>
 <p>しかし, 逆辺が負の重みを持つので, ポテンシャルは, その時求めた最短距離を加算して行くことで, 更新をし続けなければなりません.</p>
-<p><!-- raw HTML omitted -->libalgo<!-- raw HTML omitted -->が参考になります.</p>
+<p><a href="https://tubo28.me/algorithm/primal-dual/">libalgo</a>が参考になります.</p>
 <h2 id="スケーリングアルゴリズム">スケーリングアルゴリズム</h2>
 <p>スケーリングを用いたダイクストラのアルゴリズムは重みが非負整数のときに使える高速化手法です.</p>
 <p>簡潔に言うと, 「辺の重みを半分にしたものでダイクストラをして, その結果の二倍をポテンシャルに使ってダイクストラをする.」 を再帰的に行うことで, ダイクストラを高速化するテクを使うというアルゴリズムです.</p>

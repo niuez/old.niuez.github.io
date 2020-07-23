@@ -98,13 +98,18 @@
 <p>え〜っと, 多分toptreeが書けました. 多分!  verifyしたいんですが, Rustのバージョンで困っています&hellip;</p>
 <h2 id="実装">実装</h2>
 <p>論文を読むとかける！(素振り) 間違ってたらごめんなさい</p>
-<!-- raw HTML omitted -->
+<div class="github-card" data-user="kutimoti" data-repo="toptree-rust" data-width="400" data-height="" data-theme="default"></div>
+<script src="https://cdn.jsdelivr.net/github-cards/latest/widget.js"></script>
 <p>LinkCutTreeがならしO(logN)らしいし, これもO(logN)だと信じている(解析できねえ&hellip;)</p>
 <h2 id="読んだもの">読んだもの</h2>
-<!-- raw HTML omitted -->
+<ul>
+<li><a href="https://arxiv.org/abs/cs/0310065">Maintaining Information in Fully-Dynamic Trees with Top Trees</a></li>
+<li><a href="https://renatowerneck.files.wordpress.com/2016/06/wer06-dissertation.pdf">Design and Analysis of Data Structures for Dynamic Trees</a></li>
+<li>noshi91さんのツイート</li>
+</ul>
 <h2 id="toptree">toptree?</h2>
 <p>LinkCutTreeでは, Heavy-edgeのパスを頂点の順番でSplayTreeで管理していました. また, 上のLinkCutTreeでの部分木クエリでは, Light-edgeでつながったものを, multisetで管理しています.</p>
-<p>これを, Heavy-edgeのパスを辺の順番で, <!-- raw HTML omitted -->辺を葉とする<!-- raw HTML omitted -->SplayTreeで管理し, <!-- raw HTML omitted -->Light-edgeでつながったものをSplayTreeでまとめた<!-- raw HTML omitted -->データ構造が, TopTreeの雑な説明です. このSplayTreeにクエリを処理させれば, 部分木クエリなどができます. link, cutもできます.</p>
+<p>これを, Heavy-edgeのパスを辺の順番で, <strong>辺を葉とする</strong>SplayTreeで管理し, <strong>Light-edgeでつながったものをSplayTreeでまとめた</strong>データ構造が, TopTreeの雑な説明です. このSplayTreeにクエリを処理させれば, 部分木クエリなどができます. link, cutもできます.</p>
 <p>ここでもっと雑な説明をしてしまうとTopTreeが分からなくなってしまいそうなので, 他の記事にゆっくりまとめたいと思います&hellip; まとめる時間をください&hellip;(学業がなくなれば)</p>
 <h2 id="実際にできたクエリ">実際にできたクエリ</h2>
 <p>TopTreeにはClusterを載せてクエリを処理させます. ClusterのTraitは以下のようになっています.</p>

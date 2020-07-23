@@ -90,29 +90,39 @@
 		<div class="markdown">
 			<p>この土日のメモです. SAとLCPのお気持ちをまとめたくなっただけ. 間違ってたらごめん</p>
 <blockquote>
-<p>文字列アルゴの勉強する気が起きないたった一つの理由: Rolling Hash— νιυεζ (@xiuez) 2019年12月13日<!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<p>文字列アルゴの勉強する気が起きないたった一つの理由: Rolling Hash— νιυεζ (@xiuez) 2019年12月13日<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></p>
 </blockquote>
 <p>これをやめたいので, 手始めにSuffix Arrayを使った文字列検索をやってみようかなというのが今回の主題</p>
 <h2 id="概要">概要</h2>
-<!-- raw HTML omitted -->
+<ul>
+<li>SA-ISでSuffix Arrayを構築$ O(|S|)$</li>
+<li>LCP配列の構築$ O(|S|)$</li>
+<li>LCPによるSuffix同士のLCPをSparse Tableで構築$ O(|S| \log{|S|})$, クエリ$ O(1)$</li>
+<li>Suffix Arrayの二分探索で文字列検索を$ O(|T| log{|S|})$</li>
+<li>Suffix ArrayとLCPの二分探索で文字列検索を構築$ O(|S|)$, クエリ$ O(|T| + \log{|S|})$</li>
+</ul>
 <p>の実装をやってみました. このときのメモを残しておきたいと思います.</p>
-<p>各用語の説明はここではしません&hellip; 他の記事や, <!-- raw HTML omitted -->蟻本 - Amazon<!-- raw HTML omitted -->を参考に.</p>
+<p>各用語の説明はここではしません&hellip; 他の記事や, <a href="https://www.amazon.co.jp/%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E3%82%B3%E3%83%B3%E3%83%86%E3%82%B9%E3%83%88%E3%83%81%E3%83%A3%E3%83%AC%E3%83%B3%E3%82%B8%E3%83%96%E3%83%83%E3%82%AF-%E7%AC%AC2%E7%89%88-%EF%BD%9E%E5%95%8F%E9%A1%8C%E8%A7%A3%E6%B1%BA%E3%81%AE%E3%82%A2%E3%83%AB%E3%82%B4%E3%83%AA%E3%82%BA%E3%83%A0%E6%B4%BB%E7%94%A8%E5%8A%9B%E3%81%A8%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%83%86%E3%82%AF%E3%83%8B%E3%83%83%E3%82%AF%E3%82%92%E9%8D%9B%E3%81%88%E3%82%8B%EF%BD%9E-%E7%A7%8B%E8%91%89%E6%8B%93%E5%93%89/dp/4839941068">蟻本 - Amazon</a>を参考に.</p>
 <h2 id="sa-is">SA-IS</h2>
 <p>Suffix Arrayの実装は蟻本にも載っていますが, そこまで早くありません&hellip; SA-ISというアルゴリズムが早いらしいのでこれを実装します.</p>
 <p>SA-ISの理解には, この記事がとても参考になりました. とてもわかりやすい記事です.</p>
 <p><a href="https://mametter.hatenablog.com/entry/20180130/p1"> SA-IS 法のメモ - まめめも</a></p>
-<p>SA-ISの実装は<!-- raw HTML omitted -->yosupoさんのコード<!-- raw HTML omitted -->を見ました.</p>
+<p>SA-ISの実装は<a href="https://judge.yosupo.jp/submission/1069">yosupoさんのコード</a>を見ました.</p>
 <p>僕が書いたSA-ISのコードはこれです.</p>
 <p><a href="https://judge.yosupo.jp/submission/1908">Submitted</a></p>
-<!-- raw HTML omitted -->
+<ul>
+<li>メモリを使い回す(resizeの回数を減らしてメモリを使いまわしても, assignが割と早くてこれが非自明)</li>
+<li><code>push_back</code>をなくす</li>
+<li>入出力の早いライブラリを使うともっと早くなります</li>
+</ul>
 <p>実はSA-ISの論文に実装が載っていてそれがとても速いです. ぜひ参考にしてみてください.</p>
-<p>以下, 文字列<!-- raw HTML omitted -->S<!-- raw HTML omitted -->のSuffix Arrayを<!-- raw HTML omitted -->SA<!-- raw HTML omitted -->とします. <!-- raw HTML omitted -->S<!-- raw HTML omitted -->の辞書順で<!-- raw HTML omitted -->i<!-- raw HTML omitted -->番目に小さいsuffixを<!-- raw HTML omitted -->Suf[i] := S[SA[i]&hellip;]<!-- raw HTML omitted -->とします.</p>
+<p>以下, 文字列<code>S</code>のSuffix Arrayを<code>SA</code>とします. <code>S</code>の辞書順で<code>i</code>番目に小さいsuffixを<code>Suf[i] := S[SA[i]&hellip;]</code>とします.</p>
 <h2 id="lcplongest-common-prefix">LCP(Longest Common Prefix)</h2>
-<p>LCP配列は, Suffix Arrayで隣り合ったSuffix(つまり, <!-- raw HTML omitted -->Suf[i]とSuf[i + 1]<!-- raw HTML omitted -->)の最長共通接頭辞を求めた配列です. Kasai's Algorithmを用いて$ O(|S|)$で構築できます.</p>
+<p>LCP配列は, Suffix Arrayで隣り合ったSuffix(つまり, <code>Suf[i]とSuf[i + 1]</code>)の最長共通接頭辞を求めた配列です. Kasai's Algorithmを用いて$ O(|S|)$で構築できます.</p>
 <p>LCPの理解は以下の記事がわかりやすいです. 蟻本にもあるはず.</p>
 <p><a href="https://lumakernel.github.io/ecasdqina/string/LCP-Array">LCP配列 (Kasai’s algorithm)</a></p>
 <p>例は,
-<!-- raw HTML omitted -->接尾辞配列(Suffix-Array) | Luzhiled’s memo<!-- raw HTML omitted --> がわかりやすいです.</p>
+<a href="https://ei1333.github.io/luzhiled/snippets/string/suffix-array.html">接尾辞配列(Suffix-Array) | Luzhiled’s memo</a> がわかりやすいです.</p>
 <p>僕の実装は先頭に無(空配列)があるので, 以下のようになります.</p>
 <div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">i :lcp
 0 : 0 
@@ -128,12 +138,12 @@
 10: 0 ra
 11: 2 racadabra
 </code></pre></div><h2 id="任意のsuffix同士のlcp">任意のsuffix同士のLCP</h2>
-<p>上の例で, <!-- raw HTML omitted -->i = 2, abra<!-- raw HTML omitted -->と, <!-- raw HTML omitted -->j = 5, adabra<!-- raw HTML omitted -->のLCPを求めるとすると, <!-- raw HTML omitted -->3, 4, 5<!-- raw HTML omitted -->の<!-- raw HTML omitted -->lcp<!-- raw HTML omitted -->の最小値である<!-- raw HTML omitted -->1<!-- raw HTML omitted -->がその答えになります.</p>
-<p>Suffix Arrayで, indexが $ i$ のsuffixと $ j$ のsuffixのLCPは, $ [i + 1, j + 1)$ 間の<!-- raw HTML omitted -->lcp<!-- raw HTML omitted -->の最小値になります.</p>
-<p>なので, <!-- raw HTML omitted -->lcp<!-- raw HTML omitted -->をSparse Tableに載せると構築 $ O(|S| \log{|S|})$, クエリ$ O(1)$で処理できます.</p>
+<p>上の例で, <code>i = 2, abra</code>と, <code>j = 5, adabra</code>のLCPを求めるとすると, <code>3, 4, 5</code>の<code>lcp</code>の最小値である<code>1</code>がその答えになります.</p>
+<p>Suffix Arrayで, indexが $ i$ のsuffixと $ j$ のsuffixのLCPは, $ [i + 1, j + 1)$ 間の<code>lcp</code>の最小値になります.</p>
+<p>なので, <code>lcp</code>をSparse Tableに載せると構築 $ O(|S| \log{|S|})$, クエリ$ O(1)$で処理できます.</p>
 <h2 id="suffix-arrayで文字列検索">Suffix Arrayで文字列検索</h2>
-<p>文字列<!-- raw HTML omitted -->S<!-- raw HTML omitted -->のSuffix Array <!-- raw HTML omitted -->SA<!-- raw HTML omitted -->を使って, <!-- raw HTML omitted -->S<!-- raw HTML omitted -->の中に文字列<!-- raw HTML omitted -->T<!-- raw HTML omitted -->があるかどうかを二分探索で処理できます. これは, Suffix Arrayによって各suffixがソートされているのを利用しています.</p>
-<p>計算量は$ O(|T| \log{|S|})$です. <!-- raw HTML omitted -->AOJの提出コード<!-- raw HTML omitted --></p>
+<p>文字列<code>S</code>のSuffix Array <code>SA</code>を使って, <code>S</code>の中に文字列<code>T</code>があるかどうかを二分探索で処理できます. これは, Suffix Arrayによって各suffixがソートされているのを利用しています.</p>
+<p>計算量は$ O(|T| \log{|S|})$です. <a href="https://onlinejudge.u-aizu.ac.jp/status/users/niuez/submissions/1/ALDS1_14_D/judge/4048844/C++14">AOJの提出コード</a></p>
 <div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">cin</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span class="n">t</span><span class="p">;</span>
 <span class="kt">int</span> <span class="n">L</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 <span class="kt">int</span> <span class="n">R</span> <span class="o">=</span> <span class="n">sa</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="p">)</span><span class="p">;</span>
@@ -151,8 +161,10 @@
 </code></pre></div><p>これがかなりはやい なんでだろう</p>
 <h2 id="saとlcpで文字列検索">SAとLCPで文字列検索</h2>
 <p>この二分探索はさらに高速化できます. suffixとTの比較を最小限にすることで, $ O(|T| + \log{|S|})$を達成します.</p>
-<p>具体的には, <!-- raw HTML omitted -->suf[L]<!-- raw HTML omitted -->とTのLCPを常に持ちながら二分探索をします. このLCPを<!-- raw HTML omitted -->Llcp<!-- raw HTML omitted -->とします.  <!-- raw HTML omitted -->M = (L + R) / 2<!-- raw HTML omitted -->として, <!-- raw HTML omitted -->suf[L]<!-- raw HTML omitted -->と<!-- raw HTML omitted -->suf[M]<!-- raw HTML omitted -->のLCPを求めて, <!-- raw HTML omitted -->nlcp<!-- raw HTML omitted -->とします. <!-- raw HTML omitted -->nlcp<!-- raw HTML omitted -->は先に書いたとおり, Sparse Tableで求めることができます.  次に<!-- raw HTML omitted -->Llcp<!-- raw HTML omitted -->と<!-- raw HTML omitted -->nlcp<!-- raw HTML omitted -->を比較します.</p>
-<!-- raw HTML omitted -->
+<p>具体的には, <code>suf[L]</code>とTのLCPを常に持ちながら二分探索をします. このLCPを<code>Llcp</code>とします.  <code>M = (L + R) / 2</code>として, <code>suf[L]</code>と<code>suf[M]</code>のLCPを求めて, <code>nlcp</code>とします. <code>nlcp</code>は先に書いたとおり, Sparse Tableで求めることができます.  次に<code>Llcp</code>と<code>nlcp</code>を比較します.</p>
+<ul>
+<li><strong><code>Llcp &lt; nlcp</code></strong>のとき</li>
+</ul>
 <p>以下の例で考えてみます. (Suffix Arrayではありませんが, 複数の文字列を辞書順にソートしたという意味で同じです)</p>
 <div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">T = ad
 
@@ -166,8 +178,10 @@ R :
 
 Llcp = LCP(aaa, ad) = 1  // &#34;a&#34;aa, &#34;a&#34;dなので
 nlcp = LCP(aaa, aac) = 2 // &#34;aa&#34;a, &#34;aa&#34;cなので
-</code></pre></div><p><!-- raw HTML omitted -->T<!-- raw HTML omitted -->は辞書順で<!-- raw HTML omitted -->suf[T]<!-- raw HTML omitted -->以上ということがわかっているので, <!-- raw HTML omitted -->Llcp &lt; nlcp<!-- raw HTML omitted -->より, Tと<!-- raw HTML omitted -->suf[M]<!-- raw HTML omitted -->のLCPは<!-- raw HTML omitted -->Llcp<!-- raw HTML omitted -->であり, <!-- raw HTML omitted -->T<!-- raw HTML omitted -->は辞書順で<!-- raw HTML omitted -->suf[M]<!-- raw HTML omitted -->以上です.  なので, Llcpはそのままで, <!-- raw HTML omitted -->L = M<!-- raw HTML omitted -->とします.</p>
-<!-- raw HTML omitted -->
+</code></pre></div><p><code>T</code>は辞書順で<code>suf[T]</code>以上ということがわかっているので, <code>Llcp &lt; nlcp</code>より, Tと<code>suf[M]</code>のLCPは<code>Llcp</code>であり, <code>T</code>は辞書順で<code>suf[M]</code>以上です.  なので, Llcpはそのままで, <code>L = M</code>とします.</p>
+<ul>
+<li><strong><code>Llcp > nlcp</code></strong>のとき</li>
+</ul>
 <div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">T = aaac
 
 L : aaa
@@ -180,8 +194,10 @@ R :
 
 Llcp = LCP(aaa, aaac) = 3  // &#34;aaa&#34;, &#34;aaa&#34;cなので
 nlcp = LCP(aaa, aac) = 2 // &#34;aa&#34;a, &#34;aa&#34;cなので
-</code></pre></div><p>T<!-- raw HTML omitted -->と<!-- raw HTML omitted -->suf[M]<!-- raw HTML omitted -->のLCPは<!-- raw HTML omitted -->nlcp<!-- raw HTML omitted -->であり,<!-- raw HTML omitted -->T<!-- raw HTML omitted -->は辞書順で<!-- raw HTML omitted -->suf[M]<!-- raw HTML omitted -->未満です. なので, Llcpはそのままで,<!-- raw HTML omitted -->R = M`とします.</p>
-<!-- raw HTML omitted -->
+</code></pre></div><p>T<code>と</code>suf[M]<code>のLCPは</code>nlcp<code>であり,</code>T<code>は辞書順で</code>suf[M]<code>未満です. なので, Llcpはそのままで,</code>R = M`とします.</p>
+<ul>
+<li><strong><code>Llcp = nlcp</code></strong>のとき</li>
+</ul>
 <div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">T = aacc
 
 L : aaa
@@ -194,8 +210,8 @@ R :
 
 Llcp = LCP(aaa, aacc) = 2  // &#34;aa&#34;a, &#34;aa&#34;ccなので
 nlcp = LCP(aaa, aac) = 2 // &#34;aa&#34;a, &#34;aa&#34;cなので
-</code></pre></div><p>このときは, <!-- raw HTML omitted -->T<!-- raw HTML omitted -->と<!-- raw HTML omitted -->suf[M]<!-- raw HTML omitted -->の辞書順の関係がわからないので比較をします. このとき, <!-- raw HTML omitted -->LCPの部分は一致していることがわかっているので比較をしなくてよい<!-- raw HTML omitted -->です. 比較をした後, Llcpを比較をした時の計算結果を利用して更新します.</p>
-<p><!-- raw HTML omitted -->Llcp<!-- raw HTML omitted -->は探索中, 単調増加します. なので, 文字列の比較が全体で$ O(|T|)$しかされません. これにより, 計算量が改善されます.</p>
+</code></pre></div><p>このときは, <code>T</code>と<code>suf[M]</code>の辞書順の関係がわからないので比較をします. このとき, <strong>LCPの部分は一致していることがわかっているので比較をしなくてよい</strong>です. 比較をした後, Llcpを比較をした時の計算結果を利用して更新します.</p>
+<p><code>Llcp</code>は探索中, 単調増加します. なので, 文字列の比較が全体で$ O(|T|)$しかされません. これにより, 計算量が改善されます.</p>
 <p>実際にコードを示します.</p>
 <div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">pair</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;</span> <span class="n">get_lcp</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">T</span><span class="o">&gt;</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span> <span class="n">t</span><span class="p">,</span> <span class="kt">int</span> <span class="n">si</span><span class="p">,</span> <span class="kt">int</span> <span class="n">offset</span><span class="p">)</span> <span class="p">{</span>
   <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">offset</span><span class="p">;</span>
@@ -245,8 +261,8 @@ nlcp = LCP(aaa, aac) = 2 // &#34;aa&#34;a, &#34;aa&#34;cなので
 <h2 id="sparse-tableの構築が重すぎる">Sparse Tableの構築が重すぎる</h2>
 <p>$ O(|S| \log{|S|})$ 流石に重い&hellip; 改善したい</p>
 <h2 id="sparse-tableを使わない方法で改善">Sparse Tableを使わない方法で改善</h2>
-<p>二分探索だけならSparse Tableである必要はありません. Segment Treeを使います.<!-- raw HTML omitted -->
-二分探索で最小値を求めたい区間は必ず<!-- raw HTML omitted -->[L, (L + R) / 2)<!-- raw HTML omitted -->に対応できます. なので, 二分探索するときに, Segment Treeのノードを降りていくようにすると 構築$ O(|S|)$で二分探索ができるようになります.</p>
+<p>二分探索だけならSparse Tableである必要はありません. Segment Treeを使います.<br/>
+二分探索で最小値を求めたい区間は必ず<code>[L, (L + R) / 2)</code>に対応できます. なので, 二分探索するときに, Segment Treeのノードを降りていくようにすると 構築$ O(|S|)$で二分探索ができるようになります.</p>
 <p>コードはこんな感じ</p>
 <div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="p">.</span><span class="p">.</span><span class="p">.</span>
 <span class="p">.</span><span class="p">.</span><span class="p">.</span>

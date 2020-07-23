@@ -99,14 +99,22 @@
 <p>Euler TourをBFSで行います. すると, Euler Tourの列は</p>
 <div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">0 1 2 3 4 5 6 7 8 9 10 11 12 13 14
 </code></pre></div><p>になります. ここで, BFSは深さが浅い順に頂点を見ることに注目すると,</p>
-<!-- raw HTML omitted -->
+<ul>
+<li>頂点0の部分木の中で, 頂点0から距離1にある頂点</li>
+</ul>
 <div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">0 [1 2] 3 4 5 6 7 8 9 10 11 12 13 14
-</code></pre></div><!-- raw HTML omitted -->
+</code></pre></div><ul>
+<li>頂点0の部分木の中で, 頂点0から距離2にある頂点</li>
+</ul>
 <div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">0 1 2 [3 4 5 6] 7 8 9 10 11 12 13 14
 </code></pre></div><p>また同様に</p>
-<!-- raw HTML omitted -->
+<ul>
+<li>頂点1の部分木の中で, 頂点0から距離1にある頂点</li>
+</ul>
 <div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">0 1 2 [3 4] 5 6 7 8 9 10 11 12 13 14
-</code></pre></div><!-- raw HTML omitted -->
+</code></pre></div><ul>
+<li>頂点1の部分木の中で, 頂点0から距離2にある頂点</li>
+</ul>
 <div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">0 1 2 3 4 5 6 [7 8 9 10] 11 12 13 14
 </code></pre></div><p>つまりBFS Euler Tourは, 深さを同じくする頂点を列の区間に落とし込むことができます.</p>
 <p>実装はこんな感じ(この例では, 距離2までの頂点を記録しています)</p>
