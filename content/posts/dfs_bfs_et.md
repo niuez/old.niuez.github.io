@@ -4,7 +4,7 @@ date: 2020-03-24T18:05:05+09:00
 draft: false
 ---
 
-Tree Depth Query by BFS Numberingについては[Tree Depth Query by BFS Numbering - niuez.github.io](https://niuez.github.io/2019/10/002503/)を参照してください.
+Tree Depth Query by BFS Numberingについては[Tree Depth Query by BFS Numbering - niuez.github.io](https://niuez.github.io/posts/entry/2019/10/05/002503/)を参照してください.
 
 ## 処理したいクエリ (例)
 
