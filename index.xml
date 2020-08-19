@@ -58,12 +58,12 @@
     </item>
     
     <item>
-      <title>DFS&#43;BFS EulerTourで部分木の任意深さのクエリを処理する</title>
+      <title>DFS&#43;BFS Numberingで部分木の任意深さのクエリを処理する</title>
       <link>https://niuez.github.io/posts/dfs_bfs_et/</link>
       <pubDate>Tue, 24 Mar 2020 18:05:05 +0900</pubDate>
       
       <guid>https://niuez.github.io/posts/dfs_bfs_et/</guid>
-      <description>BFS Euler TourについてはBFS Euler Tour - niuez.</description>
+      <description>Tree Depth Query by BFS NumberingについてはTree Depth Query by BFS Numbering - niuez.</description>
     </item>
     
     <item>
@@ -139,7 +139,7 @@
     </item>
     
     <item>
-      <title>BFS Euler Tour</title>
+      <title>BFS Numbering</title>
       <link>https://niuez.github.io/posts/entry/2019/10/05/002503/</link>
       <pubDate>Sat, 05 Oct 2019 00:25:03 +0000</pubDate>
       

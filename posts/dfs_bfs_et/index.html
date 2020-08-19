@@ -2,16 +2,16 @@
 <html>
 <head>
 	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>DFS&#43;BFS EulerTourで部分木の任意深さのクエリを処理する - Niue&#39;z Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta property="og:title" content="DFS&#43;BFS EulerTourで部分木の任意深さのクエリを処理する" />
-<meta property="og:description" content="BFS Euler TourについてはBFS Euler Tour - niuez." />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>DFS&#43;BFS Numberingで部分木の任意深さのクエリを処理する - Niue&#39;z Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="DFS&#43;BFS Numberingで部分木の任意深さのクエリを処理する" />
+<meta property="og:description" content="Tree Depth Query by BFS NumberingについてはTree Depth Query by BFS Numbering - niuez." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://niuez.github.io/posts/dfs_bfs_et/" />
 <meta property="article:published_time" content="2020-03-24T18:05:05+09:00" />
 <meta property="article:modified_time" content="2020-03-24T18:05:05+09:00" />
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="DFS&#43;BFS EulerTourで部分木の任意深さのクエリを処理する"/>
-<meta name="twitter:description" content="BFS Euler TourについてはBFS Euler Tour - niuez."/>
+<meta name="twitter:title" content="DFS&#43;BFS Numberingで部分木の任意深さのクエリを処理する"/>
+<meta name="twitter:description" content="Tree Depth Query by BFS NumberingについてはTree Depth Query by BFS Numbering - niuez."/>
 <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="https://niuez.github.io/css/highlight-native.css">
 
@@ -83,12 +83,12 @@
 
 
 		<div class="post-header">
-			<h1 class="title">DFS&#43;BFS EulerTourで部分木の任意深さのクエリを処理する</h1>
+			<h1 class="title">DFS&#43;BFS Numberingで部分木の任意深さのクエリを処理する</h1>
 			<div class="meta">Posted at &mdash; Mar 24, 2020</div>
 		</div>
 
 		<div class="markdown">
-			<p>BFS Euler Tourについては<a href="https://niuez.github.io/2019/10/002503/">BFS Euler Tour - niuez.github.io</a>を参照してください.</p>
+			<p>Tree Depth Query by BFS Numberingについては<a href="https://niuez.github.io/2019/10/002503/">Tree Depth Query by BFS Numbering - niuez.github.io</a>を参照してください.</p>
 <h2 id="処理したいクエリ-例">処理したいクエリ (例)</h2>
 <p>有向木が与えられ, 各頂点には重みがある.</p>
 <ul>
@@ -96,9 +96,9 @@
 </ul>
 <p>総和じゃなくても更新とかもしたいよね.</p>
 <h2 id="アルゴリズム">アルゴリズム</h2>
-<p>BFS Euler Tourをすると, 同じ深さの頂点が並ぶということは上の記事をみるとわかります. これにDFS Euler Tourしたときの情報を合わせることで任意深さについで, BFS Euler Tourしたときの区間を前計算$O(N)$, クエリ$O(\log N)$で求めることができます.</p>
+<p>BFS Numberingをすると, 同じ深さの頂点が並ぶということは上の記事をみるとわかります. これにDFS Euler Tourしたときの情報を合わせることで任意深さについで, BFS Euler Tourしたときの区間を前計算$O(N)$, クエリ$O(\log N)$で求めることができます.</p>
 <p><img src="/images/bfs_dfs.png" alt="がぞう"></p>
-<p>BFS Euler Tourしたときの順番と, DFS Euler Tourしたときの$in/out$を各ノードに添えました. ただし, <strong>ノードの子供を探索する順序はDFS, BFS共に同じにします</strong>, すると,</p>
+<p>BFS Numberingしたときの順番と, DFS Numberingしたときの$in/out$を各ノードに添えました. ただし, <strong>ノードの子供を探索する順序はDFS, BFS共に同じにします</strong>, すると,</p>
 <ul>
 <li>深さ$0$のノードのbfsの番号と$in$</li>
 </ul>
@@ -120,15 +120,15 @@ in : 2 5 9 12
 <div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bfs: 7 8 9 10 11 12 13 14
 in : 3 4 6 7  10 11 13 14
 </code></pre></div><p>となり, 単調増加します.<br>
-また, DFS Euler Tourでは, ある頂点$v$の$[in, out)$は, $v$を根とする部分木に含まれる頂点の$in$の集合です. これを活かして, 頂点$1$から深さ$2$の頂点のBFS Euler Tourの区間を求めてみます.</p>
+また, DFS Numberingでは, ある頂点$v$の$[in, out)$は, $v$を根とする部分木に含まれる頂点の$in$の集合です. これを活かして, 頂点$1$から深さ$2$の頂点のBFS Numberingの区間を求めてみます.</p>
 <p>木全体での頂点$1$の深さは$1$なので, 求めたい区間の頂点は深さ$3$です.<br>
 また, 頂点$1$の$[in, out)$は$[1, 8)$です. なので求めたい頂点の$in$の値は, 深さ$3$での$in$の列の中で$[1, 8)$に含まれている$in = 3, 4, 6, 7$です.<br>
-これは, BFS Euler Tourの区間では$[7, 10)$に相当します.</p>
+これは, BFS Numberingの区間では$[7, 10)$に相当します.</p>
 <p>この操作は二分探索で行うことができるので, クエリあたり$O(\log N)$です.</p>
 <h2 id="実装">実装</h2>
 <ul>
-<li><code>para[i] := BFS Euler Tourでi番目の頂点</code></li>
-<li><code>inv_para[v] := BFS Euler Tourにおける頂点vのインデックス</code></li>
+<li><code>para[i] := BFS Numberingでi番目の頂点</code></li>
+<li><code>inv_para[v] := BFS Numberingにおける頂点vのインデックス</code></li>
 </ul>
 <div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="nc">bfs_euler_tour</span> <span class="p">{</span>
   <span class="kt">int</span> <span class="n">N</span><span class="p">;</span>
@@ -224,7 +224,7 @@ in : 3 4 6 7  10 11 13 14
 
     <div class="article-footer">
       <a style="display:none;" href="https://niuez.github.io/posts/dfs_bfs_et/"></a>
-      <h1 style="display:none;">DFS&#43;BFS EulerTourで部分木の任意深さのクエリを処理する</h1>
+      <h1 style="display:none;">DFS&#43;BFS Numberingで部分木の任意深さのクエリを処理する</h1>
       <div></div>
     </div>
 		</div>
