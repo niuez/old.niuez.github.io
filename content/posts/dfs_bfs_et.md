@@ -1,10 +1,10 @@
 ---
-title: "DFS+BFS EulerTourで部分木の任意深さのクエリを処理する"
+title: "DFS+BFS Numberingで部分木の任意深さのクエリを処理する"
 date: 2020-03-24T18:05:05+09:00
 draft: false
 ---
 
-BFS Euler Tourについては[BFS Euler Tour - niuez.github.io](https://niuez.github.io/2019/10/002503/)を参照してください.
+Tree Depth Query by BFS Numberingについては[Tree Depth Query by BFS Numbering - niuez.github.io](https://niuez.github.io/2019/10/002503/)を参照してください.
 
 ## 処理したいクエリ (例)
 
@@ -16,11 +16,11 @@ BFS Euler Tourについては[BFS Euler Tour - niuez.github.io](https://niuez.gi
 
 ## アルゴリズム
 
-BFS Euler Tourをすると, 同じ深さの頂点が並ぶということは上の記事をみるとわかります. これにDFS Euler Tourしたときの情報を合わせることで任意深さについで, BFS Euler Tourしたときの区間を前計算$O(N)$, クエリ$O(\log N)$で求めることができます.
+BFS Numberingをすると, 同じ深さの頂点が並ぶということは上の記事をみるとわかります. これにDFS Euler Tourしたときの情報を合わせることで任意深さについで, BFS Euler Tourしたときの区間を前計算$O(N)$, クエリ$O(\log N)$で求めることができます.
 
 ![がぞう](/images/bfs_dfs.png)
 
-BFS Euler Tourしたときの順番と, DFS Euler Tourしたときの$in/out$を各ノードに添えました. ただし, **ノードの子供を探索する順序はDFS, BFS共に同じにします**, すると, 
+BFS Numberingしたときの順番と, DFS Numberingしたときの$in/out$を各ノードに添えました. ただし, **ノードの子供を探索する順序はDFS, BFS共に同じにします**, すると, 
 
 - 深さ$0$のノードのbfsの番号と$in$
 
@@ -51,18 +51,18 @@ in : 3 4 6 7  10 11 13 14
 ```
 
 となり, 単調増加します.  
-また, DFS Euler Tourでは, ある頂点$v$の$[in, out)$は, $v$を根とする部分木に含まれる頂点の$in$の集合です. これを活かして, 頂点$1$から深さ$2$の頂点のBFS Euler Tourの区間を求めてみます.
+また, DFS Numberingでは, ある頂点$v$の$[in, out)$は, $v$を根とする部分木に含まれる頂点の$in$の集合です. これを活かして, 頂点$1$から深さ$2$の頂点のBFS Numberingの区間を求めてみます.
 
 木全体での頂点$1$の深さは$1$なので, 求めたい区間の頂点は深さ$3$です.  
 また, 頂点$1$の$[in, out)$は$[1, 8)$です. なので求めたい頂点の$in$の値は, 深さ$3$での$in$の列の中で$[1, 8)$に含まれている$in = 3, 4, 6, 7$です.  
-これは, BFS Euler Tourの区間では$[7, 10)$に相当します.  
+これは, BFS Numberingの区間では$[7, 10)$に相当します.  
 
 この操作は二分探索で行うことができるので, クエリあたり$O(\log N)$です.
 
 ## 実装
 
-- `para[i] := BFS Euler Tourでi番目の頂点`
-- `inv_para[v] := BFS Euler Tourにおける頂点vのインデックス`
+- `para[i] := BFS Numberingでi番目の頂点`
+- `inv_para[v] := BFS Numberingにおける頂点vのインデックス`
 
 ```cpp
 struct bfs_euler_tour {
