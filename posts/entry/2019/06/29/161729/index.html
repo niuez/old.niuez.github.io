@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>top-tree実装体験木 - Niue&#39;z Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="top-tree実装体験木" />
+<meta property="og:description" content="読者層が限定されすぎていませんか？" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://niuez.github.io/posts/entry/2019/06/29/161729/" />
+<meta property="article:published_time" content="2019-06-29T16:17:29+00:00" />
+<meta property="article:modified_time" content="2019-06-29T16:17:29+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="top-tree実装体験木"/>
+<meta name="twitter:description" content="読者層が限定されすぎていませんか？"/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="https://niuez.github.io/css/highlight-native.css">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="https://niuez.github.io/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://niuez.github.io/css/main.css" /><link rel="stylesheet" type="text/css" href="https://niuez.github.io/css/dark.css"  />
+	<link rel="stylesheet" type="text/css" href="https://niuez.github.io/css/custom-dark.css"  />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="https://niuez.github.io/js/main.js"></script>
+
+  <script type="text/javascript" src="https://s.hatena.ne.jp/js/HatenaStar.js"></script>
+  <script type="text/javascript">
+  Hatena.Star.Token = 'e2714bc09c0f22d36f9bea483e4c3efc2846d9e9';
+  Hatena.Star.SiteConfig = {
+    entryNodes: {
+      'div.article-footer': {
+        uri: 'a',
+        title: 'h1',
+        container: 'div'
+      }
+    }
+  };
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+              showMathMenu: false, //disables context menu
+              tex2jax: {
+              inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+             }
+      });
+  </script>
+
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<base href="https://niuez.github.io/">
+	<h1 class="site-title"><a href="https://niuez.github.io/">Niue&#39;z Blog</a></h1>
+	<div class="site-description"><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/niuez" title="Github"><i data-feather="github"></i></a><a href="https://twitter.com/xiuez" title="Twitter"><i data-feather="twitter"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="/">Home</a>
+			</li>
+			
+			<li>
+				<a href="/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="/about">About</a>
+			</li>
+			
+			<li>
+				<a href="/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">top-tree実装体験木</h1>
+			<div class="meta">Posted at &mdash; Jun 29, 2019</div>
+		</div>
+
+		<div class="markdown">
+			<p>読者層が限定されすぎていませんか？</p>
+<p>Link Cut Treeを書いたことがない人はこちら！</p>
+<p><a href="https://ei1333.hateblo.jp/entry/2018/05/29/011140">Link-Cut 木 - ei1333の日記</a></p>
+<p>部分木クエリについてはこちら！</p>
+<p><a href="http://beet-aizu.hatenablog.com/entry/2019/06/08/221833">Link Cut Treeで部分木の情報を管理する - beet's soil</a></p>
+<p>最遠点クエリについてはこちら！</p>
+<p><a href="https://ei1333.hateblo.jp/entry/2019/06/13/133736">Link-Cut木と最遠点クエリ - ei1333の日記</a></p>
+<p>え〜っと, 多分toptreeが書けました. 多分!  verifyしたいんですが, Rustのバージョンで困っています&hellip;</p>
+<h2 id="実装">実装</h2>
+<p>論文を読むとかける！(素振り) 間違ってたらごめんなさい</p>
+<div class="github-card" data-user="kutimoti" data-repo="toptree-rust" data-width="400" data-height="" data-theme="default"></div>
+<script src="https://cdn.jsdelivr.net/github-cards/latest/widget.js"></script>
+<p>LinkCutTreeがならしO(logN)らしいし, これもO(logN)だと信じている(解析できねえ&hellip;)</p>
+<h2 id="読んだもの">読んだもの</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/cs/0310065">Maintaining Information in Fully-Dynamic Trees with Top Trees</a></li>
+<li><a href="https://renatowerneck.files.wordpress.com/2016/06/wer06-dissertation.pdf">Design and Analysis of Data Structures for Dynamic Trees</a></li>
+<li>noshi91さんのツイート</li>
+</ul>
+<h2 id="toptree">toptree?</h2>
+<p>LinkCutTreeでは, Heavy-edgeのパスを頂点の順番でSplayTreeで管理していました. また, 上のLinkCutTreeでの部分木クエリでは, Light-edgeでつながったものを, multisetで管理しています.</p>
+<p>これを, Heavy-edgeのパスを辺の順番で, <strong>辺を葉とする</strong>SplayTreeで管理し, <strong>Light-edgeでつながったものをSplayTreeでまとめた</strong>データ構造が, TopTreeの雑な説明です. このSplayTreeにクエリを処理させれば, 部分木クエリなどができます. link, cutもできます.</p>
+<p>ここでもっと雑な説明をしてしまうとTopTreeが分からなくなってしまいそうなので, 他の記事にゆっくりまとめたいと思います&hellip; まとめる時間をください&hellip;(学業がなくなれば)</p>
+<h2 id="実際にできたクエリ">実際にできたクエリ</h2>
+<p>TopTreeにはClusterを載せてクエリを処理させます. ClusterのTraitは以下のようになっています.</p>
+<div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="k">pub</span><span class="w"> </span><span class="k">trait</span><span class="w"> </span><span class="n">Cluster</span>: <span class="nb">Clone</span> <span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="k">fn</span> <span class="nf">identity</span><span class="p">(</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Self</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="k">fn</span> <span class="nf">compress</span><span class="p">(</span><span class="n">left</span>: <span class="nc">Self</span><span class="p">,</span><span class="w"> </span><span class="n">right</span>: <span class="nc">Self</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Self</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="k">fn</span> <span class="nf">rake</span><span class="p">(</span><span class="n">left</span>: <span class="nc">Self</span><span class="p">,</span><span class="w"> </span><span class="n">right</span>: <span class="nc">Self</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Self</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="k">fn</span> <span class="nf">reverse</span><span class="p">(</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">
+</span></code></pre></div><h3 id="v-uパスの長さ">v-uパスの長さ</h3>
+<div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="k">impl</span><span class="w"> </span><span class="n">Cluster</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="kt">usize</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="k">fn</span> <span class="nf">identity</span><span class="p">(</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Self</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="k">fn</span> <span class="nf">compress</span><span class="p">(</span><span class="n">left</span>: <span class="nc">Self</span><span class="p">,</span><span class="w"> </span><span class="n">right</span>: <span class="nc">Self</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Self</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">left</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">right</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="k">fn</span> <span class="nf">rake</span><span class="p">(</span><span class="n">a</span>: <span class="nc">Self</span><span class="p">,</span><span class="w"> </span><span class="n">_</span>: <span class="nc">Self</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Self</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="k">fn</span> <span class="nf">reverse</span><span class="p">(</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">
+</span></code></pre></div><p>というふうにClusterを定義すると</p>
+<div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">path_length_test</span><span class="p">(</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&#34;path_length&#34;</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">v</span>: <span class="nb">Vec</span><span class="kp">&amp;</span><span class="nc">lt</span><span class="p">;</span><span class="n">_</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="p">.</span><span class="mi">13</span><span class="p">)</span><span class="p">.</span><span class="n">map</span><span class="p">(</span><span class="o">|</span><span class="n">i</span><span class="o">|</span><span class="w"> </span><span class="n">Vertex</span>::<span class="n">new</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="p">)</span><span class="p">.</span><span class="n">collect</span><span class="p">(</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">edges</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="mi">0</span><span class="k">usize</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="k">usize</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="k">usize</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="p">]</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">es</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Vec</span>::<span class="n">new</span><span class="p">(</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">edges</span><span class="p">.</span><span class="n">iter</span><span class="p">(</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="n">es</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">link</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">*</span><span class="n">a</span><span class="p">]</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="o">*</span><span class="n">b</span><span class="p">]</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">w</span><span class="p">)</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="n">assert</span><span class="o">!</span><span class="p">(</span><span class="n">path_query</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="n">assert</span><span class="o">!</span><span class="p">(</span><span class="n">path_query</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="n">assert</span><span class="o">!</span><span class="p">(</span><span class="n">path_query</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="n">assert</span><span class="o">!</span><span class="p">(</span><span class="n">path_query</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="o">=</span><span class="w"> </span><span class="mi">27</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="n">assert</span><span class="o">!</span><span class="p">(</span><span class="n">path_query</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="o">=</span><span class="w"> </span><span class="mi">18</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="n">assert</span><span class="o">!</span><span class="p">(</span><span class="n">path_query</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="o">=</span><span class="w"> </span><span class="mi">18</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="n">assert</span><span class="o">!</span><span class="p">(</span><span class="n">path_query</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="o">=</span><span class="w"> </span><span class="mi">14</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="n">assert</span><span class="o">!</span><span class="p">(</span><span class="n">path_query</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">
+</span></code></pre></div><h3 id="木の直径クエリ">木の直径クエリ</h3>
+<div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="cp">#[</span><span class="cp">derive(Clone, Debug)</span><span class="cp">]</span><span class="w">
+</span><span class="w"></span><span class="k">struct</span> <span class="nc">Diameter</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="n">diam</span>: <span class="kt">usize</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="n">max_dist_left</span>: <span class="kt">usize</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="n">max_dist_right</span>: <span class="kt">usize</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="n">length</span>: <span class="kt">usize</span>
+<span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">
+</span><span class="w"></span><span class="k">impl</span><span class="w"> </span><span class="n">Diameter</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="k">fn</span> <span class="nf">new</span><span class="p">(</span><span class="n">l</span>: <span class="kt">usize</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Self</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="n">Diameter</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">diam</span>: <span class="nc">l</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">max_dist_left</span>: <span class="nc">l</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">max_dist_right</span>: <span class="nc">l</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">length</span>: <span class="nc">l</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">
+</span><span class="w"></span><span class="k">impl</span><span class="w"> </span><span class="n">Cluster</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Diameter</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="k">fn</span> <span class="nf">identity</span><span class="p">(</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Self</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="n">Diameter</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">diam</span>: <span class="mi">0</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">max_dist_left</span>: <span class="mi">0</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">max_dist_right</span>: <span class="mi">0</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">length</span>: <span class="mi">0</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="k">fn</span> <span class="nf">compress</span><span class="p">(</span><span class="n">a</span>: <span class="nc">Self</span><span class="p">,</span><span class="w"> </span><span class="n">b</span>: <span class="nc">Self</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Self</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="n">Diameter</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">diam</span>: <span class="o">*</span><span class="p">[</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">diam</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">diam</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">max_dist_right</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">max_dist_left</span><span class="p">]</span><span class="p">.</span><span class="n">into_iter</span><span class="p">(</span><span class="p">)</span><span class="p">.</span><span class="n">max</span><span class="p">(</span><span class="p">)</span><span class="p">.</span><span class="n">unwrap</span><span class="p">(</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">max_dist_left</span>: <span class="nc">std</span>::<span class="n">cmp</span>::<span class="n">max</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">max_dist_left</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">max_dist_left</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">max_dist_right</span>: <span class="nc">std</span>::<span class="n">cmp</span>::<span class="n">max</span><span class="p">(</span><span class="n">b</span><span class="p">.</span><span class="n">max_dist_right</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">max_dist_right</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">length</span>: <span class="nc">a</span><span class="p">.</span><span class="n">length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">length</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="k">fn</span> <span class="nf">rake</span><span class="p">(</span><span class="n">a</span>: <span class="nc">Self</span><span class="p">,</span><span class="w"> </span><span class="n">b</span>: <span class="nc">Self</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Self</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="n">Diameter</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">diam</span>: <span class="o">*</span><span class="p">[</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">diam</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">diam</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">max_dist_right</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">max_dist_right</span><span class="w"> </span><span class="p">]</span><span class="p">.</span><span class="n">into_iter</span><span class="p">(</span><span class="p">)</span><span class="p">.</span><span class="n">max</span><span class="p">(</span><span class="p">)</span><span class="p">.</span><span class="n">unwrap</span><span class="p">(</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">max_dist_left</span>: <span class="nc">std</span>::<span class="n">cmp</span>::<span class="n">max</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">max_dist_left</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">max_dist_right</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">max_dist_right</span>: <span class="nc">std</span>::<span class="n">cmp</span>::<span class="n">max</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">max_dist_right</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">max_dist_right</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">length</span>: <span class="nc">a</span><span class="p">.</span><span class="n">length</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="k">fn</span> <span class="nf">reverse</span><span class="p">(</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="n">std</span>::<span class="n">mem</span>::<span class="n">swap</span><span class="p">(</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">max_dist_left</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">max_dist_right</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">
+</span></code></pre></div><p>というふうにClusterを定義すると</p>
+<div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">diameter_cut_test</span><span class="p">(</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&#34;diameter cut&#34;</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">v</span>: <span class="nb">Vec</span><span class="kp">&amp;</span><span class="nc">lt</span><span class="p">;</span><span class="n">_</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="p">.</span><span class="mi">13</span><span class="p">)</span><span class="p">.</span><span class="n">map</span><span class="p">(</span><span class="o">|</span><span class="n">i</span><span class="o">|</span><span class="w"> </span><span class="n">Vertex</span>::<span class="n">new</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="p">)</span><span class="p">.</span><span class="n">collect</span><span class="p">(</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">edges</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="mi">0</span><span class="k">usize</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="k">usize</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="k">usize</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="p">]</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">es</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Vec</span>::<span class="n">new</span><span class="p">(</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">edges</span><span class="p">.</span><span class="n">iter</span><span class="p">(</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="n">es</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">link</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">*</span><span class="n">a</span><span class="p">]</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="o">*</span><span class="n">b</span><span class="p">]</span><span class="p">,</span><span class="w"> </span><span class="n">Diameter</span>::<span class="n">new</span><span class="p">(</span><span class="o">*</span><span class="n">w</span><span class="p">)</span><span class="p">)</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="n">cut</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&#34;0 diameter = {}&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">expose</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">)</span><span class="p">.</span><span class="n">fold</span><span class="p">(</span><span class="p">)</span><span class="p">.</span><span class="n">diam</span><span class="p">)</span><span class="p">;</span><span class="w"> </span><span class="c1">// -&gt; 24
+</span><span class="c1"></span><span class="w">    </span><span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&#34;5 diameter = {}&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">expose</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="p">)</span><span class="p">.</span><span class="n">fold</span><span class="p">(</span><span class="p">)</span><span class="p">.</span><span class="n">diam</span><span class="p">)</span><span class="p">;</span><span class="w"> </span><span class="c1">// -&gt; 20
+</span><span class="c1"></span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">
+</span></code></pre></div><p>AOJの直径のやつ適当にいくつか通しました(提出できない)</p>
+<h3 id="最遠点クエリ">最遠点クエリ</h3>
+<div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="cp">#[</span><span class="cp">derive(Clone, Debug)</span><span class="cp">]</span><span class="w">
+</span><span class="w"></span><span class="k">struct</span> <span class="nc">Farthest</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="n">ans</span>: <span class="kt">usize</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="n">max_dist_left</span>: <span class="kt">usize</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="n">max_dist_right</span>: <span class="kt">usize</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="n">length</span>: <span class="kt">usize</span>
+<span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">
+</span><span class="w"></span><span class="k">impl</span><span class="w"> </span><span class="n">Farthest</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="k">fn</span> <span class="nf">new</span><span class="p">(</span><span class="n">l</span>: <span class="kt">usize</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Self</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="n">Farthest</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">ans</span>: <span class="nc">l</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">max_dist_left</span>: <span class="nc">l</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">max_dist_right</span>: <span class="nc">l</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">length</span>: <span class="nc">l</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">
+</span><span class="w"></span><span class="k">impl</span><span class="w"> </span><span class="n">Cluster</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Farthest</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="k">fn</span> <span class="nf">identity</span><span class="p">(</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Self</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="n">Farthest</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">ans</span>: <span class="mi">0</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">max_dist_left</span>: <span class="mi">0</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">max_dist_right</span>: <span class="mi">0</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">length</span>: <span class="mi">0</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="k">fn</span> <span class="nf">compress</span><span class="p">(</span><span class="n">a</span>: <span class="nc">Self</span><span class="p">,</span><span class="w"> </span><span class="n">b</span>: <span class="nc">Self</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Self</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="n">Farthest</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">ans</span>: <span class="nc">std</span>::<span class="n">cmp</span>::<span class="n">max</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">max_dist_right</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">max_dist_left</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">max_dist_left</span>: <span class="nc">std</span>::<span class="n">cmp</span>::<span class="n">max</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">max_dist_left</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">max_dist_left</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">max_dist_right</span>: <span class="nc">std</span>::<span class="n">cmp</span>::<span class="n">max</span><span class="p">(</span><span class="n">b</span><span class="p">.</span><span class="n">max_dist_right</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">max_dist_right</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">length</span>: <span class="nc">a</span><span class="p">.</span><span class="n">length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">length</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="k">fn</span> <span class="nf">rake</span><span class="p">(</span><span class="n">a</span>: <span class="nc">Self</span><span class="p">,</span><span class="w"> </span><span class="n">b</span>: <span class="nc">Self</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Self</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="n">Farthest</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">ans</span>: <span class="mi">0</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">max_dist_left</span>: <span class="nc">std</span>::<span class="n">cmp</span>::<span class="n">max</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">max_dist_left</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">max_dist_right</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">max_dist_right</span>: <span class="nc">std</span>::<span class="n">cmp</span>::<span class="n">max</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">max_dist_right</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">max_dist_right</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">length</span>: <span class="nc">a</span><span class="p">.</span><span class="n">length</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="k">fn</span> <span class="nf">reverse</span><span class="p">(</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="n">std</span>::<span class="n">mem</span>::<span class="n">swap</span><span class="p">(</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">max_dist_left</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">max_dist_right</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">
+</span></code></pre></div><p>というふうにClusterを定義すると</p>
+<p><a href="https://atcoder.jp/contests/tkppc/tasks/tkppc2015_j">J - 仕事をしよう！ (Working!)</a></p>
+<p>が解けます. サンプルは通りました(AtCoderさんverifyさせてくださいおねがいします)</p>
+<div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">farthest_test</span><span class="p">(</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&#34;farthest&#34;</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span>::<span class="n">new</span><span class="p">(</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="n">std</span>::<span class="n">io</span>::<span class="n">stdin</span><span class="p">(</span><span class="p">)</span><span class="p">.</span><span class="n">read_to_string</span><span class="p">(</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="k">mut</span><span class="w"> </span><span class="n">buf</span><span class="p">)</span><span class="p">.</span><span class="n">unwrap</span><span class="p">(</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">iter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">buf</span><span class="p">.</span><span class="n">split_whitespace</span><span class="p">(</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">q</span>: <span class="kt">usize</span> <span class="o">=</span><span class="w"> </span><span class="n">iter</span><span class="p">.</span><span class="n">next</span><span class="p">(</span><span class="p">)</span><span class="p">.</span><span class="n">unwrap</span><span class="p">(</span><span class="p">)</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="p">)</span><span class="p">.</span><span class="n">unwrap</span><span class="p">(</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">v</span>: <span class="nb">Vec</span><span class="kp">&amp;</span><span class="nc">lt</span><span class="p">;</span><span class="n">_</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="p">.</span><span class="mi">1</span><span class="p">)</span><span class="p">.</span><span class="n">map</span><span class="p">(</span><span class="o">|</span><span class="n">_</span><span class="o">|</span><span class="w"> </span><span class="n">Vertex</span>::<span class="n">new</span><span class="p">(</span><span class="p">(</span><span class="p">)</span><span class="p">)</span><span class="p">)</span><span class="p">.</span><span class="n">collect</span><span class="p">(</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">edges</span><span class="w"> </span>:<span class="nb">Vec</span><span class="kp">&amp;</span><span class="nc">lt</span><span class="p">;</span><span class="p">(</span><span class="kt">usize</span><span class="p">,</span><span class="w"> </span><span class="kt">usize</span><span class="p">,</span><span class="w"> </span><span class="kt">usize</span><span class="p">)</span><span class="o">&gt;</span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="p">.</span><span class="n">q</span><span class="p">)</span><span class="p">.</span><span class="n">map</span><span class="p">(</span><span class="o">|</span><span class="n">_</span><span class="o">|</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">(</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">iter</span><span class="p">.</span><span class="n">next</span><span class="p">(</span><span class="p">)</span><span class="p">.</span><span class="n">unwrap</span><span class="p">(</span><span class="p">)</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="p">)</span><span class="p">.</span><span class="n">unwrap</span><span class="p">(</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">iter</span><span class="p">.</span><span class="n">next</span><span class="p">(</span><span class="p">)</span><span class="p">.</span><span class="n">unwrap</span><span class="p">(</span><span class="p">)</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="p">)</span><span class="p">.</span><span class="n">unwrap</span><span class="p">(</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">iter</span><span class="p">.</span><span class="n">next</span><span class="p">(</span><span class="p">)</span><span class="p">.</span><span class="n">unwrap</span><span class="p">(</span><span class="p">)</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="p">)</span><span class="p">.</span><span class="n">unwrap</span><span class="p">(</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="p">)</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="p">}</span><span class="p">)</span><span class="p">.</span><span class="n">collect</span><span class="p">(</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">es</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Vec</span>::<span class="n">new</span><span class="p">(</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">edges</span><span class="p">.</span><span class="n">iter</span><span class="p">(</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">*</span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">new_v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Vertex</span>::<span class="n">new</span><span class="p">(</span><span class="p">(</span><span class="p">)</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">v</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">new_v</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">link</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">*</span><span class="n">a</span><span class="p">]</span><span class="p">,</span><span class="w"> </span><span class="n">new_v</span><span class="p">,</span><span class="w"> </span><span class="n">Farthest</span>::<span class="n">new</span><span class="p">(</span><span class="o">*</span><span class="n">c</span><span class="p">)</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">es</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">len</span><span class="p">(</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="o">*</span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">es</span><span class="p">[</span><span class="o">*</span><span class="n">a</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">es</span><span class="p">[</span><span class="o">*</span><span class="n">a</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="p">.</span><span class="mi">1</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">cut</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="n">q</span><span class="p">]</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">link</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="n">q</span><span class="p">]</span><span class="p">,</span><span class="w"> </span><span class="n">Farthest</span>::<span class="n">new</span><span class="p">(</span><span class="o">*</span><span class="n">c</span><span class="p">)</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="o">*</span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w"></span><span class="w">            </span><span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&#34;farthest from {} = {}&#34;</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">expose</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">*</span><span class="n">a</span><span class="p">]</span><span class="p">)</span><span class="p">.</span><span class="n">fold</span><span class="p">(</span><span class="p">)</span><span class="p">.</span><span class="n">ans</span><span class="p">)</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="w">
+</span></code></pre></div><p>Nearest Marked Vertex Queryはまだやってない.</p>
+<p>何が載るのかはさっぱりわかりません, だれか解明して.</p>
+
+
+    <div class="article-footer">
+      <a style="display:none;" href="https://niuez.github.io/posts/entry/2019/06/29/161729/"></a>
+      <h1 style="display:none;">top-tree実装体験木</h1>
+      <div></div>
+    </div>
+		</div>
+
+		<div class="post-tags">
+			
+				
+			
+		</div>
+		</div>
+	
+<div class="footer wrapper">
+	<nav class="nav">
+		<div> This site use Google Analytics |  <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-157596444-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+<script>feather.replace()</script>
+</body>
+</html>

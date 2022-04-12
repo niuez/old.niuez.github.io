@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Transform on Niue&#39;z Blog</title>
+    <link>https://niuez.github.io/tags/transform/</link>
+    <description>Recent content in Transform on Niue&#39;z Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>jp</language>
+    <copyright>This site use Google Analytics</copyright>
+    <lastBuildDate>Mon, 03 Feb 2020 21:20:02 +0900</lastBuildDate>
+    
+	<atom:link href="https://niuez.github.io/tags/transform/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>約数畳み込みを使って最大公約数と集合をうまく扱うメモ</title>
+      <link>https://niuez.github.io/posts/divisor_transform_memo/</link>
+      <pubDate>Mon, 03 Feb 2020 21:20:02 +0900</pubDate>
+      
+      <guid>https://niuez.github.io/posts/divisor_transform_memo/</guid>
+      <description>移植テストです</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>約数畳み込みを使って最大公約数と集合をうまく扱うメモ - Niue&#39;z Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="約数畳み込みを使って最大公約数と集合をうまく扱うメモ" />
+<meta property="og:description" content="移植テストです" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://niuez.github.io/posts/divisor_transform_memo/" />
+<meta property="article:published_time" content="2020-02-03T21:20:02+09:00" />
+<meta property="article:modified_time" content="2020-02-03T21:20:02+09:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="約数畳み込みを使って最大公約数と集合をうまく扱うメモ"/>
+<meta name="twitter:description" content="移植テストです"/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="https://niuez.github.io/css/highlight-native.css">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="https://niuez.github.io/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://niuez.github.io/css/main.css" /><link rel="stylesheet" type="text/css" href="https://niuez.github.io/css/dark.css"  />
+	<link rel="stylesheet" type="text/css" href="https://niuez.github.io/css/custom-dark.css"  />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="https://niuez.github.io/js/main.js"></script>
+
+  <script type="text/javascript" src="https://s.hatena.ne.jp/js/HatenaStar.js"></script>
+  <script type="text/javascript">
+  Hatena.Star.Token = 'e2714bc09c0f22d36f9bea483e4c3efc2846d9e9';
+  Hatena.Star.SiteConfig = {
+    entryNodes: {
+      'div.article-footer': {
+        uri: 'a',
+        title: 'h1',
+        container: 'div'
+      }
+    }
+  };
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+              showMathMenu: false, //disables context menu
+              tex2jax: {
+              inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+             }
+      });
+  </script>
+
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<base href="https://niuez.github.io/">
+	<h1 class="site-title"><a href="https://niuez.github.io/">Niue&#39;z Blog</a></h1>
+	<div class="site-description"><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/niuez" title="Github"><i data-feather="github"></i></a><a href="https://twitter.com/xiuez" title="Twitter"><i data-feather="twitter"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="/">Home</a>
+			</li>
+			
+			<li>
+				<a href="/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="/about">About</a>
+			</li>
+			
+			<li>
+				<a href="/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">約数畳み込みを使って最大公約数と集合をうまく扱うメモ</h1>
+			<div class="meta">Posted at &mdash; Feb 3, 2020</div>
+		</div>
+
+		<div class="markdown">
+			<p>移植テストです</p>
+<p>書いて置かないと頭に置いておけない気がしたのでメモを残す. 間違ってたらごめん</p>
+<p>これについて気になったので</p>
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">メビウス関数とかを導入するとより形式的に約数とかを扱えるようになるのかなあ</p>&mdash; Niuez (@xiuez) <a href="https://twitter.com/xiuez/status/1219811848263852033?ref_src=twsrc%5Etfw">January 22, 2020</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<h2 id="概要">概要</h2>
+<ul>
+<li>約数畳み込み</li>
+<li>メビウス関数</li>
+<li>メビウスの反転公式(約数畳み込みの逆操作)</li>
+<li>約数畳み込みと逆約数畳み込みのアルゴリズム $O(A \log{\log A})$</li>
+<li>最大公約数の扱い</li>
+<li>集合の扱い</li>
+<li><a href="https://atcoder.jp/contests/agc038/tasks/agc038_c">AGC038C LCMs</a>の解き方</li>
+</ul>
+<p>ネタバレあるので気をつけてください</p>
+<h2 id="約数畳み込み">約数畳み込み</h2>
+<p>関数$f(n)$に対する約数畳み込みとは,</p>
+<p>$\begin{eqnarray} g(n) = \sum_{ d | n } f(d) \end{eqnarray}$</p>
+<p>あとで解説しますが, 方針としてはこの畳み込んだ後の$g(n)$を問題を解けるように定義してやることでGCDを綺麗に扱うことができます.</p>
+<h2 id="メビウス関数">メビウス関数</h2>
+<p>実際に$g(n)$を定義してみます. 一番有名なのは$g(n) = \delta(n, 1)$です. $\delta(n, 1)$はクロネッカーのデルタです. このとき,</p>
+<p>$\begin{eqnarray} g(n) = \delta(n, 1) = \sum_{ d | n } f(d) \end{eqnarray}$</p>
+<p>を満たす$f(n)$はメビウス関数と呼ばれ, $\mu(n)$と書きます.(<a href="https://ja.wikipedia.org/wiki/%E3%83%A1%E3%83%93%E3%82%A6%E3%82%B9%E9%96%A2%E6%95%B0">メビウス関数 - Wikipedia</a>)</p>
+<h2 id="メビウスの反転公式約数畳み込みの逆操作">メビウスの反転公式(約数畳み込みの逆操作)</h2>
+<p>上の式のままだと, $f(n)$を導くのは困難です. ここで登場するのがメビウスの反転公式です. これは, 約数畳み込みの逆操作に当たります.</p>
+<p>$$ \begin{eqnarray}
+g(n) &amp;=&amp; \sum_{ d | n } f(d) \\<br>
+f(n) &amp;=&amp; \sum_{ d | n } g(d) \mu(\frac{n}{d})
+\end{eqnarray} $$</p>
+<p>これで$g(n)$を定義してから反転公式を適用することで$f(n)$を導くことができます.</p>
+<h2 id="約数畳み込みと逆約数畳み込みのアルゴリズム">約数畳み込みと逆約数畳み込みのアルゴリズム</h2>
+<p>約数畳み込みとその逆はnoshi91さんが計算量$O(A \log{\log A})$で計算するアルゴリズムの記事を紹介しています.</p>
+<p><a href="http://noshi91.hatenablog.com/entry/2018/12/27/121649">http://noshi91.hatenablog.com/entry/2018/12/27/121649</a></p>
+<p>逆約数畳み込みの実装例</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">inverse_divisor_transform</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">a</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">a</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="p">)</span><span class="p">;</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span> <span class="n">sieve</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">true</span><span class="p">)</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">p</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="n">p</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="o">+</span><span class="o">+</span><span class="n">p</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">sieve</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">p</span><span class="p">;</span> <span class="n">k</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="o">-</span><span class="o">-</span><span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">sieve</span><span class="p">[</span><span class="n">k</span> <span class="o">*</span> <span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+                <span class="n">a</span><span class="p">[</span><span class="n">k</span> <span class="o">*</span> <span class="n">p</span><span class="p">]</span> <span class="o">-</span><span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><h2 id="最大公約数の扱い">最大公約数の扱い</h2>
+<p>自然数$n, m$に対して,</p>
+<p>$\begin{eqnarray} \sum_{d | n, d | m} f(d) \end{eqnarray}$</p>
+<p>を考えると,</p>
+<p>$$
+\begin{eqnarray}
+\sum_{d | n, d | m} f(d) &amp;=&amp; \sum_{d | \gcd(n, m)} f(d) \\<br>
+&amp;=&amp; g(\gcd(n, m))
+\end{eqnarray}
+$$</p>
+<p>となり, $\gcd(n, m)$に対する操作ができます. 例えば, $f(n) = \mu(n), g(n) = \delta(n, 1)$とすると, $g(\gcd(n, m))$は,「$n, m$が互いに素であれば$1$, そうでなければ$0$」となり, 互いに素かどうかの判定ができます.</p>
+<h2 id="集合の扱い">集合の扱い</h2>
+<p>例えば, $c_m(d) = [d | m$]という関数($d$が$m$を割り切るなら$1$, そうでなければ$0$)を考えると,</p>
+<p>$$ \sum_{d | n, d | m} f(d) = \sum_{ d | n } f(d) c_m(d) $$</p>
+<p>と変形できます.</p>
+<p>これを応用します. 自然数の集合$S$ を考え, $c(d) = \sum_{m \in S} c_m(d)$とすると,</p>
+<p>$$
+\begin{eqnarray}
+\sum_{d | n} f(d) c(d) &amp;=&amp; \sum_{m \in S}\sum_{d | n} f(d) c_m(d) \\<br>
+&amp;=&amp; \sum_{m \in S} g(\gcd(n, m))
+\end{eqnarray}
+$$</p>
+<p>となります.</p>
+<p>$f(n) = \mu(n), g(n) = \delta(n, 1)$を考えてみると, 「集合$S$の中に$n$と互いに素な要素の数」を計算しています.</p>
+<h2 id="agc038c-lcmsを解く">AGC038C LCMsを解く</h2>
+<blockquote><h4><a href="https://atcoder.jp/contests/agc038/tasks/agc038_c">AGC038 C - LCMs</a></h4></blockquote>
+<p>$lcm(x, y) = x (\frac{y}{\gcd(x, y)})$と変形します. 約数畳み込みを使う方針でやると, この$(\frac{y}{\gcd(x, y)})$が最後に来てほしい気持ちになります. $g(n) = \frac{1}{n}$と置くと,</p>
+<p>$$
+\begin{eqnarray}
+\frac{y}{\gcd(x, y)} &amp;=&amp; y \cdot g(\gcd(x, y)) \\<br>
+&amp;=&amp; \sum_{d | gcd(x, y)} f(d) y \\<br>
+&amp;=&amp; \sum_{d | x, d | y} f(d) y \\<br>
+&amp;=&amp; \sum_{d | x} f(d) s_y(d)
+\end{eqnarray}
+$$</p>
+<p>ここで$s_y(d)$を「$d$が$y$を割り切るなら$y$, そうでなければ$0$」としました.<br>
+応用して, 自然数の集合$S$ を考え, $s(d) = \sum_{m \in S} s_m(d)$とすると,</p>
+<p>$$
+\begin{eqnarray}
+\sum_{d | x} f(d) s(d) &amp;=&amp; \sum_{y \in S}\sum_{d | x} f(d) s_y(d) \\<br>
+&amp;=&amp; \sum_{y \in S} y \cdot g(\gcd(x, y))
+\end{eqnarray}
+$$</p>
+<p>と計算できて, これに$x$を掛けると「集合$S$の中の各要素と$x$の最大公約数の和」を計算できました.<br>
+計算量は, $O(A \log{\log A} + N \sqrt A)$です.</p>
+<p><a href="https://atcoder.jp/contests/agc038/submissions/9703431">C - LCMs の僕の提出</a></p>
+<p>ソースコード</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cp">#</span><span class="cp">include</span> <span class="cpf">&lt;bits/stdc++.h&gt;</span><span class="cp">
+</span><span class="cp"></span><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">i64</span> <span class="o">=</span> <span class="kt">long</span> <span class="kt">long</span><span class="p">;</span>
+<span class="cp">#</span><span class="cp">define rep(i,s,e) for(i64 (i) = (s);(i) &lt; (e);(i)++)</span><span class="cp">
+</span><span class="cp"></span>
+<span class="cm">/* modint */</span>
+<span class="cm">/* IO(niu::fin, niu::fout) */</span>
+
+<span class="k">const</span> <span class="n">i64</span> <span class="n">MOD</span> <span class="o">=</span> <span class="mi">998244353</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">fp</span> <span class="o">=</span> <span class="n">modint</span><span class="o">&lt;</span><span class="n">MOD</span><span class="o">&gt;</span><span class="p">;</span>
+
+
+<span class="cp">#</span><span class="cp">include</span> <span class="cpf">&lt;bits/stdc++.h&gt;</span><span class="cp">
+</span><span class="cp"></span><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">i64</span> <span class="o">=</span> <span class="kt">long</span> <span class="kt">long</span><span class="p">;</span>
+
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">inverse_divisor_transform</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">a</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">a</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="p">)</span><span class="p">;</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span> <span class="n">sieve</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">true</span><span class="p">)</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">p</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="n">p</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="o">+</span><span class="o">+</span><span class="n">p</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">sieve</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">p</span><span class="p">;</span> <span class="n">k</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="o">-</span><span class="o">-</span><span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">sieve</span><span class="p">[</span><span class="n">k</span> <span class="o">*</span> <span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+                <span class="n">a</span><span class="p">[</span><span class="n">k</span> <span class="o">*</span> <span class="n">p</span><span class="p">]</span> <span class="o">-</span><span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">constexpr</span> <span class="n">i64</span> <span class="n">A</span> <span class="o">=</span> <span class="mf">1e6</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">fp</span><span class="o">&gt;</span> <span class="n">f</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="p">;</span>
+  <span class="n">rep</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">A</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">f</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">=</span> <span class="n">fp</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="p">.</span><span class="n">pow</span><span class="p">(</span><span class="n">MOD</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">inverse_divisor_transform</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="p">;</span>
+
+  <span class="n">i64</span> <span class="n">N</span><span class="p">;</span>
+  <span class="n">niu</span><span class="o">:</span><span class="o">:</span><span class="n">fin</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span class="n">N</span><span class="p">;</span>
+  <span class="n">vector</span><span class="o">&lt;</span><span class="n">fp</span><span class="o">&gt;</span> <span class="n">sum</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="p">;</span>
+  <span class="n">fp</span> <span class="n">ans</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">rep</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">N</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">x</span><span class="p">;</span>
+    <span class="n">niu</span><span class="o">:</span><span class="o">:</span><span class="n">fin</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span class="n">x</span><span class="p">;</span>
+    <span class="n">fp</span> <span class="n">res</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">d</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">d</span> <span class="o">*</span> <span class="n">d</span> <span class="o">&lt;</span><span class="o">=</span> <span class="n">x</span><span class="p">;</span> <span class="n">d</span><span class="o">+</span><span class="o">+</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">x</span> <span class="o">%</span> <span class="n">d</span> <span class="o">=</span><span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">res</span> <span class="o">+</span><span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">*</span> <span class="n">sum</span><span class="p">[</span><span class="n">d</span><span class="p">]</span><span class="p">;</span>
+        <span class="n">sum</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">+</span><span class="o">=</span> <span class="n">fp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="n">d</span> <span class="o">!</span><span class="o">=</span> <span class="n">d</span><span class="p">)</span> <span class="p">{</span>
+          <span class="n">res</span> <span class="o">+</span><span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="n">x</span> <span class="o">/</span> <span class="n">d</span><span class="p">]</span> <span class="o">*</span> <span class="n">sum</span><span class="p">[</span><span class="n">x</span> <span class="o">/</span> <span class="n">d</span><span class="p">]</span><span class="p">;</span>
+          <span class="n">sum</span><span class="p">[</span><span class="n">x</span> <span class="o">/</span> <span class="n">d</span><span class="p">]</span> <span class="o">+</span><span class="o">=</span> <span class="n">fp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="n">ans</span> <span class="o">+</span><span class="o">=</span> <span class="n">res</span> <span class="o">*</span> <span class="n">fp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">niu</span><span class="o">:</span><span class="o">:</span><span class="n">fout</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">ans</span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="p">)</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="sa"></span><span class="s">&#34;</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+    <div class="article-footer">
+      <a style="display:none;" href="https://niuez.github.io/posts/divisor_transform_memo/"></a>
+      <h1 style="display:none;">約数畳み込みを使って最大公約数と集合をうまく扱うメモ</h1>
+      <div></div>
+    </div>
+		</div>
+
+		<div class="post-tags">
+			
+				
+					<nav class="nav tags">
+							<ul class="flat">
+								
+								<li><a href="/tags/divisor">Divisor</a></li>
+								
+								<li><a href="/tags/transform">Transform</a></li>
+								
+								<li><a href="/tags/mobius">Mobius</a></li>
+								
+								<li><a href="/tags/gcd">GCD</a></li>
+								
+								<li><a href="/tags/lcm">LCM</a></li>
+								
+							</ul>
+					</nav>
+				
+			
+		</div>
+		</div>
+	
+<div class="footer wrapper">
+	<nav class="nav">
+		<div> This site use Google Analytics |  <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-157596444-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+<script>feather.replace()</script>
+</body>
+</html>

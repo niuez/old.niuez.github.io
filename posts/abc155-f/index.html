@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>ABC155 F Perils in ParallelをF_2の行列で解く - Niue&#39;z Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="ABC155 F Perils in ParallelをF_2の行列で解く" />
+<meta property="og:description" content="ABC155-F Perils in Parallel - kotatsugameの日記を読んだときのメモです." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://niuez.github.io/posts/abc155-f/" />
+<meta property="article:published_time" content="2020-02-22T16:40:51+09:00" />
+<meta property="article:modified_time" content="2020-02-22T16:40:51+09:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="ABC155 F Perils in ParallelをF_2の行列で解く"/>
+<meta name="twitter:description" content="ABC155-F Perils in Parallel - kotatsugameの日記を読んだときのメモです."/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="https://niuez.github.io/css/highlight-native.css">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="https://niuez.github.io/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://niuez.github.io/css/main.css" /><link rel="stylesheet" type="text/css" href="https://niuez.github.io/css/dark.css"  />
+	<link rel="stylesheet" type="text/css" href="https://niuez.github.io/css/custom-dark.css"  />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="https://niuez.github.io/js/main.js"></script>
+
+  <script type="text/javascript" src="https://s.hatena.ne.jp/js/HatenaStar.js"></script>
+  <script type="text/javascript">
+  Hatena.Star.Token = 'e2714bc09c0f22d36f9bea483e4c3efc2846d9e9';
+  Hatena.Star.SiteConfig = {
+    entryNodes: {
+      'div.article-footer': {
+        uri: 'a',
+        title: 'h1',
+        container: 'div'
+      }
+    }
+  };
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+              showMathMenu: false, //disables context menu
+              tex2jax: {
+              inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+             }
+      });
+  </script>
+
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<base href="https://niuez.github.io/">
+	<h1 class="site-title"><a href="https://niuez.github.io/">Niue&#39;z Blog</a></h1>
+	<div class="site-description"><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/niuez" title="Github"><i data-feather="github"></i></a><a href="https://twitter.com/xiuez" title="Twitter"><i data-feather="twitter"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="/">Home</a>
+			</li>
+			
+			<li>
+				<a href="/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="/about">About</a>
+			</li>
+			
+			<li>
+				<a href="/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">ABC155 F Perils in ParallelをF_2の行列で解く</h1>
+			<div class="meta">Posted at &mdash; Feb 22, 2020</div>
+		</div>
+
+		<div class="markdown">
+			<p><a href="https://kotatsugame.hatenablog.com/entry/2020/02/19/031012">ABC155-F Perils in Parallel - kotatsugameの日記</a>を読んだときのメモです.</p>
+<p><a href="https://atcoder.jp/contests/abc155/tasks/abc155_f">AtCoder F - Perils in Parallel</a>を$\mathbb{F}_2$上の行列として考えて解きます. <strong>以下この問題のネタバレを含みます</strong></p>
+<h2 id="問題を簡単にする">問題を簡単にする</h2>
+<ul>
+<li>座標$i \  (0 \le i \le N)$のスイッチの状態が$B_i$</li>
+<li>$i \ (0 \le i \le M)$のコードは$[L_i, R_i) \ (0 \le L_i, R_i \le N)$の範囲のスイッチのオンオフを切り替える.</li>
+</ul>
+<p>とします.</p>
+<h2 id="l-rを行列で表示">$L, R$を行列で表示</h2>
+<p>気持ちとしては,</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">(コードを表した行列) * (コードを切ったか切っていないか) = (爆弾のスイッチを切り替えるか切り替えないか)
+</code></pre></div><p>とすると嬉しい. なので,</p>
+<p>$(N, M)$型行列$A$ * $(M, 1)$型行列$\vec{x}$ $=$ $(N, 1)$型行列$B$ という感じに.</p>
+<p>サンプル1で試してみます.</p>
+<div class="highlight"><pre class="chroma"><code class="language-txt" data-lang="txt">3 4
+5 1
+10 1
+8 0
+1 10
+4 5
+6 7
+8 9
+</code></pre></div><div>
+$$
+B = \left(
+  \begin{array}{c}
+    1 \\
+    0 \\
+    1
+  \end{array}
+\right)
+$$
+</div>
+<div>
+$$
+A = \left(
+  \begin{array}{ccc}
+    1 & 1 & 0 & 0 \\
+    1 & 0 & 0 & 0 \\
+    1 & 0 & 0 & 1
+  \end{array}
+\right)
+$$
+</div>
+<p>$A$は, 「どこの爆弾のスイッチを切り替えるか」を縦に並べて, それを横にくっつけた感じです.</p>
+<p>答えとなる$\vec{x}$は,</p>
+<div>
+$$
+\vec{x} = \left(
+  \begin{array}{c}
+    1 \\
+    0 \\
+    0 \\
+    1
+  \end{array}
+\right)
+$$
+</div>
+<p>となります.</p>
+<h2 id="求め方">求め方</h2>
+<p>$A \vec{x} = B$を解くわけなんですが, このままだと解きにくいので行列の基本変形をすることで, $A$を下三角行列に変換します. <a href="https://ja.wikipedia.org/wiki/%E8%A1%8C%E5%88%97%E3%81%AE%E5%9F%BA%E6%9C%AC%E5%A4%89%E5%BD%A2">行列の基本変形</a></p>
+<p>普通, 連立方程式を解く時は行の基本変形を行います. しかし, 掃き出し法は計算に時間がかかります. ここでは, 列の基本変形をすることで計算量が落ちることを使います. この証明は後にします.</p>
+<p>$A$に基本行列$P_1 P_2 \cdots P_k$を右から掛けて(列の基本変形なので)$A'$と下三角行列に変形したとします. $A&rsquo; \vec{x&rsquo;} = B$を解くのは簡単です.</p>
+<p>$\vec{x&rsquo;}$から$\vec{x}$を求めることを考えます.</p>
+<p>$$ \begin{eqnarray}
+A&rsquo; \vec{x&rsquo;} &amp;=&amp; B \\<br>
+A P_1 P_2 \cdots P_k \vec{x&rsquo;} &amp;=&amp; A \vec{x} \\<br>
+P_1 P_2 \cdots P_k \vec{x&rsquo;} &amp;=&amp; \vec{x} \\<br>
+\end{eqnarray} $$</p>
+<p>となるので, $\vec{x&rsquo;}$を$P_k$から行の基本変形していけば$\vec{x}$が求まります.</p>
+<h2 id="列の基本変形による計算量削減">列の基本変形による計算量削減</h2>
+<p>縦方向には, $1$が連続していることを使えば, 計算量が削減できます.</p>
+<p>同じ始点$L$を持つ区間, $[L, R_1), [L, R_2), \cdots, [L, R_n)$を$[L, R_1), [R_1, R_2), \cdots, [R_{n-1}, R_n)$と掃き出します. すると, 以下のように計算量が計算できます.</p>
+<p>掃き出したときに区間が半分未満(ちょうど半分になっていく)になるとすると, $O(\log N)$回しか処理されません. また, スイッチは$M$個なので$O(M \log N)$です.<br>
+区間が半分以上になるのは各$L \ (0 \le L &lt; N)$について$O(\log N)$個しか無いので$O(N \log N)$です.<br>
+合わせて$O((N+M) \log N)$です.<br>
+吐き出す前にソートが必要なので$O((N + M) \log (N) \log ((N + M) \log N))$です.</p>
+<h2 id="コード">コード</h2>
+<p><a href="https://atcoder.jp/contests/abc155/submissions/10248008">提出 #10248008 - AtCoder Beginner Contest 155</a></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cp">#</span><span class="cp">include</span> <span class="cpf">&lt;bits/stdc++.h&gt;</span><span class="cp">
+</span><span class="cp"></span><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">i64</span> <span class="o">=</span> <span class="kt">long</span> <span class="kt">long</span><span class="p">;</span>
+<span class="cp">#</span><span class="cp">define rep(i,s,e) for(i64 (i) = (s);(i) &lt; (e);(i)++)</span><span class="cp">
+</span><span class="cp"></span><span class="cp">#</span><span class="cp">define all(x) x.begin(),x.end()</span><span class="cp">
+</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">i64</span> <span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">;</span>
+  <span class="n">cin</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span class="n">N</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span class="n">M</span><span class="p">;</span>
+  <span class="n">vector</span><span class="o">&lt;</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">i64</span><span class="p">,</span> <span class="n">i64</span><span class="o">&gt;</span><span class="o">&gt;</span> <span class="n">vec</span><span class="p">;</span>
+  <span class="n">rep</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">N</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">i64</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">;</span>
+    <span class="n">cin</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span class="n">a</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span class="n">b</span><span class="p">;</span>
+    <span class="n">vec</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="p">{</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="p">}</span><span class="p">)</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">vector</span><span class="o">&lt;</span><span class="n">i64</span><span class="o">&gt;</span> <span class="n">A</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="p">,</span> <span class="n">B</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="p">;</span>
+  <span class="n">sort</span><span class="p">(</span><span class="n">all</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+  <span class="n">rep</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">N</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+    <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">vector</span><span class="o">&lt;</span><span class="n">i64</span><span class="o">&gt;</span> <span class="n">L</span><span class="p">(</span><span class="n">M</span><span class="p">)</span><span class="p">,</span> <span class="n">R</span><span class="p">(</span><span class="n">M</span><span class="p">)</span><span class="p">;</span>
+  <span class="n">rep</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">M</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">i64</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">;</span>
+    <span class="n">cin</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span class="n">l</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span class="n">r</span><span class="p">;</span>
+    <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">lower_bound</span><span class="p">(</span><span class="n">all</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span> <span class="o">-</span> <span class="n">begin</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="p">;</span>
+    <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">upper_bound</span><span class="p">(</span><span class="n">all</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="o">-</span> <span class="n">begin</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">vector</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">i64</span><span class="p">,</span> <span class="n">i64</span><span class="o">&gt;</span><span class="o">&gt;</span><span class="o">&gt;</span> <span class="n">mat</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="p">;</span>
+  <span class="n">rep</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">M</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">mat</span><span class="p">[</span><span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">]</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="p">{</span> <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">,</span> <span class="n">i</span> <span class="p">}</span><span class="p">)</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="n">vector</span><span class="o">&lt;</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">i64</span><span class="p">,</span> <span class="n">i64</span><span class="o">&gt;</span><span class="o">&gt;</span> <span class="n">P</span><span class="p">;</span>
+  <span class="n">rep</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">N</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">mat</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="p">)</span> <span class="o">=</span><span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
+    <span class="n">sort</span><span class="p">(</span><span class="n">all</span><span class="p">(</span><span class="n">mat</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">i64</span> <span class="n">j</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="p">)</span><span class="p">;</span> <span class="n">j</span> <span class="o">-</span><span class="o">-</span><span class="o">&gt;</span> <span class="mi">1</span><span class="p">;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kt">int</span> <span class="n">nl</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+      <span class="kt">int</span> <span class="n">nr</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">nl</span> <span class="o">&lt;</span> <span class="n">nr</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">mat</span><span class="p">[</span><span class="n">nl</span><span class="p">]</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="p">{</span> <span class="n">nr</span><span class="p">,</span> <span class="n">mat</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="p">.</span><span class="n">second</span> <span class="p">}</span><span class="p">)</span><span class="p">;</span>
+        <span class="n">P</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="p">{</span> <span class="n">mat</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="p">.</span><span class="n">second</span><span class="p">,</span> <span class="n">mat</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="p">.</span><span class="n">second</span> <span class="p">}</span><span class="p">)</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="n">reverse</span><span class="p">(</span><span class="n">all</span><span class="p">(</span><span class="n">P</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+  <span class="n">vector</span><span class="o">&lt;</span><span class="n">i64</span><span class="o">&gt;</span> <span class="n">sum</span><span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="p">;</span>
+  <span class="n">vector</span><span class="o">&lt;</span><span class="n">i64</span><span class="o">&gt;</span> <span class="n">ans</span><span class="p">(</span><span class="n">M</span><span class="p">)</span><span class="p">;</span>
+  <span class="n">rep</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">N</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">sum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">=</span><span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">mat</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="p">)</span> <span class="o">=</span><span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">endl</span><span class="p">;</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="n">i64</span> <span class="n">r</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">front</span><span class="p">(</span><span class="p">)</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+      <span class="n">i64</span> <span class="n">idx</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">.</span><span class="n">front</span><span class="p">(</span><span class="p">)</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
+      <span class="n">ans</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+      <span class="n">sum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="o">+</span><span class="p">;</span>
+      <span class="n">sum</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">-</span><span class="o">-</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">sum</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span><span class="o">=</span> <span class="n">sum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="nl">p</span><span class="p">:</span> <span class="n">P</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">ans</span><span class="p">[</span><span class="n">p</span><span class="p">.</span><span class="n">first</span><span class="p">]</span> <span class="o">^</span><span class="o">=</span> <span class="n">ans</span><span class="p">[</span><span class="n">p</span><span class="p">.</span><span class="n">second</span><span class="p">]</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">vector</span><span class="o">&lt;</span><span class="n">i64</span><span class="o">&gt;</span> <span class="n">res</span><span class="p">;</span>
+  <span class="n">rep</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">M</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">ans</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">)</span> <span class="n">res</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">cout</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">res</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="p">)</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">endl</span><span class="p">;</span>
+  <span class="n">rep</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">res</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="p">)</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">cout</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="sa"></span><span class="s">&#34;</span><span class="s"> </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">=</span><span class="o">=</span> <span class="n">res</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="p">)</span><span class="p">]</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><h2 id="〆">〆</h2>
+
+
+    <div class="article-footer">
+      <a style="display:none;" href="https://niuez.github.io/posts/abc155-f/"></a>
+      <h1 style="display:none;">ABC155 F Perils in ParallelをF_2の行列で解く</h1>
+      <div></div>
+    </div>
+		</div>
+
+		<div class="post-tags">
+			
+				
+			
+		</div>
+		</div>
+	
+<div class="footer wrapper">
+	<nav class="nav">
+		<div> This site use Google Analytics |  <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-157596444-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+<script>feather.replace()</script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Toptree - Link &amp; Cut編 - Niue&#39;z Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Toptree - Link &amp; Cut編" />
+<meta property="og:description" content="Toptree 導入編 - niuez’s diary" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://niuez.github.io/posts/entry/2019/08/05/114511/" />
+<meta property="article:published_time" content="2019-08-05T11:45:11+00:00" />
+<meta property="article:modified_time" content="2019-08-05T11:45:11+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Toptree - Link &amp; Cut編"/>
+<meta name="twitter:description" content="Toptree 導入編 - niuez’s diary"/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="https://niuez.github.io/css/highlight-native.css">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="https://niuez.github.io/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://niuez.github.io/css/main.css" /><link rel="stylesheet" type="text/css" href="https://niuez.github.io/css/dark.css"  />
+	<link rel="stylesheet" type="text/css" href="https://niuez.github.io/css/custom-dark.css"  />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="https://niuez.github.io/js/main.js"></script>
+
+  <script type="text/javascript" src="https://s.hatena.ne.jp/js/HatenaStar.js"></script>
+  <script type="text/javascript">
+  Hatena.Star.Token = 'e2714bc09c0f22d36f9bea483e4c3efc2846d9e9';
+  Hatena.Star.SiteConfig = {
+    entryNodes: {
+      'div.article-footer': {
+        uri: 'a',
+        title: 'h1',
+        container: 'div'
+      }
+    }
+  };
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+              showMathMenu: false, //disables context menu
+              tex2jax: {
+              inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+             }
+      });
+  </script>
+
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<base href="https://niuez.github.io/">
+	<h1 class="site-title"><a href="https://niuez.github.io/">Niue&#39;z Blog</a></h1>
+	<div class="site-description"><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/niuez" title="Github"><i data-feather="github"></i></a><a href="https://twitter.com/xiuez" title="Twitter"><i data-feather="twitter"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="/">Home</a>
+			</li>
+			
+			<li>
+				<a href="/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="/about">About</a>
+			</li>
+			
+			<li>
+				<a href="/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">Toptree - Link &amp; Cut編</h1>
+			<div class="meta">Posted at &mdash; Aug 5, 2019</div>
+		</div>
+
+		<div class="markdown">
+			<p><a href="https://niuez.hatenablog.com/entry/2019/08/04/191420">Toptree 導入編 - niuez’s diary</a></p>
+<p>引き続き, toptreeの解説をしていきます.</p>
+<h2 id="link">Link</h2>
+<p><code>link(v, w)</code>: 頂点<code>v</code>と<code>w</code>を辺<code>vw</code>で結ぶをします.</p>
+<p>場合分けが多すぎるんじゃ</p>
+<p>が, <code>v</code>の次数が0, 1, 2以上で処理が変わり, また<code>w</code>の次数が0, 1, 2以上で処理が変わります. (ちなみに論文はどちらも次数2以上のときのことしか書いてない, 全部書けや)</p>
+<p>まず, <code>expose(v)</code>をした結果はこんな感じに次数で場合分けできます. <code>expose</code>した後, 次数1のときに右側に<code>v</code>が来るようにします(左にあるときはreverseします)</p>
+<figure>
+    <img src="/images/2019/08/05/114511/20190805114250.png"/> 
+</figure>
+
+<p><code>expose(w)</code>をしたときはこんな感じ. <code>expose</code>した後, 次数1のときに左側に<code>w</code>が来るようにします.</p>
+<figure>
+    <img src="/images/2019/08/05/114511/20190805114301.png"/> 
+</figure>
+
+<p><code>v</code>が右側, <code>w</code>が左側なのは, <code>&hellip; - v</code>と<code>w - &hellip;</code>をつなげて <code>&hellip; - v - w - &hellip;</code>としたいからです.</p>
+<p>次に, <code>w</code>側のtoptreeから処理していきます.<br/>
+ここでは, <code>&hellip; - v - w - &hellip;</code>の<code>v - w - &hellip;</code>の部分を作ります.</p>
+<figure>
+    <img src="/images/2019/08/05/114511/20190805114321.png"/> 
+</figure>
+
+<p>このそれぞれの木の根を<code>v-w-</code>と表すことにして,<br/>
+<code>v</code>側のtoptreeとつなげます. つなげ方は, <code>v</code>の次数によって場合分けです. つなげるとこんな感じ</p>
+<figure>
+    <img src="/images/2019/08/05/114511/20190805114331.png"/> 
+</figure>
+
+<p><code>&hellip; - v - w - &hellip;</code>になっていると思います.</p>
+<h2 id="cut">Cut</h2>
+<p><code>cut(v, w)</code>: 頂点<code>v</code>と<code>w</code>を結んでいる辺<code>vw</code>を切ります</p>
+<p><code>link</code>の逆操作をすればいいです.
+<code>soft_expose</code>を思い出してみましょう.</p>
+<figure>
+    <img src="/images/2019/08/05/114511/20190805073700.png"/> 
+</figure>
+
+<p><code>vw</code>は辺なので, 図中の丸<code>vw</code>はCompress Nodeではなく, Edge Nodeのはずです.
+また, <code>degree(v) &gt;= 2, degree(w) &gt;= 2</code>のパターンを見ると, <code>N_w</code>以下が<code>link</code>での<code>v - w - &hellip;</code>の部分を作るときと形が同じです.<br/>
+まあなので逆操作をすると<code>cut</code>ができます.</p>
+<h2 id="記事を分けたの失敗">記事を分けたの失敗</h2>
+<p>LinkとCut重いなあと違う記事にしたけど, 図を作ったらそんなに重くなかった</p>
+<p>次はクエリの捌き方を書きます(これは流石に分けないとまずい)</p>
+
+
+    <div class="article-footer">
+      <a style="display:none;" href="https://niuez.github.io/posts/entry/2019/08/05/114511/"></a>
+      <h1 style="display:none;">Toptree - Link &amp; Cut編</h1>
+      <div></div>
+    </div>
+		</div>
+
+		<div class="post-tags">
+			
+				
+			
+		</div>
+		</div>
+	
+<div class="footer wrapper">
+	<nav class="nav">
+		<div> This site use Google Analytics |  <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-157596444-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+<script>feather.replace()</script>
+</body>
+</html>

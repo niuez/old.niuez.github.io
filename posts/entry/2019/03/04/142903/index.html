@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>ダイクストラとポテンシャルのはなし - Niue&#39;z Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="ダイクストラとポテンシャルのはなし" />
+<meta property="og:description" content="はじめまして, niuezといいます." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://niuez.github.io/posts/entry/2019/03/04/142903/" />
+<meta property="article:published_time" content="2019-03-04T14:29:03+00:00" />
+<meta property="article:modified_time" content="2019-03-04T14:29:03+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="ダイクストラとポテンシャルのはなし"/>
+<meta name="twitter:description" content="はじめまして, niuezといいます."/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="https://niuez.github.io/css/highlight-native.css">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="https://niuez.github.io/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://niuez.github.io/css/main.css" /><link rel="stylesheet" type="text/css" href="https://niuez.github.io/css/dark.css"  />
+	<link rel="stylesheet" type="text/css" href="https://niuez.github.io/css/custom-dark.css"  />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="https://niuez.github.io/js/main.js"></script>
+
+  <script type="text/javascript" src="https://s.hatena.ne.jp/js/HatenaStar.js"></script>
+  <script type="text/javascript">
+  Hatena.Star.Token = 'e2714bc09c0f22d36f9bea483e4c3efc2846d9e9';
+  Hatena.Star.SiteConfig = {
+    entryNodes: {
+      'div.article-footer': {
+        uri: 'a',
+        title: 'h1',
+        container: 'div'
+      }
+    }
+  };
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+              showMathMenu: false, //disables context menu
+              tex2jax: {
+              inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+             }
+      });
+  </script>
+
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<base href="https://niuez.github.io/">
+	<h1 class="site-title"><a href="https://niuez.github.io/">Niue&#39;z Blog</a></h1>
+	<div class="site-description"><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/niuez" title="Github"><i data-feather="github"></i></a><a href="https://twitter.com/xiuez" title="Twitter"><i data-feather="twitter"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="/">Home</a>
+			</li>
+			
+			<li>
+				<a href="/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="/about">About</a>
+			</li>
+			
+			<li>
+				<a href="/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">ダイクストラとポテンシャルのはなし</h1>
+			<div class="meta">Posted at &mdash; Mar 4, 2019</div>
+		</div>
+
+		<div class="markdown">
+			<p>はじめまして, niuezといいます. 競プロを少ししています.</p>
+<p>最近勉強したことのメモ書きをしておきます.</p>
+<h2 id="ダイクストラ法">ダイクストラ法</h2>
+<p>ダイクストラ法(<em>Dijkstra</em>)は負の長さの無いグラフで始点からの最短距離を求めるアルゴリズムです.</p>
+<p>具体的には</p>
+<ol>
+<li>距離が未確定の頂点の中で一番小さいものを選び, 距離を確定させる.</li>
+<li>選んだ頂点から距離が未確定の頂点に伸びる辺で, 未確定な距離をより短いものに更新する.</li>
+</ol>
+<p>を繰り返します. これを実装すると $O(N)$ですが, よく知られるダイクストラの計算量は $O((E+ V) \log E)$ です(heapとかを使う).</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cp">#</span><span class="cp">include</span> <span class="cpf">&lt;set&gt;&lt;/set&gt;</span><span class="cp">
+</span><span class="cp"></span><span class="cp">#</span><span class="cp">include</span> <span class="cpf">&lt;queue&gt;&lt;/queue&gt;</span><span class="cp">
+</span><span class="cp"></span><span class="cp">#</span><span class="cp">include</span> <span class="cpf">&lt;vector&gt;&lt;/vector&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="k">struct</span> <span class="nc">edge</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">dist</span><span class="p">;</span>
+<span class="p">}</span><span class="p">;</span>
+
+<span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">dijkstra</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">edge</span><span class="o">&gt;</span><span class="o">&gt;</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span> <span class="n">g</span><span class="p">,</span> <span class="kt">int</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">dist</span><span class="p">(</span><span class="n">g</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="mf">1e9</span><span class="p">)</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">node</span> <span class="o">=</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">pair</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">priority_queue</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">node</span><span class="p">,</span><span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">node</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">greater</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">node</span><span class="o">&gt;</span><span class="o">&gt;</span> <span class="n">Q</span><span class="p">;</span>
+  <span class="n">dist</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">Q</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">node</span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">Q</span><span class="p">.</span><span class="n">empty</span><span class="p">(</span><span class="p">)</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">v</span> <span class="o">=</span> <span class="n">Q</span><span class="p">.</span><span class="n">top</span><span class="p">(</span><span class="p">)</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">d</span> <span class="o">=</span> <span class="n">Q</span><span class="p">.</span><span class="n">top</span><span class="p">(</span><span class="p">)</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+    <span class="n">Q</span><span class="p">.</span><span class="n">pop</span><span class="p">(</span><span class="p">)</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">d</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span> <span class="nl">e</span><span class="p">:</span> <span class="n">g</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">e</span><span class="p">.</span><span class="n">u</span><span class="p">]</span> <span class="o">+</span> <span class="n">e</span><span class="p">.</span><span class="n">dist</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">dist</span><span class="p">[</span><span class="n">e</span><span class="p">.</span><span class="n">v</span><span class="p">]</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">dist</span><span class="p">[</span><span class="n">e</span><span class="p">.</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">dist</span><span class="p">[</span><span class="n">e</span><span class="p">.</span><span class="n">u</span><span class="p">]</span> <span class="o">+</span> <span class="n">e</span><span class="p">.</span><span class="n">dist</span><span class="p">;</span>
+        <span class="n">Q</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">node</span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">e</span><span class="p">.</span><span class="n">v</span><span class="p">]</span><span class="p">,</span> <span class="n">e</span><span class="p">.</span><span class="n">v</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">move</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span><span class="p">;</span>
+<span class="p">}</span>
+
+</code></pre></div><h2 id="ベルマンフォード法">ベルマンフォード法</h2>
+<p>ベルマンフォード法(<em>Bellman-Ford</em>)は任意の長さのグラフで始点からの最短距離を求めるアルゴリズムです. 負の長さの閉路があるときはもちろん求められませんが, この記事では考えないことにします.</p>
+<p>$O(VE)$ で直感的にもわかりやすいアルゴリズムですね.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cp">#</span><span class="cp">include</span> <span class="cpf">&lt;vector&gt;&lt;/vector&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="k">struct</span> <span class="nc">edge</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">dist</span><span class="p">;</span>
+<span class="p">}</span><span class="p">;</span>
+
+<span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">dijkstra</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">edge</span><span class="o">&gt;</span><span class="o">&gt;</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span> <span class="n">g</span><span class="p">,</span> <span class="kt">int</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">vector</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">dist</span><span class="p">(</span><span class="n">g</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="mf">1e9</span><span class="p">)</span><span class="p">;</span>
+  <span class="n">dist</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">c</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span><span class="n">c</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">g</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="p">)</span><span class="p">;</span><span class="n">c</span><span class="o">+</span><span class="o">+</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">v</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span><span class="n">v</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">g</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="p">)</span><span class="p">;</span><span class="n">g</span><span class="o">+</span><span class="o">+</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">if</span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span><span class="o">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="mf">1e9</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
+          <span class="k">for</span><span class="p">(</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span> <span class="nl">e</span><span class="p">:</span> <span class="n">g</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">e</span><span class="p">.</span><span class="n">u</span><span class="p">]</span> <span class="o">+</span> <span class="n">e</span><span class="p">.</span><span class="n">dist</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">dist</span><span class="p">[</span><span class="n">e</span><span class="p">.</span><span class="n">v</span><span class="p">]</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">dist</span><span class="p">[</span><span class="n">e</span><span class="p">.</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">dist</span><span class="p">[</span><span class="n">e</span><span class="p">.</span><span class="n">u</span><span class="p">]</span> <span class="o">+</span> <span class="n">e</span><span class="p">.</span><span class="n">dist</span><span class="p">;</span>
+            <span class="p">}</span>
+          <span class="p">}</span>
+      <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="n">std</span><span class="o">:</span><span class="o">:</span><span class="n">move</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span><span class="p">;</span>
+<span class="p">}</span>
+
+</code></pre></div><h2 id="負の重みがあるときはベルマンフォード法しか無い">負の重みがあるときはベルマンフォード法しか無い?</h2>
+<p>ダイクストラ法のほうが定数倍が早かったりするので, できるだけベルマンフォード法よりはダイクストラ法を使いたいですよね?</p>
+<p><strong>一回だけ</strong>最短経路を求めるときはベルマンフォード法を使うしかありません.</p>
+<p><strong>複数回</strong>最短経路を求めるときはどうでしょうか?</p>
+<p>実はこの場合, ベルマンフォード法を最初に一回だけしておくことで, 後の複数回はダイクストラ法を使うことが出来ます.</p>
+<p>ダイクストラ法を使うとすると, 辺の長さを<strong>うまいことして正の長さにする</strong>必要があります.</p>
+<h2 id="最短経路とは">最短経路とは??</h2>
+<p>始点を頂点 $s$ とした最短経路を数式に落とし込むと, こういう定義になります.</p>
+<p>$d_s = 0$ とする.<br/>
+すべての辺 $(i,j)$ において $d_i + dist(i,j) \ge d_j$ が成り立つときの, $d$ のそれぞれの取れる最大値.</p>
+<p>これを頭に入れておくと次がわかります.</p>
+<h2 id="ポテンシャル">ポテンシャル</h2>
+<p>ここで天才をします. 先人は天才です.</p>
+<p>ある$p_i$という値を用意して, 距離を $dist'(i,j) = dist(i,j) + p_i - p_j$ としたグラフを考えます.</p>
+<p>長さ $dist'$ のグラフで, 頂点 $s$ を始点とした最短距離を計算して, ${d'}_i$ を求めたとしましょう.</p>
+<div>${d&#39;}_i + dist&#39;(i, j) \ge {d&#39;}_j$</div>
+<div>${d&#39;}_i + dist(i, j) + p_i - p_j \ge {d&#39;}_j$</div>
+<div>${d&#39;}_i + p_i + dist(i, j) \ge {d&#39;}_j + p_j$</div>
+<p>よく見ると</p>
+<div> $d_i = {d&#39;}_i + p_i$ </div>
+<p>とすれば, $d_i$は最短距離の定義を満たしているように見えますね.しかし</p>
+<div>$d_s = {d&#39;}_s + p_s = p_s`$ </div>
+<p>なので<br/>
+$d_s = 0$ を満たしていません. <br/>
+なので, すべての頂点 $i$ について $ans_i = {d'}_i + p_i - p_s$ を計算すれば, $ans$ は最短経路を示しています.</p>
+<p>このとき, $p_i$ のことを<strong>ポテンシャル</strong>と呼びます.</p>
+<p>では, <strong>$dist'$を正の長さにしたい</strong>気持ちになります.</p>
+<div>$dist(i, j) + p_i - p_j \ge 0$</div>
+<div>$p_i + dist(i, j) \ge p_j$</div>
+<p>これは何かな. 最短距離の定義そのままですね(天才).</p>
+<p>これを使うと色々なものが効率的に求めることが出来ます.</p>
+<h2 id="負の重みがあるグラフでの全点間最短距離問題">負の重みがあるグラフでの全点間最短距離問題</h2>
+<p>全点間最短距離問題とは, すべての頂点の間での最短距離を計算する問題のことです.</p>
+<p>よく知られているのはワーシャルフロイド法の <span>$O(V<sup>3</sup>)$</span> ですが, これを <span>$V$</span> 回のダイクストラに置き換えることが出来て, $O(V(E + V) \log V)$ になります.</p>
+<p>疑似コード</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">proc all_pair_shortest_path(G, dist)
+    let potential = bellman_ford(G, dist, 0) //引数は グラフ, 距離, 始点 です
+    for e = (i, j) in G
+        dist2(i, j) = dist(i, j) + potential[i] - potential[j]
+    for s in [0, |V| - 1]
+        result[s] = dijkstra(G, dist2, s)
+        for j in [0, |V| - 1]
+            result[s][j] += potential[j] - potential[s] // result[s][j]... s -&gt; jの距離
+    return result
+</code></pre></div><h2 id="最小費用流">最小費用流</h2>
+<p>最小費用流はたぶん皆さんなら, 最短路反復法で実装していると思いますが&hellip;(<em>RHS-algorithm</em>なんて強多項式計算量知らない)</p>
+<p>このとき負の辺があるときはダイクストラが使えないと思われがちですが, 同じように最初にベルマンフォードでポテンシャルを求めておけば, 高速で計算が可能です.</p>
+<p>しかし, 逆辺が負の重みを持つので, ポテンシャルは, その時求めた最短距離を加算して行くことで, 更新をし続けなければなりません.</p>
+<p><a href="https://tubo28.me/algorithm/primal-dual/">libalgo</a>が参考になります.</p>
+<h2 id="スケーリングアルゴリズム">スケーリングアルゴリズム</h2>
+<p>スケーリングを用いたダイクストラのアルゴリズムは重みが非負整数のときに使える高速化手法です.</p>
+<p>簡潔に言うと, 「辺の重みを半分にしたものでダイクストラをして, その結果の二倍をポテンシャルに使ってダイクストラをする.」 を再帰的に行うことで, ダイクストラを高速化するテクを使うというアルゴリズムです.</p>
+<p>下に例を示します.</p>
+<figure>
+    <img src="/images/2019/03/04/142903/20190304120801.png"/> 
+</figure>
+
+<p>このようなグラフがあったとします.</p>
+<p>このグラフの重みを半分にした(小数点以下切り捨て) グラフでダイクストラをします.</p>
+<figure>
+    <img src="/images/2019/03/04/142903/20190304120815.png"/> 
+</figure>
+
+<p>最短距離は赤色に示した通りです.</p>
+<p>この値を二倍した値を, 半分にする前のグラフのポテンシャルに使います.</p>
+<figure>
+    <img src="/images/2019/03/04/142903/20190304120824.png"/> 
+</figure>
+
+<p>辺の重みをポテンシャルによって置き換えると以下のようになります.</p>
+<figure>
+    <img src="/images/2019/03/04/142903/20190304120834.png"/> 
+</figure>
+
+<p>この置き換えた重みでダイクストラをします.</p>
+<figure>
+    <img src="/images/2019/03/04/142903/20190304121550.png"/> 
+</figure>
+
+<p>最短距離は青色で示しました.</p>
+<p>それぞれの頂点で赤色と青色の値を足すと, ポテンシャルの性質により半分にする前のグラフの最短距離が求まります.</p>
+<figure>
+    <img src="/images/2019/03/04/142903/20190304120846.png"/> 
+</figure>
+
+<p>このグラフの重みは二進数にしたとき高々2桁なので1回半分にするだけで済みましたが, 一般に $ \log W$ 回再帰的に「重みを半分にして二倍してポテンシャルに使う」という動作をすれば求まります.</p>
+<h2 id="高速化">高速化</h2>
+<p>正直こんなことしなくてもこのままのアルゴリズムであれば, 大元のグラフをダイクストラすればいいだけの話です.</p>
+<p>ですが, このポテンシャルで変更を加えた後のグラフに性質があります.</p>
+<p>重みを半分にしたグラフでの, 頂点$s$から頂点$g$の最短経路($P$とします)に含まれる辺の数を $L$とします.</p>
+<p>このとき, 半分にする前の重みをポテンシャルで変更を加えたグラフでの $s$から$g$の最短経路の重みは $L$以下です.</p>
+<p>なぜなら, 二進数を考えると$P$上の辺の重みはポテンシャルで変更を加えると $0$ か $1$にしかならないからです.</p>
+<p>つまりこのスケーリングアルゴリズムで行うダイクストラは, $V$個のQueueを用意してダイクストラをするものを使えば $O(m + n \log W)$ で計算できます.</p>
+<h2 id="〆">〆</h2>
+<p>実はダイクストラの定数倍が速すぎてスケーリングはそんなに速くなりません</p>
+
+
+    <div class="article-footer">
+      <a style="display:none;" href="https://niuez.github.io/posts/entry/2019/03/04/142903/"></a>
+      <h1 style="display:none;">ダイクストラとポテンシャルのはなし</h1>
+      <div></div>
+    </div>
+		</div>
+
+		<div class="post-tags">
+			
+				
+			
+		</div>
+		</div>
+	
+<div class="footer wrapper">
+	<nav class="nav">
+		<div> This site use Google Analytics |  <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-157596444-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+<script>feather.replace()</script>
+</body>
+</html>
