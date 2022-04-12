@@ -89,7 +89,7 @@
 
 		<div class="markdown">
 			<p>今日<a href="https://maspypy.com/category/%e5%bd%a2%e5%bc%8f%e7%9a%84%e3%81%b9%e3%81%8d%e7%b4%9a%e6%95%b0%e8%a7%a3%e8%aa%ac">maspyさんの形式的べき級数</a>の記事を読んだ後に、サークルの見学会にいったらいきなりバチャが始まって、FPSが使えたのでメモ</p>
-<p><a href="https://atcoder.jp/contests/abc051/tasks/b">ABC051B</a> 全探索で$O(K^2)$ですが、これを$O(1)$まで落としましょう。</p>
+<p><a href="https://atcoder.jp/contests/abc051/tasks/abc051_b">ABC051B</a> 全探索で$O(K^2)$ですが、これを$O(1)$まで落としましょう。</p>
 <p>まずは、問題をべき級数に落とし込むところからスタートしましょう。$[0, K]$から1つ整数を選ぶのは、$1+x+x^2+&hellip;x^K$と表せて、3個選んで和をとるのは$(1+x+x^2+&hellip;x^K)^3$となって、求めたい答えは$x^S$の係数となります。この式展開を愚直にすれば$O(K^2)$です。</p>
 <p>式変形して計算量を改善していきます。等比数列の和から、$(1+x+x^2+&hellip;x^K)^3 = \frac{(1 - x^{K + 1})^3}{(1 - x)^3}$となります。分子は展開して$1 - 3 x^{K + 1} + 3 x^{2 (K + 1)} - x^{3(K + 1)}$となります. $\frac{1}{1 - x} = 1 + x + x^2 + \cdots$は累積和の操作にあたるので、3回累積和をとればいいです. これで$O(K)$まで落ちました。わ〜い！</p>
 <p><a href="https://atcoder.jp/contests/abc051/submissions/30929013">O(K)提出コード</a></p>
