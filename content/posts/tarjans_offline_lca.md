@@ -1,8 +1,7 @@
 ---
 title: "Tarjan's off-line LCA の実装メモと速度"
 date: 2020-02-05T20:33:01+09:00
-categories: ["Algorithms"]
-tags: ["DFS", "LCA", "Tree"]
+tags: ["Algorithm"]
 ---
 
 Tarjan's off-line LCAを書いてみたので, その時のメモです.

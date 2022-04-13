@@ -1,8 +1,7 @@
 ---
 title: "約数畳み込みを使って最大公約数と集合をうまく扱うメモ"
 date: 2020-02-03T21:20:02+09:00
-categories: ["Algorithms"]
-tags: ["Divisor", "Transform", "Mobius", "GCD", "LCM"]
+tags: ["Algorithm"]
 ---
 
 移植テストです

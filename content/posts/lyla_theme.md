@@ -1,6 +1,7 @@
 ---
 title: "Hugoのテーマを変えました & lyla colorschemeについて"
 date: 2020-07-24T00:04:58+09:00
+tags: ["other"]
 ---
 
 <style type="text/css" media="screen">

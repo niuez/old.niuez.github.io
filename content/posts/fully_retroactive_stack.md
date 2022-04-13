@@ -2,6 +2,7 @@
 title: "Fully Retroactive Stack 実装してみた"
 date: 2020-04-10T20:09:09+09:00
 draft: false
+tags: ["Algorithm"]
 ---
 
 noshi91さんがFully Retroactive Stackについての解説生放送をやっていたので, その解説通りに実装してみました. ちょっとした解説も書きました.

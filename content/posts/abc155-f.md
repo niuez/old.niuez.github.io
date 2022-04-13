@@ -2,6 +2,7 @@
 title: "ABC155 F Perils in ParallelをF_2の行列で解く"
 date: 2020-02-22T16:40:51+09:00
 draft: false
+tags: ["Editorial"]
 ---
 
 [ABC155-F Perils in Parallel - kotatsugameの日記](https://kotatsugame.hatenablog.com/entry/2020/02/19/031012)を読んだときのメモです.

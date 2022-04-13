@@ -1,8 +1,7 @@
 ---
 title: "ブロウちゃんをデスクトップにわいわいさせる(moviepy, ffmpeg, Übersicht)"
 date: 2020-12-29T21:20:02+09:00
-categories: ["ネタ"]
-tags: ["ネタ"]
+tags: ["other"]
 ---
 
 [弊高専アドカレ](https://qiita.com/advent-calendar/2021/snct)埋めます

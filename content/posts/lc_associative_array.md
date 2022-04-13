@@ -1,8 +1,8 @@
 ---
 title: "Library Checker - Associative Array に関するいろいろ"
 date: 2020-06-12T23:02:44+09:00
-categories: ["Library Checker"]
 draft: false
+tags: ["Algorithm"]
 ---
 
 [Library Checker - Associative Array]を解くに当たってのいろいろをまとめておきます.
