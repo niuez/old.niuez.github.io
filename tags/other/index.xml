@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>ネタ on Niue&#39;z Blog</title>
-    <link>https://niuez.github.io/tags/%E3%83%8D%E3%82%BF/</link>
-    <description>Recent content in ネタ on Niue&#39;z Blog</description>
+    <title>other on Niue&#39;z Blog</title>
+    <link>https://niuez.github.io/tags/other/</link>
+    <description>Recent content in other on Niue&#39;z Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>jp</language>
     <copyright>This site use Google Analytics</copyright>
     <lastBuildDate>Tue, 29 Dec 2020 21:20:02 +0900</lastBuildDate>
     
-	<atom:link href="https://niuez.github.io/tags/%E3%83%8D%E3%82%BF/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://niuez.github.io/tags/other/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -19,6 +19,15 @@
       
       <guid>https://niuez.github.io/posts/buro_ubersicht/</guid>
       <description>弊高専アドカレ埋めます</description>
+    </item>
+    
+    <item>
+      <title>Hugoのテーマを変えました &amp; lyla colorschemeについて</title>
+      <link>https://niuez.github.io/posts/lyla_theme/</link>
+      <pubDate>Fri, 24 Jul 2020 00:04:58 +0900</pubDate>
+      
+      <guid>https://niuez.github.io/posts/lyla_theme/</guid>
+      <description>.pallet h2 { border-bottom: initial; }  Hugoテーマ変えました ま〜〜〜たテーマとか色とかいじくってた.</description>
     </item>
     
   </channel>

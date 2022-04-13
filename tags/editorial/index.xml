@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Editorial on Niue&#39;z Blog</title>
+    <link>https://niuez.github.io/tags/editorial/</link>
+    <description>Recent content in Editorial on Niue&#39;z Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>jp</language>
+    <copyright>This site use Google Analytics</copyright>
+    <lastBuildDate>Tue, 12 Apr 2022 13:00:00 +0900</lastBuildDate>
+    
+	<atom:link href="https://niuez.github.io/tags/editorial/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>ABC051 B Sum of Three IntegersをO(1)</title>
+      <link>https://niuez.github.io/posts/abc051-b/</link>
+      <pubDate>Tue, 12 Apr 2022 13:00:00 +0900</pubDate>
+      
+      <guid>https://niuez.github.io/posts/abc051-b/</guid>
+      <description>今日maspyさんの形式的べき級数の記事を読んだ後に、サークルの見学会にいったらいきなりバチャが始まって、FPSが使えたのでメモ</description>
+    </item>
+    
+    <item>
+      <title>OyamaC&#39;20 解説</title>
+      <link>https://niuez.github.io/posts/oyamac20/</link>
+      <pubDate>Thu, 19 Mar 2020 20:10:48 +0900</pubDate>
+      
+      <guid>https://niuez.github.io/posts/oyamac20/</guid>
+      <description>小山高専で, mitsuさん原案のコンテストOyamaCが行われました.</description>
+    </item>
+    
+    <item>
+      <title>ABC155 F Perils in ParallelをF_2の行列で解く</title>
+      <link>https://niuez.github.io/posts/abc155-f/</link>
+      <pubDate>Sat, 22 Feb 2020 16:40:51 +0900</pubDate>
+      
+      <guid>https://niuez.github.io/posts/abc155-f/</guid>
+      <description>ABC155-F Perils in Parallel - kotatsugameの日記を読んだときのメモです.</description>
+    </item>
+    
+  </channel>
+</rss>
