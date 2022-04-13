@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>jp</language>
     <copyright>This site use Google Analytics</copyright>
-    <lastBuildDate>Wed, 13 Apr 2022 14:30:00 +0900</lastBuildDate>
+    <lastBuildDate>Wed, 13 Apr 2022 15:00:00 +0900</lastBuildDate>
     
 	<atom:link href="https://niuez.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>ARC028 D - 注文の多い高橋商店</title>
+      <link>https://niuez.github.io/posts/arc028-d/</link>
+      <pubDate>Wed, 13 Apr 2022 15:00:00 +0900</pubDate>
+      
+      <guid>https://niuez.github.io/posts/arc028-d/</guid>
+      <description>ARC028 D - 注文の多い高橋商店</description>
+    </item>
     
     <item>
       <title>ABC135 D - Digits Parade</title>
