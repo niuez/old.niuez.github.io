@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>jp</language>
     <copyright>This site use Google Analytics</copyright>
-    <lastBuildDate>Tue, 12 Apr 2022 13:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Wed, 13 Apr 2022 13:00:00 +0900</lastBuildDate>
     
 	<atom:link href="https://niuez.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>KUPC2019 K - One or AllをFPSで</title>
+      <link>https://niuez.github.io/posts/kupc2019-k/</link>
+      <pubDate>Wed, 13 Apr 2022 13:00:00 +0900</pubDate>
+      
+      <guid>https://niuez.github.io/posts/kupc2019-k/</guid>
+      <description>KUPC2019 K - One or All</description>
+    </item>
     
     <item>
       <title>ABC051 B Sum of Three IntegersをO(1)</title>
