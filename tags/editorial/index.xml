@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>jp</language>
     <copyright>This site use Google Analytics</copyright>
-    <lastBuildDate>Wed, 13 Apr 2022 14:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Wed, 13 Apr 2022 14:30:00 +0900</lastBuildDate>
     
 	<atom:link href="https://niuez.github.io/tags/editorial/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>ABC135 D - Digits Parade</title>
+      <link>https://niuez.github.io/posts/abc135-d/</link>
+      <pubDate>Wed, 13 Apr 2022 14:30:00 +0900</pubDate>
+      
+      <guid>https://niuez.github.io/posts/abc135-d/</guid>
+      <description>ABC135 D - Digits Parade</description>
+    </item>
     
     <item>
       <title>EDPC M - CandiesをFPSで</title>

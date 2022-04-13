@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>ABC135 D - Digits Parade - Niue&#39;z Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="ABC135 D - Digits Parade" />
+<meta property="og:description" content="ABC135 D - Digits Parade" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://niuez.github.io/posts/abc135-d/" />
+<meta property="article:published_time" content="2022-04-13T14:30:00+09:00" />
+<meta property="article:modified_time" content="2022-04-13T14:30:00+09:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="ABC135 D - Digits Parade"/>
+<meta name="twitter:description" content="ABC135 D - Digits Parade"/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="https://niuez.github.io/css/highlight-native.css">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="https://niuez.github.io/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://niuez.github.io/css/main.css" /><link rel="stylesheet" type="text/css" href="https://niuez.github.io/css/dark.css"  />
+	<link rel="stylesheet" type="text/css" href="https://niuez.github.io/css/custom-dark.css"  />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="https://niuez.github.io/js/main.js"></script>
+
+  <script type="text/javascript" src="https://s.hatena.ne.jp/js/HatenaStar.js"></script>
+  <script type="text/javascript">
+  Hatena.Star.Token = 'e2714bc09c0f22d36f9bea483e4c3efc2846d9e9';
+  Hatena.Star.SiteConfig = {
+    entryNodes: {
+      'div.article-footer': {
+        uri: 'a',
+        title: 'h1',
+        container: 'div'
+      }
+    }
+  };
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+              showMathMenu: false, //disables context menu
+              tex2jax: {
+              inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+             }
+      });
+  </script>
+
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<base href="https://niuez.github.io/">
+	<h1 class="site-title"><a href="https://niuez.github.io/">Niue&#39;z Blog</a></h1>
+	<div class="site-description"><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/niuez" title="Github"><i data-feather="github"></i></a><a href="https://twitter.com/xiuez" title="Twitter"><i data-feather="twitter"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="/">Home</a>
+			</li>
+			
+			<li>
+				<a href="/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="/about">About</a>
+			</li>
+			
+			<li>
+				<a href="/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">ABC135 D - Digits Parade</h1>
+			<div class="meta">Posted at &mdash; Apr 13, 2022</div>
+		</div>
+
+		<div class="markdown">
+			<p><a href="https://atcoder.jp/contests/abc135/tasks/abc135_d">ABC135 D - Digits Parade</a></p>
+<p>最初に$S$を反転させておきます。</p>
+<p>$$
+f_{i} =
+\begin{cases}
+x^{10^i a} &amp; (S_i=a) \\<br>
+\sum_{j=0}^{9} x^{10^i j} &amp; (S_i=?)
+\end{cases}
+$$</p>
+<p>とすれば、$\prod_{i = 1}^{N} f_i$を$x^{13}=1$としたときの$x^5$の係数が答えになります。毎回周期13で集約すれば、$O(13^2 |S|)$です。</p>
+<p><a href="https://atcoder.jp/contests/abc135/submissions/30922848">提出コード</a></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">string</span> <span class="n">S</span><span class="p">;</span>
+<span class="n">cin</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span class="n">S</span><span class="p">;</span>
+<span class="n">reverse</span><span class="p">(</span><span class="n">all</span><span class="p">(</span><span class="n">S</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+<span class="n">i64</span> <span class="n">N</span> <span class="o">=</span> <span class="n">S</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="p">)</span><span class="p">;</span>
+<span class="n">vector</span><span class="o">&lt;</span><span class="n">fp</span><span class="o">&gt;</span> <span class="n">dp</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span><span class="p">;</span>
+<span class="n">dp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="n">i64</span> <span class="n">ten</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="n">rep</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">N</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">vector</span><span class="o">&lt;</span><span class="n">fp</span><span class="o">&gt;</span> <span class="n">nxt</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span><span class="p">;</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">S</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span><span class="o">=</span> <span class="sa"></span><span class="sc">&#39;</span><span class="sc">?</span><span class="sc">&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">rep</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">13</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">rep</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">nxt</span><span class="p">[</span><span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="n">k</span> <span class="o">*</span> <span class="n">ten</span><span class="p">)</span> <span class="o">%</span> <span class="mi">13</span><span class="p">]</span> <span class="o">+</span><span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="n">i64</span> <span class="n">k</span> <span class="o">=</span> <span class="n">S</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="sa"></span><span class="sc">&#39;</span><span class="sc">0</span><span class="sc">&#39;</span><span class="p">;</span>
+    <span class="n">rep</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">13</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">nxt</span><span class="p">[</span><span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="n">k</span> <span class="o">*</span> <span class="n">ten</span><span class="p">)</span> <span class="o">%</span> <span class="mi">13</span><span class="p">]</span> <span class="o">+</span><span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="n">ten</span> <span class="o">*</span><span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+  <span class="n">ten</span> <span class="o">%</span><span class="o">=</span> <span class="mi">13</span><span class="p">;</span>
+  <span class="n">swap</span><span class="p">(</span><span class="n">nxt</span><span class="p">,</span> <span class="n">dp</span><span class="p">)</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">cout</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">dp</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">&lt;</span><span class="o">&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</code></pre></div>
+
+    <div class="article-footer">
+      <a style="display:none;" href="https://niuez.github.io/posts/abc135-d/"></a>
+      <h1 style="display:none;">ABC135 D - Digits Parade</h1>
+      <div></div>
+    </div>
+		</div>
+
+		<div class="post-tags">
+			
+				
+					<nav class="nav tags">
+							<ul class="flat">
+								
+								<li><a href="/tags/editorial">Editorial</a></li>
+								
+								<li><a href="/tags/fps">FPS</a></li>
+								
+							</ul>
+					</nav>
+				
+			
+		</div>
+		</div>
+	
+<div class="footer wrapper">
+	<nav class="nav">
+		<div> This site use Google Analytics |  <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-157596444-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+<script>feather.replace()</script>
+</body>
+</html>
