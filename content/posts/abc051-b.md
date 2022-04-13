@@ -2,7 +2,7 @@
 title: "ABC051 B Sum of Three IntegersをO(1)"
 date: 2022-04-12T13:00:00+09:00
 draft: false
-tags: ["Editorial"]
+tags: ["Editorial", "FPS"]
 ---
 
 今日[maspyさんの形式的べき級数](https://maspypy.com/category/%e5%bd%a2%e5%bc%8f%e7%9a%84%e3%81%b9%e3%81%8d%e7%b4%9a%e6%95%b0%e8%a7%a3%e8%aa%ac)の記事を読んだ後に、サークルの見学会にいったらいきなりバチャが始まって、FPSが使えたのでメモ
