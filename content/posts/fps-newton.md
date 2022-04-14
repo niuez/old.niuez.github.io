@@ -5,7 +5,7 @@ draft: false
 tags: ["Algorithm", "FPS"]
 ---
 
-[ABC222 H - Beautiful Binary Tree](https://atcoder.jp/contests/abc222/tasks/abc222_h)のニュートン法解(TLE)でニュートン法の勉強をしてみました. [nyaanさんのライブラリ](https://nyaannyaan.github.io/library/fps/formal-power-series.hpp.html)に仕組みが書いてあるのでこれを読みました
+FPSのライブラリ書き直しに合わせて、[ABC222 H - Beautiful Binary Tree](https://atcoder.jp/contests/abc222/tasks/abc222_h)のニュートン法解(TLE)でニュートン法の勉強をしてみました. [nyaanさんのライブラリ](https://nyaannyaan.github.io/library/fps/formal-power-series.hpp.html)に仕組みが書いてあるのでこれを読みました
 
 $$
 G(\hat{g}) \equiv f \pmod{x^n} \\\\
