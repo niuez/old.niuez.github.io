@@ -235,7 +235,7 @@ $T\_{i} = \sum\_{j = 0}^{i - 1} t\_j(d)$も同様に、$i$を進めながら更�
 $$
 T\_{i + 1}(d) = 
 \begin{cases}
-j + T\_i(d) & d | A\_i \\\\
+i + T\_i(d) & d | A\_i \\\\
 0 & \text{otherwise}
 \end{cases}
 $$
