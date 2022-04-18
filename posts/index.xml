@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>jp</language>
     <copyright>This site use Google Analytics</copyright>
-    <lastBuildDate>Thu, 14 Apr 2022 15:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Mon, 18 Apr 2022 19:00:00 +0900</lastBuildDate>
     
 	<atom:link href="https://niuez.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>約数ゼータ・メビウス変換のメモ</title>
+      <link>https://niuez.github.io/posts/divisor_transform2/</link>
+      <pubDate>Mon, 18 Apr 2022 19:00:00 +0900</pubDate>
+      
+      <guid>https://niuez.github.io/posts/divisor_transform2/</guid>
+      <description>以前僕が書いた記事を復習するときにとても読みにくかったので、もう一度書き直します。</description>
+    </item>
     
     <item>
       <title>FPSのニュートン法メモ</title>
@@ -162,7 +171,7 @@
       <pubDate>Mon, 03 Feb 2020 21:20:02 +0900</pubDate>
       
       <guid>https://niuez.github.io/posts/divisor_transform_memo/</guid>
-      <description>移植テストです</description>
+      <description>とっても読みにくいので新しいのをよんで！！ あたらしいの</description>
     </item>
     
     <item>
