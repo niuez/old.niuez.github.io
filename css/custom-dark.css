@@ -78,7 +78,8 @@ table th, table td {
 }
 
 pre code {
-  display: inline-block
+  display: inline-block;
+  font-family: "Monaco", "Consolas", "Courier New", "Courier" ,monospace;
 }
 
 img {
