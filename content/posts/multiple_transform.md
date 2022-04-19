@@ -163,6 +163,8 @@ $\sum\_{n | A\_i} A\_i$は倍数ゼータ変換の形をしているので、こ
 
 [提出コード](https://atcoder.jp/contests/agc038/submissions/31088850)
 
+
+
 ```cpp
 constexpr i64 MAX = 1e6 + 1;
  
@@ -196,6 +198,121 @@ int main() {
   cout << res / fp(2) << endl;
 }
 ```
+
+## ちなみに...2
+
+約数を列挙する部分でosa\_k法を用いるとめちゃ速くなります。
+
+[提出コード](https://atcoder.jp/contests/agc038/submissions/31096016)
+
+osa\_kの実装は[えびちゃんのエラトステネスの篩に基づく高速な素因数分解 - Qiita](https://qiita.com/rsk0315_h4x/items/ff3b542a4468679fb409)を参考にしました。
+
+```cpp
+struct osa_k {
+  using int_type = int;
+  std::vector<int_type> min_fact;
+ 
+  // O(NlogN)
+  static std::vector<int_type> min_prime_factor(int n) {
+    std::vector<int_type> res(n);
+    std::iota(std::begin(res), std::end(res), 0);
+    for(int i = 2; i * i < n; i++) {
+      if(res[i] < i) continue;
+      for(int j = i * i; j < n; j += i) {
+        if(res[j] == j) res[j] = i;
+      }
+    }
+    return res;
+  }
+ 
+  void build(int n) {
+    min_fact = min_prime_factor(n);
+  }
+ 
+  // O(logN)
+  std::vector<std::pair<int_type, int>> prime_factors(int n) const {
+    std::vector<std::pair<int_type, int>> res;
+    while(n > 1) {
+      if(res.empty() || res.back().first != min_fact[n]) {
+        res.push_back({ min_fact[n], 0 });
+      }
+      res.back().second++;
+      n /= min_fact[n];
+    }
+    return res;
+  }
+  
+  // The divisors are not sorted
+  // O(logN + |divisors|)
+  template<class F>
+  void enumerate_divisors(int n, F f) const {
+    std::vector<std::pair<int_type, int>> prime_facts = prime_factors(n);
+    if(prime_facts.empty()) {
+      f(1);
+      return;
+    }
+    std::vector<int> cnt(prime_facts.size());
+    std::vector<int> acc(prime_facts.size(), 1);
+    while(true){
+      f(acc.front());
+      int i = 0;
+      for(; i < prime_facts.size(); i++) {
+        if((cnt[i]++) == prime_facts[i].second) {
+          cnt[i] = 0;
+        }
+        else {
+          acc[i] *= prime_facts[i].first;
+          break;
+        }
+      }
+      if(i == prime_facts.size()) {
+        break;
+      }
+      while(i --> 0) {
+        acc[i] = acc[i + 1];
+      }
+    }
+  }
+};
+
+...
+
+int main() {
+  i64 N;
+  cin.tie(nullptr);
+  std::ios::sync_with_stdio(false);
+  cin >> N;
+  vector<i64> A(N);
+  rep(i,0,N) cin >> A[i];
+ 
+  osa_k osa;
+  osa.build(MAX);
+  vector<fp> S(MAX);
+ 
+  vector<fp> ans(MAX);
+ 
+  rep(i,0,N) {
+    osa.enumerate_divisors(A[i], [&](int d) {
+        S[d] += fp(A[i]);
+        ans[d] -= fp(A[i]) * fp(A[i]);
+    });
+  }
+  fp i2 = fp(2).inv();
+  rep(g,1,MAX) {
+    ans[g] += S[g] * S[g];
+    ans[g] *= i2;
+  }
+ 
+  inverse_multiple_transform(ans);
+ 
+  fp res;
+  rep(g,1,MAX) {
+    res += fp(g).inv() * ans[g];
+  }
+  cout << res << endl;
+}
+```
+
 
 ## ABC248 G - GCD cost on the tree
 
