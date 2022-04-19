@@ -143,6 +143,12 @@ int main() {
 }
 ```
 
+## 追記
+
+約数列挙にosa\_k法を使うとめっちゃはやくなります。
+
+[提出コード](https://atcoder.jp/contests/agc038/submissions/31096206)
+
 ## ABC248 G - GCD cost on the treeのパスグラフ版
 
 [ABC248 G - GCD cost on the tree](https://atcoder.jp/contests/abc248/tasks/abc248_g)のパスグラフ版から考えて、木に応用しようとしたけど失敗しちゃったのでパスグラフの解法だけでもメモっておきます...
